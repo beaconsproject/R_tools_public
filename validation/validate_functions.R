@@ -7,8 +7,8 @@ library(summarytools)
 
 validate_project <- function(data_pkg, lyr_line, lyr_poly, output_dir) {
 
-  types <- readr::read_csv('https://github.com/beaconsproject/beacons_tools/blob/main/validation/yg_industry_disturbance_types.csv')
-  errors <- readr::read_csv('https://github.com/beaconsproject/beacons_tools/blob/main/validation/yg_industry_disturbance_types_errors.csv')
+  types <- readr::read_csv('https://raw.githubusercontent.com/beaconsproject/beacons_tools/main/validation/yg_industry_disturbance_types.csv')
+  errors <- readr::read_csv('https://raw.githubusercontent.com/beaconsproject/beacons_tools/main/validation/yg_industry_disturbance_types_errors.csv')
 
   # Create output folder if it doesn't exist
   if (!dir.exists(output_dir)) {
