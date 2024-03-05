@@ -12,7 +12,7 @@ validate_project <- function(data_pkg, lyr_line, lyr_poly, output_dir) {
 
   # Create output folder if it doesn't exist
   if (!dir.exists(output_dir)) {
-    dir.create(output_dir)
+    dir.create(output_dir, recursive=TRUE)
   }
 
   # Read file and get disturbance attributes
