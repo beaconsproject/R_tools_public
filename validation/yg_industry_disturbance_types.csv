@@ -1,0 +1,67 @@
+TYPE_FEATURE,TYPE_INDUSTRY,TYPE_DISTURBANCE,BEACONS_EXTRA
+Areal,Agriculture,Agriculture,0
+Areal,Forestry,Forestry,0
+Areal,Mining,Building,0
+Areal,Mining,Drill Pad,0
+Areal,Mining,Fuel Cache,0
+Areal,Mining,Gravel Pit / Quarry,0
+Areal,Mining,Laydown area,0
+Areal,Mining,Mining,0
+Areal,Mining,Placer Mining - Minor,0
+Areal,Mining,Placer Mining - Significant,0
+Areal,Mining,Quartz Mining - Minor,0
+Areal,Mining,Quartz Mining - Significant,0
+Areal,Mining,Tailing Pond,0
+Areal,Mining,Camp,0
+Areal,Oil and Gas,Well Pad,0
+Areal,Oil and Gas,Unknown,0
+Areal,Rural,Camp,0
+Areal,Rural,Homestead,0
+Areal,Transportation,Airstrip,0
+Areal,Transportation,Clearing,0
+Areal,Transportation,Gravel Pit / Quarry,0
+Areal,Transportation,Pullout / Turn Area,0
+Areal,Transportation,Road Cut and Fill,0
+Areal,Transportation,Unknown,1
+Areal,Unknown,Clearing,0
+Areal,Unknown,Gravel Pit / Quarry,0
+Areal,Unknown,Building,1
+Areal,Unknown,Unknown,0
+Areal,Urban,Building,0
+Areal,Urban,Cemetery,0
+Areal,Urban,Clearing,0
+Areal,Urban,Cul-de-sac / Turn Area,0
+Areal,Urban,Dam,0
+Areal,Urban,Golf Course,0
+Areal,Urban,Industrial,0
+Areal,Urban,Institutional,0
+Areal,Urban,Landfill,0
+Areal,Urban,Pond,0
+Areal,Urban,Recreation Area,0
+Areal,Urban,Rural Residential,0
+Areal,Urban,Tower,0
+Areal,Urban,Urban,0
+Linear,Mining,Diversion Channel,0
+Linear,Mining,Survey / Cutline,0
+Linear,Mining,Survey / Cutline - Placer,0
+Linear,Mining,Survey / Cutline - Quartz,0
+Linear,Mining,Trench,0
+Linear,Mining,Unknown,0
+Linear,Oil and Gas,Pipeline,0
+Linear,Oil and Gas,Seismic Line,0
+Linear,Rural,Driveway,0
+Linear,Rural,Fence,0
+Linear,Transportation,Access Assumed,0
+Linear,Transportation,Access Road,0
+Linear,Transportation,Arterial Road,0
+Linear,Transportation,Local Road,0
+Linear,Transportation,Right of Way,0
+Linear,Transportation,Trail,0
+Linear,Transportation,Unpaved Road,0
+Linear,Transportation,Railway,1
+Linear,Transportation,Unknown,1
+Linear,Unknown,Right of Way,0
+Linear,Unknown,Survey / Cutline,0
+Linear,Unknown,Unknown,0
+Linear,Utility,Electric Utility Corridor,0
+Linear,Utility,Unknown,0
