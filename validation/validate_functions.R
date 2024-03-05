@@ -7,6 +7,9 @@ library(summarytools)
 
 validate_project <- function(data_pkg, lyr_line, lyr_poly, output_dir) {
 
+  types <- readr::read_csv('https://github.com/beaconsproject/beacons_tools/blob/main/validation/yg_industry_disturbance_types.csv')
+  errors <- readr::read_csv('https://github.com/beaconsproject/beacons_tools/blob/main/validation/yg_industry_disturbance_types_errors.csv')
+
   # Create output folder if it doesn't exist
   if (!dir.exists(output_dir)) {
     dir.create(output_dir)
@@ -44,25 +47,25 @@ validate_project <- function(data_pkg, lyr_line, lyr_poly, output_dir) {
   sink()
 
   # Validate linear TYPE_INDUSTRY and TYPE_DISTURBANCE
-  line_indu <- readr::read_csv('yg_industry_disturbance_types.csv') |>
+  line_indu <- types |>
     filter(TYPE_FEATURE=='Linear') |>
     select(TYPE_INDUSTRY) |>
     unique() |>
     pull()
-  line_dist <- readr::read_csv('yg_industry_disturbance_types.csv') |>
+  line_dist <- types |>
     filter(TYPE_FEATURE=='Linear') |>
     select(TYPE_DISTURBANCE) |>
     unique() |>
     pull()
   # These are combinations that are theoretically not permitted but left as is for now
-  line_combo <- readr::read_csv('yg_industry_disturbance_types.csv') |>
+  line_combo <- types |>
     filter(TYPE_FEATURE=='Linear') |>
     select(TYPE_INDUSTRY, TYPE_DISTURBANCE) |>
     mutate(TYPE_COMBINED=paste0(TYPE_INDUSTRY,"***",TYPE_DISTURBANCE)) |>
     unique() |>
     pull()
   # These ones need to be fixed asap - they cannot occur (see fixit script)
-  line_combo_error <- readr::read_csv('yg_industry_disturbance_types_errors.csv') |>
+  line_combo_error <- errors |>
     filter(TYPE_FEATURE=='Linear') |>
     select(TYPE_INDUSTRY_error, TYPE_DISTURBANCE_error) |>
     mutate(TYPE_COMBINED_error=paste0(TYPE_INDUSTRY_error,"***",TYPE_DISTURBANCE_error)) |>
@@ -78,18 +81,18 @@ validate_project <- function(data_pkg, lyr_line, lyr_poly, output_dir) {
   readr::write_csv(x_line_test, paste0(output_dir, '/',lyr_line,'_types_validation.csv'))
 
   # Validate areal TYPE_INDUSTRY and TYPE_DISTURBANCE
-  poly_indu <- readr::read_csv('yg_industry_disturbance_types.csv') |>
+  poly_indu <- types |>
     filter(TYPE_FEATURE=='Areal') |>
     select(TYPE_INDUSTRY) |>
     unique() |>
     pull()
-  poly_dist <- readr::read_csv('yg_industry_disturbance_types.csv') |>
+  poly_dist <- types |>
     filter(TYPE_FEATURE=='Areal') |>
     select(TYPE_DISTURBANCE) |>
     unique() |>
     pull()
   # These are combinations that are theoretically not permitted but left as is for now
-  poly_combo <- readr::read_csv('yg_industry_disturbance_types.csv') |>
+  poly_combo <- types |>
     filter(TYPE_FEATURE=='Areal') |>
     select(TYPE_INDUSTRY, TYPE_DISTURBANCE) |>
     mutate(TYPE_COMBINED=paste0(TYPE_INDUSTRY,"***",TYPE_DISTURBANCE)) |>
