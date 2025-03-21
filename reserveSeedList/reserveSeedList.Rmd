@@ -117,13 +117,13 @@ Both functions need the following:
 pas_sf_with_dci <- pas_sf %>%
   mutate(dci = sapply(1:nrow(pas_sf), function(i) {
     pa <- pas_sf[i, ]
-    calc_dci(pa, streams_sf, column_id = "PAID")  # Assuming calc_dci is a function
+    calc_dci(pa, streams_sf, column_id = pas_colName)  # Assuming calc_dci is a function
   }))
 
 pas_sf_with_lwdci <- pas_sf_with_dci %>%
   mutate(lwdci = sapply(1:nrow(pas_sf_with_dci), function(i) {
     pa <- pas_sf_with_dci[i, ]
-    calc_lwdci(pa, streams_sf, column_id = "PAID")  # Assuming calc_dci is a function
+    calc_lwdci(pa, streams_sf, column_id = pas_colName)  # Assuming calc_dci is a function
   }))
 
 #Save results
