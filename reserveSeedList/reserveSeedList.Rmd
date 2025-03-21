@@ -25,6 +25,7 @@ library(stringr)
 library(readr)
 library(tibble)
 source("./reserveSeedList_dependencies.R")
+source("./dci.R")
 
 #Set access path 
 dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/preBuilder"
@@ -36,6 +37,9 @@ catchments <- file.path(dirpath ,"NCC_Quebec/debug_files_2025-03-19/input", "QC_
 pas <- file.path(dirpath, "NCC_Quebec/debug_files_2025-03-19/input", "QC_pas.shp")
 pas_colName <- "PAID"
 
+#Set access path streams layer
+streams <- file.path(dirpath, "NCC_Quebec/debug_files_2025-03-19/input", "streams.shp")
+
 #Build folder trees for putput
 treedir <- c("shp_output","Builder_input","Builder_output")
 for(d in treedir){
@@ -44,6 +48,10 @@ for(d in treedir){
   }
 }
 
+# Initialize sf objects
+catchments_sf <- st_read(catchments)
+pas_sf <- st_read(pas)
+streams_sf <- st_read(streams)
 ```
 
 ## 1. Generate reserve seedlist and neighbour input file 
@@ -59,10 +67,6 @@ Function `genReserveSeed` need the following:
 - **outDir**: Point to an output directory
 
 ```{r input, echo=TRUE}
-# Initialize sf objects
-catchments_sf <- st_read(catchments)
-pas_sf <- st_read(pas)
-
 # Create neighbour file
 nghbrs <- neighbours(catchments_sf)
 write.csv(nghbrs, file=file.path(dirpath,"Builder_input/nghbrs.csv"), row.names=FALSE) # Convert neighbours table to csv file.
@@ -92,4 +96,36 @@ write_sf(up_poly, dsn =file.path(dirpath, "shp_output", "out_up.shp"), append = 
 #downstream
 down_poly <- gen_poly_from_rowTable(catchments_sf, outDir = dirpath, type = "DOWNSTREAM")
 write_sf(down_poly, dsn=file.path(dirpath, "shp_output","out_down.shp"), append = FALSE)
+```
+
+
+## 4. Calculate DCI
+
+Function `calc_dci` calculate dendritic connectivity index (DCI) for a set of input polygons. Values range between 0 and 1, with 1 indicating a completely connected river network. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of reserves based on the expected probability of an organism being able to move between two random points in the network. 
+
+Function `calc_lwdci` calculate stream network length-weighted dendritic connectivity index (DCI) for a set of input polygons. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of conservation areas based on the expected probability of an organism being able to move between two random points in the network. 
+
+Both functions need the following:
+
+- **conservation_area_sf**: Point to a protected areas sf object
+- **stream_sf**: Point to an stream_sf object. The provided streams need to have information on BASIN. 
+- **column_id**: Column name  holding the unique ID of the conservation_area_sf. Default is network. 
+- **buffer_width**: Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis.
+
+```{r dci, echo=TRUE}
+#DCI
+pas_sf_with_dci <- pas_sf %>%
+  mutate(dci = sapply(1:nrow(pas_sf), function(i) {
+    pa <- pas_sf[i, ]
+    calc_dci(pa, streams_sf, column_id = "PAID")  # Assuming calc_dci is a function
+  }))
+
+pas_sf_with_lwdci <- pas_sf_with_dci %>%
+  mutate(lwdci = sapply(1:nrow(pas_sf_with_dci), function(i) {
+    pa <- pas_sf_with_dci[i, ]
+    calc_lwdci(pa, streams_sf, column_id = "PAID")  # Assuming calc_dci is a function
+  }))
+
+#Save results
+write_sf(pas_sf_with_lwdci, dsn=file.path(dirpath, "shp_output","pas_with_dci.shp"), append = FALSE)
 ```
