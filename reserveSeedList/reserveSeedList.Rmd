@@ -25,7 +25,6 @@ library(stringr)
 library(readr)
 library(tibble)
 source("./reserveSeedList_dependencies.R")
-source("./dci.R")
 
 #Set access path 
 dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/preBuilder"
