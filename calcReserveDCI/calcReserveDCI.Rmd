@@ -23,6 +23,7 @@ Both functions need the following:
 - **column_id**: Column name  holding the unique ID of the pas_sf. Default is network. 
 - **buffer_width**: Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis.
 
+```{r dci, echo=TRUE}
 # Load libraries
 library(sf)
 library(plyr)
@@ -34,8 +35,7 @@ library(tibble)
 source("./project_dependencies.R")
 
 #Set access path 
-#dirpath <- "C:/DCI"
-dirpath <-  "E:/MelinaStuff/BEACONs/request/Kim/DCI/DCI"
+dirpath <- "C:/DCI"
 
 
 #Set access path reserve layer
@@ -86,3 +86,4 @@ if (exists("pas_sf_with_dci") && exists("pas_sf_with_lwdci")) {
 #Save results
 write_sf(pas_sf_final, dsn=file.path(dirpath, "output","pas_hydrometrics.shp"), append = FALSE)
 
+```
