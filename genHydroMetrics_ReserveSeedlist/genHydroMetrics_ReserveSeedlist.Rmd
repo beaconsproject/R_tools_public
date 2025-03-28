@@ -1,5 +1,5 @@
 ---
-title: "reserveSeedList"
+title: "genHydroMetrics_ReserveSeedlist"
 author: "Melina Houle"
 date: "`r Sys.Date()`"
 output: html_document
@@ -24,7 +24,7 @@ library(utils)
 library(stringr)
 library(readr)
 library(tibble)
-source("./reserveSeedList_dependencies.R")
+source("./project_dependencies.R")
 
 #Set access path 
 dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/preBuilder"
