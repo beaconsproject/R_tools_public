@@ -1,0 +1,88 @@
+---
+title: "calcReserveDCI"
+author: "Melina Houle"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Intro
+
+This script calculates Dendritic Connectivity Index (DCI).  
+
+The first step is to locate the reserves (e.g., protected area) and stream networks shapefiles and point on an output directory where all derived files will be saved. 
+The shapefiles must have the same CRS. 
+
+Function `calc_dci` calculate dendritic connectivity index (DCI) for a set of input polygons. Values range between 0 and 1, with 1 indicating a completely connected river network. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of reserves based on the expected probability of an organism being able to move between two random points in the network. 
+
+Function `calc_lwdci` calculate stream network length-weighted dendritic connectivity index (DCI) for a set of input polygons. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of conservation areas based on the expected probability of an organism being able to move between two random points in the network. 
+
+Both functions need the following:
+
+- **pas_sf**: Point to a protected areas sf object
+- **streams_sf**: Point to an stream_sf object. The provided streams need to have information on BASIN. 
+- **column_id**: Column name  holding the unique ID of the pas_sf. Default is network. 
+- **buffer_width**: Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis.
+
+# Load libraries
+library(sf)
+library(plyr)
+library(dplyr)
+library(utils)
+library(stringr)
+library(readr)
+library(tibble)
+source("./project_dependencies.R")
+
+#Set access path 
+#dirpath <- "C:/DCI"
+dirpath <-  "E:/MelinaStuff/BEACONs/request/Kim/DCI/DCI"
+
+
+#Set access path reserve layer
+pas <- file.path(dirpath, "input", "PAS2.shp")
+pas_colName <- "network"
+
+#Set access path streams layer
+streams <- file.path(dirpath, "input", "PAS2_streams.shp")
+
+#Create output folder
+treedir <- c("output")
+for(d in treedir){
+  if(!dir.exists(file.path(dirpath, d))){
+    dir.create(file.path(dirpath, d))
+  }
+}
+
+# Initialize sf objects
+pas_sf <- st_read(pas)
+streams_sf <- st_read(streams)
+
+# calculate DCI
+pas_sf_with_dci <- pas_sf %>%
+  mutate(dci = sapply(1:nrow(pas_sf), function(i) {
+    pa <- pas_sf[i, ]
+    calc_dci(pa, streams_sf, column_id = pas_colName)  # Assuming calc_dci is a function
+  }))
+
+pas_sf_with_lwdci <- pas_sf %>%
+  mutate(lwdci = sapply(1:nrow(pas_sf), function(i) {
+    pa <- pas_sf[i, ]
+    calc_lwdci(pa, streams_sf, column_id = pas_colName)  # Assuming calc_dci is a function
+  }))
+
+if (exists("pas_sf_with_dci") && exists("pas_sf_with_lwdci")) {
+  # Both exist, merge them
+  pas_sf_final <- st_join(pas_sf_with_dci, pas_sf_with_lwdci["lwdci"])
+} else if (exists("pas_sf_with_dci")) {
+  # Only dci object exists
+  pas_sf_final <- pas_sf_with_dci
+} else if (exists("pas_sf_with_lwdci")) {
+  # Only lwdci object exists
+  pas_sf_final <- pas_sf_with_lwdci
+} else {
+  stop("Neither pas_sf_with_dci nor pas_sf_with_lwdci exist.") # Handle case where neither exists
+}
+  
+#Save results
+write_sf(pas_sf_final, dsn=file.path(dirpath, "output","pas_hydrometrics.shp"), append = FALSE)
+
