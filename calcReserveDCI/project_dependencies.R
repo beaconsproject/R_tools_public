@@ -401,7 +401,7 @@ get_catch_list <- function(pa_ids, input_table){
 #'   dissolve_list = c("PB_0001", "PB_0002"))
 #' calc_dci(conservation_areas, streams_sample)
 #' 
-calc_dci <- function(conservation_area_sf, stream_sf, column_id = network, buffer_width = 0.1){
+calc_dci <- function(conservation_area_sf, stream_sf, column_id = "network", buffer_width = 0.1){
   #browser()
   stopifnot(sf::st_crs(conservation_area_sf) == sf::st_crs(stream_sf))
   
@@ -471,7 +471,7 @@ calc_dci <- function(conservation_area_sf, stream_sf, column_id = network, buffe
 #' calc_lwdci(conservation_areas, streams_sample)
 #' 
 
-calc_lwdci <- function(conservation_area_sf, stream_sf, column_id = network, buffer_width = 0.1){
+calc_lwdci <- function(conservation_area_sf, stream_sf, column_id = "network", buffer_width = 0.1){
   
   stopifnot(sf::st_crs(conservation_area_sf) == sf::st_crs(stream_sf))
   
