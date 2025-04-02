@@ -1,0 +1,109 @@
+---
+title: "createBuilderInput"
+author: "Melina Houle"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Intro
+
+This script creates the three required input to run BUILDER (seed, neighbour and catchments tables).  
+
+The first step is to locate the catchments shapefiles and point on an output directory where the derived files will be saved. The script uses two functions from the beaconsbuilder package: `seeds` and `neighbour`. 
+
+The `seeds` function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset to limit the as a seed, catchments reaching a certain level of intactness or having STAHRALER index equal to 1.  seeds.  
+
+Function `neighbours` calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
+
+
+Both functions need the catchments dataset with unique identifier column CATCHNUM.
+
+
+```{r builderInput, echo=TRUE}
+# Load libraries
+library(sf)
+library(dplyr)
+library(utils)
+
+source("./project_dependencies.R")
+
+
+# --------------------------------------
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# --------------------------------------
+# -- GLOBAL ----------------------------
+#Set access path 
+dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/createBuilderInput"
+
+#Set access path reserve layer
+catchments <- file.path(dirpath, "data", "catch1M_KBA_MDA06.shp")
+
+#Create output folder
+out_dir <- file.path(dirpath, "Builder_input")
+for(d in out_dir){
+  if(!dir.exists(file.path(out_dir))){
+    dir.create(file.path(out_dir))
+  }
+}
+
+# -- SEED PARAMS -----------------------
+##OPTION: Filter potential seeds according to catchments intactness and STHRALER index
+intactColname <- "intactKBA" # set catchment intactness column
+intact_threshold <- 0.9      # set catchment intactness threshold
+STRAHLER_ref <- NULL         # set STRAHLER index
+
+##OPTION: Set area target value by choosing one of the following options. Leave argument to NULL  if not chosen
+## Option 1:
+areatarget <- 10000 #ex : areatarget <- 10000
+## Option 2:
+areatarget_col <- NULL #ex : areatarget_col <- "area_thres" 
+## Option 3:
+areatarget_poly <- NULL # ex: areatarget_poly <- st_read(file.path(dirpath, "data", "poly_areatarget.shp"))
+areatarget_poly_col <- NULL # ex: areatarget_poly_col <-"area_thres"
+# --------------------------------------
+# --------------------------------------
+# -- END SET PARAMS   ------------------
+
+
+# --------------------------------------
+# --------------------------------------
+# -- RUN -----------------------
+# --------------------------------------
+# --------------------------------------
+#-- NEIGHBOUR
+# Create neighbours and convert to csv
+catchments_sf <- st_read(catchments)
+nghbrs <- neighbours(catchments_sf)
+write.csv(nghbrs, file=file.path(out_dir,"nghbrs.csv"), row.names=FALSE) 
+
+#-- SEED
+# Filter catchments based on intactness and STRAHLER index, create seeds and convert to csv
+seed_sf <- catchments_sf %>%
+  dplyr::filter(.data[[intactColname]] >= intact_threshold, 
+         if (!is.null(STRAHLER_ref)) STRAHLER == as.numeric(STRAHLER_ref) else TRUE)
+
+if (!is.null(areatarget)) {
+  # Both exist, merge them
+  seed <- seeds(catchments_sf = seed_sf, areatarget_value = as.numeric(areatarget))
+} else if (!is.null(areatarget_col)) {
+  # Only dci object exists
+  seed <- seeds(catchments_sf = seed_sf, areatarget_col = areatarget_col)
+} else if (!is.null(areatarget_poly)) {
+  # Only lwdci object exists
+  seed <- seeds(catchments_sf = seed_sf, areatarget_polygon = areatarget_poly, areatarget_polygon_col = areatarget_poly_col)
+} else {
+  stop("You need to set at least one option") # Handle case where neither exists
+}
+
+write.csv(seed, file=file.path(out_dir, "seeds.csv"), row.names=FALSE) # Convert neighbours table to csv file.
+
+
+#-- CATCHMENTS
+catchment <- catchments_sf %>%
+  st_drop_geometry()
+write.csv(catchment, file=file.path(out_dir, "catchments.csv"), row.names=FALSE) # Convert neighbours table to csv file.
+
+
+```
