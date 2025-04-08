@@ -7,14 +7,13 @@ output: html_document
 
 ## Intro
 
-This script creates the three required input to run BUILDER (seed, neighbour and catchments tables).  
+This script creates the three required input to run BUILDER (seeds, neighbour and catchments tables).  
 
 The first step is to locate the catchments shapefiles and point on an output directory where the derived files will be saved. The script uses two functions from the beaconsbuilder package: `seeds` and `neighbour`. 
 
-The `seeds` function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset to limit the as a seed, catchments reaching a certain level of intactness or having STAHRALER index equal to 1.  seeds.  
+The `seeds` function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.  
 
-Function `neighbours` calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
-
+The `neighbours` function calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
 
 Both functions need the catchments dataset with unique identifier column CATCHNUM.
 
