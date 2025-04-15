@@ -1,0 +1,82 @@
+---
+title: "createBuilderPolygons"
+author: "Melina Houle"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Intro
+
+This script generates potential benchmarks, upstream and downstream polygon based on the builder output. 
+
+The first step is to locate catchments and protected areas shapefile representing the reserves and point on an output directory where all derived files will be saved. Catchments and protected areas shapefile must be using the same CRS. 
+
+```{r Params, echo=TRUE}
+# Load libraries
+library(sf)
+library(dplyr)
+library(utils)
+source("./project_dependencies.R")
+source("./utils.R")
+
+
+#Set access path 
+dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/preBuilder"
+builder_dir <- file.path(dirpath, "Builder_output")
+
+outDir <- file.path(dirpath, "shp_output")
+
+#Set access path catchments layer and initialize
+catchments <- file.path(dirpath ,"NCC_Quebec/debug_files_2025-03-19/input", "QC_catch.shp")
+catchments_sf <- st_read(catchments)
+
+```
+
+## 1. Generate potential benchmarks, upstream and downstream polygons from catchments using Builder output files
+
+Function `prep_input_column` allow to read Builder output tables that uses column format. The output can then be passed to dissolve_catchment_from_table to generate polygons using enumerated 'CATCHNUM'. `prep_input_column` needs the following:
+
+- **out_dir**: Point to a directory that contains Builder output
+- **type**: Indicate which file to read. type can be 'BENCHMARKS', 'UPSTREAM' or 'DOWNSTREAM'. Default is 'BENCHMARKS'.
+
+```{r genPoly, echo=TRUE}
+#############################################
+#  Generate benchmark polygons
+#############################################
+out_tab <- prep_input_column(builder_dir)
+
+# Convert builder output tables to polygons
+poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
+                                             input_table = out_tab, 
+                                             out_feature_id = "network")
+
+write_sf(poly_sf, dsn =file.path(outDir, "benchmarks_poly.shp"), append = FALSE)
+
+#############################################
+#  Generate upstream polygons
+#############################################
+out_tab <- prep_input_column(builder_dir, "UPSTREAM")
+
+# Convert builder output tables to polygons
+poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
+                                             input_table = out_tab, 
+                                             out_feature_id = "network")
+
+write_sf(poly_sf, dsn =file.path(outDir, "upstream_poly.shp"), append = FALSE)
+
+#############################################
+#  Generate downstream polygons
+#############################################
+out_tab <- prep_input_column(builder_dir, "DOWNSTREAM")
+
+# Convert builder output tables to polygons
+poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
+                                             input_table = out_tab, 
+                                             out_feature_id = "network")
+
+write_sf(poly_sf, dsn =file.path(outDir, "downstream_poly.shp"), append = FALSE)
+```
