@@ -141,6 +141,76 @@ neighbours <- function(catchments_sf){
 
   return(nbr_df)
 }
+reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NULL, joinType = "CENTROID", out_dir){
+  options(scipen = 999)
+  
+  # JOIN TYPE
+  if(joinType =="INTERSECT"){
+    catch_join <- st_intersects(CAs_sf, catchments_sf)
+  }else if(joinType =="CENTROID"){
+    #browser()
+    catch_centroids <- st_centroid(catchments_sf)
+    catch_join <- st_intersects(CAs_sf, catch_centroids, sparse = TRUE)
+  }
+  
+  out_tab <- data.frame(
+    CAs_name = CAs_sf[[CAs_name]],
+    Areatarget = areatarget_value,
+    CATCHNUM  = sapply(catch_join, function(idx) {
+      paste(catchments_sf$CATCHNUM[idx], collapse = ",")
+    })
+  ) 
+  
+  # # Split the 'CATCHNUM' column into a list of vectors
+  catchnum_list <- strsplit(out_tab$CATCHNUM, ",")
+  
+  # Determine the maximum number of catch numbers
+  max_catchnums <- max(sapply(catchnum_list, length))
+  
+  # Create a row with the specified values
+  row <- c("CAs_name", "Areatarget", "CATCHNUM", rep(NA, max_catchnums-1))
+  
+  # Specify the output file path
+  output_file <- file.path(out_dir, "Builder_input/seeds.csv")
+  if(!dir.exists(file.path(out_dir, "Builder_input"))){
+    dir.create(file.path(out_dir, "Builder_input"))
+  }
+  
+  # Create the data frame
+  seed_init <- as.data.frame(t(row), stringsAsFactors = FALSE)
+  utils::write.table(seed_init, file = output_file, sep= ",", na= "", row.names = FALSE, col.names= FALSE)
+  
+  # Open a connection to the output file
+  file_conn <- file(output_file, open = "a")
+  
+  # Pad shorter vectors with NA
+  catchnum_list <- lapply(catchnum_list, function(x) {
+    length(x) <- max_catchnums
+    return(x)
+  })
+  
+  # Iterate over each row in the data list
+  for (i in 1:length(catchnum_list)) {
+    CAs_name <- as.character(out_tab[i, 1])
+    Areatarget <- as.character(out_tab[i, 2])
+    CATCHNUM <- catchnum_list[[i]]
+    # Combine the elements into a single comma-separated string
+    last_non_na <- max(which(CATCHNUM != ""))
+    CATCHNUM <- CATCHNUM[1:last_non_na]
+    
+    line <- paste(c(CAs_name, Areatarget, CATCHNUM), collapse = ",")
+    
+    # Write the line to the file
+    writeLines(line, con = file_conn)
+  }
+  
+  # Close the file connection
+  close(file_conn)
+  #browser()
+  out_tab <- utils::read.csv(output_file)
+  return(dplyr::as_tibble(out_tab))
+  return(seed)
+}
 make_catchnum_integer <- function(catchments_sf){
 
   # check CATCHNUM exists

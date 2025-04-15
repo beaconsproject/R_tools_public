@@ -17,6 +17,8 @@ The `neighbours` function calculates a list of neighbouring CATCHNUM pairs and r
 
 Both functions need the catchments dataset with unique identifier column CATCHNUM.
 
+If you want to create a seedList 
+
 
 ```{r builderInput, echo=TRUE}
 # Load libraries
@@ -39,6 +41,7 @@ dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/createBuilderInput"
 #Set access path reserve layer
 catchments <- file.path(dirpath, "data", "catch1M_KBA_MDA06.shp")
 
+pas <- file.path(dirpath, "data", "PAs_MDA06.shp")
 #Create output folder
 out_dir <- file.path(dirpath, "Builder_input")
 for(d in out_dir){
@@ -74,6 +77,7 @@ areatarget_poly_col <- NULL # ex: areatarget_poly_col <-"area_thres"
 #-- NEIGHBOUR
 # Create neighbours and convert to csv
 catchments_sf <- st_read(catchments)
+pas_sf <- st_read(pas)
 nghbrs <- neighbours(catchments_sf)
 write.csv(nghbrs, file=file.path(out_dir,"nghbrs.csv"), row.names=FALSE) 
 
@@ -99,10 +103,11 @@ if (!is.null(areatarget)) {
 write.csv(seed, file=file.path(out_dir, "seeds.csv"), row.names=FALSE) # Convert neighbours table to csv file.
 
 
-#-- CATCHMENTS
+#-- RESERVE SEED
 catchment <- catchments_sf %>%
   st_drop_geometry()
 write.csv(catchment, file=file.path(out_dir, "catchments.csv"), row.names=FALSE) # Convert neighbours table to csv file.
 
+seed <- reserve_seeds(catchments_sf, CAs_sf=pas_sf, CAs_name = "PARENT_ID", areatarget_value = 10000, joinType = "INTERSECT", out_dir = file.path(dirpath, "Builder_input"))
 
 ```
