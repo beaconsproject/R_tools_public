@@ -1,7 +1,7 @@
----
-title: "docs"
----
+# docs/index.qmd
 
-## Quarto
+# Welcome to the R Tools Public Documentation
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+This site documents the tools available in the [R_tools_public GitHub repo](https://github.com/beaconsproject/R_tools_public).
+
+▶️ **[Click here to launch the live Shiny app](https://beaconsproject.github.io/R_tools_public/)**  
