@@ -12,14 +12,13 @@ website:
     background: primary
     left:
       - href: index.qmd
-        text: Home
-      - text: "Data"
+        text: Welcome
+      - text: "Functions categories"
         menu:
-          - href: data/yt_data.qmd
-            text: Yukon    
-          - href: data/bc_data.qmd
-            text: BC
-      - href: resources.qmd
+          - href: tools/Builder.qmd
+            text: Builder functions    
+          - href: tools/Spatial.qmd
+            text: Spatial
 
 format:
   html:
@@ -27,3 +26,6 @@ format:
       light: [cosmo, theme.scss]
     css: styles.css
     toc: true
+
+resources:
+  - tools/
