@@ -1,7 +1,19 @@
-<center><img src="pics/bp_banner.png" alt="BEACONs Project"></center>
-<hr>
 
-**Welcome to the BEACONs R tools pages!**
+**BEACONs Builder**
 
-Over the years, BEACONs develops a series of function to ease conservation planning across the landscape. Those functions have been group into categories. This pages aims to document each function and demonstrate their use through example. The functions are target advanced users who work with environmental data at large scale.
+beaconsbuilder allows you to build conservation areas following rules of size, intactness, and hydrological connectivity. You can visit the package website here: https://beaconsproject.github.io/beaconsbuilder.
 
+beaconsbuilder should be used together with the beaconstools package to construct and analyse sets of conservation areas. More details on how beaconsbuilder works can be found in vignette("builder").
+
+**BEACONs Builder has 4 main functions:**
+
+- [seeds](Builder/seeds.qmd)
+- [reserve_seeds](Builder/reserve_seeds.qmd)
+- [neighbours](Builder/neighbours.qmd)
+- [builder](Builder/builder.qmd)
+
+
+**Citation**
+Please cite the beaconsbuilder package when using it in publications. To cite the latest official version, please use:
+
+Edwards M, Vernier P, Lisgo K, Houle M, Schmiegelow F (2022). beaconsbuilder: building conservation areas in R. R package version 0.0.0.9000. Available at https://github.com/beaconsproject/beaconsbuilder.
