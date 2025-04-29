@@ -6,7 +6,7 @@ project:
     - "**/*.Rmd"
     
 website:
-  title: "BEACONs Tools"
+  title: "BEACONs R Tools"
   image: "pics/bp_banner.png"
   navbar:
     background: primary
@@ -19,33 +19,6 @@ website:
             text: Yukon    
           - href: data/bc_data.qmd
             text: BC
-      - text: "Methods"
-        menu:
-        - href: methods/intactness.qmd
-          text: Intactness mapping
-      - text: "Tools"
-        menu:
-        - text: "SHINY APPS:"
-        - href: https://github.com/beaconsproject/geopackage_creator
-          text: Geopackage Creator
-        - href: https://github.com/beaconsproject/disturbance_explorer
-          text: Disturbance Explorer
-        - href: https://github.com/beaconsproject/beaconshydro_explorer
-          text: Hydrology Explorer (private)
-        - href: https://github.com/beaconsproject/conservation_area_explorer
-          text: Conservation Area Explorer
-        - href: https://github.com/beaconsproject/disturbance_validation
-          text: Disturbance Validation
-        - href: https://github.com/beaconsproject/wolverines
-          text: Wolverine Survey Design
-        - text: "---"
-        - text: "PACKAGES:"
-        - href: https://github.com/beaconsproject/beaconstools
-          text: beaconstools (private)
-        - href: https://github.com/beaconsproject/beaconsbuilder
-          text: beaconsbuilder (private)
-        - href: https://github.com/beaconsproject/beaconshydro
-          text: beaconshydro (private)
       - href: resources.qmd
 
 format:
