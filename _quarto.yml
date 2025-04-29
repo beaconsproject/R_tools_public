@@ -1,7 +1,10 @@
 project:
   type: website
   output-dir: docs
-
+  exclude:
+    - "*.Rmd"
+    - "**/*.Rmd"
+    
 website:
   title: "BEACONs Tools"
   image: "pics/bp_banner.png"
