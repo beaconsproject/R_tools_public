@@ -34,6 +34,15 @@ outDir <- file.path(dirpath, "shp_output")
 catchments <- file.path(dirpath ,"NCC_Quebec/debug_files_2025-03-19/input", "QC_catch.shp")
 catchments_sf <- st_read(catchments)
 
+streams <- file.path(dirpath ,"NCC_Quebec/debug_files_2025-03-19/input", "streams.shp")
+streams_sf <- st_read(streams)
+
+# Name given to identify unique benchmark
+colName <- "network"
+
+# Calculate hydrology metrics
+addDCI <- TRUE
+addLWDCI <- TRUE
 ```
 
 ## 1. Generate potential benchmarks, upstream and downstream polygons from catchments using Builder output files
@@ -52,7 +61,23 @@ out_tab <- prep_input_column(builder_dir)
 # Convert builder output tables to polygons
 poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
                                              input_table = out_tab, 
-                                             out_feature_id = "network")
+                                             out_feature_id = colName)
+
+if(addDCI){
+  poly_sf <- poly_sf %>%
+  mutate(dci = sapply(1:nrow(poly_sf), function(i) {
+    i <- poly_sf[i, ]
+    calc_dci(i, streams_sf, col_name = colName) 
+  }))
+}
+if(addLWDCI){
+  poly_sf <- poly_sf %>%
+  mutate(lwdci = sapply(1:nrow(poly_sf), function(j) {
+    j <- poly_sf[j, ]
+    calc_lwdci(j, streams_sf, col_name = colName) 
+  }))
+}
+
 
 write_sf(poly_sf, dsn =file.path(outDir, "benchmarks_poly.shp"), append = FALSE)
 
@@ -64,7 +89,7 @@ out_tab <- prep_input_column(builder_dir, "UPSTREAM")
 # Convert builder output tables to polygons
 poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
                                              input_table = out_tab, 
-                                             out_feature_id = "network")
+                                             out_feature_id = colName)
 
 write_sf(poly_sf, dsn =file.path(outDir, "upstream_poly.shp"), append = FALSE)
 
@@ -76,7 +101,7 @@ out_tab <- prep_input_column(builder_dir, "DOWNSTREAM")
 # Convert builder output tables to polygons
 poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
                                              input_table = out_tab, 
-                                             out_feature_id = "network")
+                                             out_feature_id = colName)
 
 write_sf(poly_sf, dsn =file.path(outDir, "downstream_poly.shp"), append = FALSE)
 ```

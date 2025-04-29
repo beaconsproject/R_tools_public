@@ -21,7 +21,7 @@ prep_input_column <- function(out_dir, type= "BENCHMARKS"){
   }
   
   message(paste0("Returning BUILDER table: ", benchmarks_out))
-  out_tab <- utils::read.csv(file.path(outdir, benchmarks_out))
+  out_tab <- utils::read.csv(file.path(out_dir, benchmarks_out))
   
   # make sure BUILDER made some conservation areas
   if(nrow(out_tab) == 0){
