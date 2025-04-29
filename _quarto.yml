@@ -1,7 +1,7 @@
 project:
   type: website
   output-dir: docs
-  exclude:
+exclude:
     - "*.Rmd"
     - "**/*.Rmd"
     
