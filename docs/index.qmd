@@ -1,7 +1,59 @@
-# docs/index.qmd
+<center><img src="pics/bp_banner.png" alt="BEACONs Project"></center>
+<hr>
 
-# Welcome to the R Tools Public Documentation
+**Welcome to the BEACONs tools pages!**
 
-This site documents the tools available in the [R_tools_public GitHub repo](https://github.com/beaconsproject/R_tools_public).
+The [BEACONs Project](https://beaconsproject.ualberta.ca/) was founded at the University of Alberta in recognition for a new approach to conservation planning in North America's boreal region. We are building a credible scientific framework for comprehensive conservation planning through the development and application of leading-edge conservation science that includes consideration of both protected areas and lands managed for other values. The premise of our research is that the ultimate goal of conservation is to identify human activities that are compatible with the maintenance of biological diversity and integrity of ecological systems. The conceptual scientific framework guiding our research is the Conservation Matrix Model.
 
-▶️ **[Click here to launch the live Shiny app](https://beaconsproject.github.io/R_tools_public/)**  
+Within these pages we provide information on the data, methods, and tools that we use for large-scale conservation planning in the boreal region, including:
+
+- R/Shiny apps to assist in conservation planning and assessment.
+- R packages to facilitate large scale conservation planning.
+- Documentation describing the data, methods, and tools.
+- Resources such as bookmarks, presentations, and supporting material from publications.
+
+<br>
+
+**Shiny Apps**
+
+| Geopackage Creator | Disturbance Explorer | Hydrology Explorer |
+| :---: | :---: | :---: |
+| <a href="https://beaconsproject.shinyapps.io/geopackage_creator/" target="_blank"><img align="center" src="pics/geopackage_creator.png" width="250" height="165"></a> | <a href="https://beaconsproject.shinyapps.io/disturbance_explorer/" target="_blank"><img align="center" src="pics/disturbance_explorer.png" width="250" height="165"></a> | <a href="https://beaconsproject.shinyapps.io/beaconshydro_explorer_v2/" target="_blank"><img align="center" src="pics/hydrology_explorer.png" width="250" height="165"></a> |
+
+| Conservation Area Explorer | | Wolverine Survey Design |
+| :---: | :---: | :---: |
+| <a href="https://beaconsproject.shinyapps.io/conservation_area_explorer_v2" target="_blank"><img align="center" src="pics/conservation_area_explorer.png" width="250" height="165"></a> |  | <a href="https://beaconsproject.shinyapps.io/wolverines/" target="_blank"><img align="center" src="pics/wolverines_survey.png" width="250" height="165"></a> |
+
+<br>
+
+**Shiny Apps (under development)**
+
+| Disturbance Validation | | |
+| :---: | :---: | :---: |
+| <a href="https://beaconsproject.shinyapps.io/disturbance_validation" target="_blank"><img align="center" src="pics/disturbance_validation.png" width="250" height="165"></a> | | |
+
+<br>
+
+**R Packages**
+
+| beaconstools | beaconsbuilder | beaconshydro |
+| :---: | :---: | :---: |
+| <a href="https://github.com/beaconsproject/beaconstools">
+  <img align="center" src="pics/beaconstools.png" width="250"></a> 
+| <a href="https://github.com/beaconsproject/beaconsbuilder">
+  <img align="center" src="pics/beaconsbuilder.png" width="250"></a> 
+| <a href="https://github.com/beaconsproject/beaconshydro">
+  <img align="center" src="pics/beaconshydro.png" width="250"></a> |
+
+<br>
+
+**Documentation pages**
+
+| BEACONs Docs | Disturbance Mapping | Connectivity Analysis |
+| :---: | :---: | :---: |
+| <a href="https://beaconsproject.github.io/beacons_docs/">
+  <img align="center" src="pics/beacons_docs.png" width="250"></a> 
+| <a href="https://github.com/beaconsproject/disturbance_mapping">
+  <img align="center" src="pics/disturbance_mapping.png" width="250"></a> 
+| <a href="https://github.com/beaconsproject/connectivity_analysis">
+  <img align="center" src="pics/connectivity_analysis.png" width="250"></a> |

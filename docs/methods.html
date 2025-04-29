@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index</title>
+<title>methods</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,16 +23,16 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="index_files/libs/clipboard/clipboard.min.js"></script>
-<script src="index_files/libs/quarto-html/quarto.js"></script>
-<script src="index_files/libs/quarto-html/popper.min.js"></script>
-<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="index_files/libs/quarto-html/anchor.min.js"></script>
-<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="index_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="methods_files/libs/clipboard/clipboard.min.js"></script>
+<script src="methods_files/libs/quarto-html/quarto.js"></script>
+<script src="methods_files/libs/quarto-html/popper.min.js"></script>
+<script src="methods_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="methods_files/libs/quarto-html/anchor.min.js"></script>
+<link href="methods_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="methods_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="methods_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="methods_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="methods_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -46,124 +46,37 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<center>
-<img src="pics/bp_banner.png" alt="BEACONs Project">
-</center>
-<hr>
-<p><strong>Welcome to the BEACONs tools pages!</strong></p>
-<p>The <a href="https://beaconsproject.ualberta.ca/">BEACONs Project</a> was founded at the University of Alberta in recognition for a new approach to conservation planning in North America’s boreal region. We are building a credible scientific framework for comprehensive conservation planning through the development and application of leading-edge conservation science that includes consideration of both protected areas and lands managed for other values. The premise of our research is that the ultimate goal of conservation is to identify human activities that are compatible with the maintenance of biological diversity and integrity of ecological systems. The conceptual scientific framework guiding our research is the Conservation Matrix Model.</p>
-<p>Within these pages we provide information on the data, methods, and tools that we use for large-scale conservation planning in the boreal region, including:</p>
+<section id="workflow" class="level1">
+<h1>Workflow</h1>
 <ul>
-<li>R/Shiny apps to assist in conservation planning and assessment.</li>
-<li>R packages to facilitate large scale conservation planning.</li>
-<li>Documentation describing the data, methods, and tools.</li>
-<li>Resources such as bookmarks, presentations, and supporting material from publications.</li>
+<li>clickable flowchart</li>
 </ul>
-<p><br></p>
-<p><strong>Shiny Apps</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">Geopackage Creator</th>
-<th style="text-align: center;">Disturbance Explorer</th>
-<th style="text-align: center;">Hydrology Explorer</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://beaconsproject.shinyapps.io/geopackage_creator/" target="_blank"><img align="center" src="pics/geopackage_creator.png" width="250" height="165"></a></td>
-<td style="text-align: center;"><a href="https://beaconsproject.shinyapps.io/disturbance_explorer/" target="_blank"><img align="center" src="pics/disturbance_explorer.png" width="250" height="165"></a></td>
-<td style="text-align: center;"><a href="https://beaconsproject.shinyapps.io/beaconshydro_explorer_v2/" target="_blank"><img align="center" src="pics/hydrology_explorer.png" width="250" height="165"></a></td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">Conservation Area Explorer</th>
-<th style="text-align: center;"></th>
-<th style="text-align: center;">Wolverine Survey Design</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://beaconsproject.shinyapps.io/conservation_area_explorer_v2" target="_blank"><img align="center" src="pics/conservation_area_explorer.png" width="250" height="165"></a></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"><a href="https://beaconsproject.shinyapps.io/wolverines/" target="_blank"><img align="center" src="pics/wolverines_survey.png" width="250" height="165"></a></td>
-</tr>
-</tbody>
-</table>
-<p><br></p>
-<p><strong>Shiny Apps (under development)</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">Disturbance Validation</th>
-<th style="text-align: center;"></th>
-<th style="text-align: center;"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://beaconsproject.shinyapps.io/disturbance_validation" target="_blank"><img align="center" src="pics/disturbance_validation.png" width="250" height="165"></a></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-</tbody>
-</table>
-<p><br></p>
-<p><strong>R Packages</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">beaconstools</th>
-<th style="text-align: center;">beaconsbuilder</th>
-<th style="text-align: center;">beaconshydro</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://github.com/beaconsproject/beaconstools"></a></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-</tbody>
-</table>
-<p><img align="center" src="pics/beaconstools.png" width="250"> | <a href="https://github.com/beaconsproject/beaconsbuilder"> <img align="center" src="pics/beaconsbuilder.png" width="250"></a> | <a href="https://github.com/beaconsproject/beaconshydro"> <img align="center" src="pics/beaconshydro.png" width="250"></a> |</p>
-<p><br></p>
-<p><strong>Documentation pages</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">BEACONs Docs</th>
-<th style="text-align: center;">Disturbance Mapping</th>
-<th style="text-align: center;">Connectivity Analysis</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://beaconsproject.github.io/beacons_docs/"></a></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-</tbody>
-</table>
-<p><img align="center" src="pics/beacons_docs.png" width="250"> | <a href="https://github.com/beaconsproject/disturbance_mapping"> <img align="center" src="pics/disturbance_mapping.png" width="250"></a> | <a href="https://github.com/beaconsproject/connectivity_analysis"> <img align="center" src="pics/connectivity_analysis.png" width="250"></a> |</p>
+<p><img src="pics/workflow.png" class="img-fluid"></p>
+</section>
+<section id="steps" class="level1">
+<h1>Steps</h1>
+<section id="step-1" class="level2">
+<h2 class="anchored" data-anchor-id="step-1">Step 1</h2>
+</section>
+<section id="step-2" class="level2">
+<h2 class="anchored" data-anchor-id="step-2">Step 2</h2>
+</section>
+<section id="step-3" class="level2">
+<h2 class="anchored" data-anchor-id="step-3">Step 3</h2>
+</section>
+<section id="step-4" class="level2">
+<h2 class="anchored" data-anchor-id="step-4">Step 4</h2>
+</section>
+<section id="step-5" class="level2">
+<h2 class="anchored" data-anchor-id="step-5">Step 5</h2>
+</section>
+<section id="step-6" class="level2">
+<h2 class="anchored" data-anchor-id="step-6">Step 6</h2>
+</section>
+<section id="step-7" class="level2">
+<h2 class="anchored" data-anchor-id="step-7">Step 7</h2>
+</section>
+</section>
 
 </main>
 <!-- /main column -->
