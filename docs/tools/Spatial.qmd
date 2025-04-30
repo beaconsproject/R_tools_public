@@ -1,7 +1,2 @@
-<center><img src="pics/bp_banner.png" alt="BEACONs Project"></center>
-<hr>
-
-**Welcome to the BEACONs R tools pages!**
-
-Over the years, BEACONs develops a series of function to ease conservation planning across the landscape. Those functions have been group into categories. This pages aims to document each function and demonstrate their use through example. The functions are target advanced users who work with environmental data at large scale.
+**Spatial**
 

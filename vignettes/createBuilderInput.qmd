@@ -1,8 +1,7 @@
 ---
 title: "Create Builder input"
 author: "Melina Houle"
-date: "`r Sys.Date()`"
-output: html_document
+format: html
 ---
 
 ## Intro

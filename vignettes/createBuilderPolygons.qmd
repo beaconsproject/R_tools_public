@@ -1,8 +1,7 @@
 ---
-title: "createBuilderPolygons"
+title: "create Builder Polygons"
 author: "Melina Houle"
-date: "`r Sys.Date()`"
-output: html_document
+format: html
 ---
 
 ```{r setup, include=FALSE}
@@ -20,8 +19,7 @@ The first step is to locate catchments and protected areas shapefile representin
 library(sf)
 library(dplyr)
 library(utils)
-source("./project_dependencies.R")
-source("./utils.R")
+source("./createBuilderPolygons_dependencies.R")
 
 
 #Set access path 

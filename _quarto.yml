@@ -16,10 +16,15 @@ website:
       - text: "Functions categories"
         menu:
           - href: tools/Builder.qmd
-            text: Builder functions    
+            text: Builder    
           - href: tools/Spatial.qmd
             text: Spatial
-
+      - text: "Articles"
+        menu:
+          - href: vignettes/createBuilderInput.qmd
+            text: Create Builder Input    
+          - href: vignettes/createBuilderPolygons.qmd
+            text: Create Builder Polygons
 format:
   html:
     theme: 

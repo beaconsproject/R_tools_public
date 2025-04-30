@@ -99,11 +99,26 @@ ul.task-list li input[type="checkbox"] {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-functions-categories">    
         <li>
     <a class="dropdown-item" href="../tools/Builder.html">
- <span class="dropdown-text">Builder functions</span></a>
+ <span class="dropdown-text">Builder</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../tools/Spatial.html">
  <span class="dropdown-text">Spatial</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-articles" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Articles</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-articles">    
+        <li>
+    <a class="dropdown-item" href="../vignettes/createBuilderInput.html">
+ <span class="dropdown-text">Create Builder Input</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../vignettes/createBuilderPolygons.html">
+ <span class="dropdown-text">Create Builder Polygons</span></a>
   </li>  
     </ul>
   </li>
@@ -118,8 +133,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#beacons-builder" id="toc-beacons-builder" class="nav-link active" data-scroll-target="#beacons-builder">BEACONs Builder</a>
+  <ul class="collapse">
+  <li><a href="#seeds" id="toc-seeds" class="nav-link" data-scroll-target="#seeds">seeds</a></li>
+  <li><a href="#reserve_seeds" id="toc-reserve_seeds" class="nav-link" data-scroll-target="#reserve_seeds">reserve_seeds</a></li>
+  <li><a href="#neighbours" id="toc-neighbours" class="nav-link" data-scroll-target="#neighbours">neighbours</a></li>
+  <li><a href="#builder" id="toc-builder" class="nav-link" data-scroll-target="#builder">builder</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
@@ -127,20 +154,109 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p><strong>BEACONs Builder</strong></p>
-<p>beaconsbuilder allows you to build conservation areas following rules of size, intactness, and hydrological connectivity. You can visit the package website here: https://beaconsproject.github.io/beaconsbuilder.</p>
+<section id="beacons-builder" class="level2">
+<h2 class="anchored" data-anchor-id="beacons-builder">BEACONs Builder</h2>
+<p>BEACONs Builder allows you to build conservation areas following rules of size, intactness, and hydrological connectivity. You can visit the package website here: https://beaconsproject.github.io/beaconsbuilder.</p>
 <p>beaconsbuilder should be used together with the beaconstools package to construct and analyse sets of conservation areas. More details on how beaconsbuilder works can be found in vignette(“builder”).</p>
 <p><strong>BEACONs Builder has 4 main functions:</strong></p>
 <ul>
-<li><a href="../tools/Builder/seeds.html">seeds</a></li>
-<li><a href="../tools/Builder/reserve_seeds.html">reserve_seeds</a></li>
-<li><a href="../tools/Builder/neighbours.html">neighbours</a></li>
-<li><a href="../tools/Builder/builder.html">builder</a></li>
+<li><a href="#seeds">seeds</a></li>
+<li><a href="#reserve_seeds">reserve_seeds</a></li>
+<li><a href="#neighbours">neighbours</a></li>
+<li><a href="#builder">builder</a></li>
 </ul>
-<p><strong>Citation</strong> Please cite the beaconsbuilder package when using it in publications. To cite the latest official version, please use:</p>
+<section id="seeds" class="level3">
+<h3 class="anchored" data-anchor-id="seeds">seeds</h3>
+<p>The <code>seeds()</code> function creates a <strong>seeds table</strong>, which is an input to <code>builder()</code>.<br>
+It identifies <strong>seed catchments</strong> and assigns them an <strong>area target</strong>.</p>
+<section id="filtering" class="level4">
+<h4 class="anchored" data-anchor-id="filtering">Filtering</h4>
+<p>If no filter arguments are used, all catchments in <code>catchments_sf</code> are included.</p>
+<p><strong>Options:</strong> - Use <code>dplyr::filter()</code> to pre-filter. - Use <code>filter_polygon</code> to keep only catchments whose centroid lies inside the polygon.</p>
+</section>
+<section id="area-targets" class="level4">
+<h4 class="anchored" data-anchor-id="area-targets">Area Targets</h4>
+<p>Area targets (in m²) can be provided using one of the following (priority order):</p>
+<ol type="1">
+<li><code>areatarget_value</code>: a single fixed target for all seeds<br>
+</li>
+<li><code>areatarget_col</code>: column from <code>catchments_sf</code><br>
+</li>
+<li><code>areatarget_polygon</code> + <code>areatarget_polygon_col</code>: spatial join, most overlapping polygon used</li>
+</ol>
+</section>
+</section>
+<section id="reserve_seeds" class="level3">
+<h3 class="anchored" data-anchor-id="reserve_seeds">reserve_seeds</h3>
+</section>
+<section id="neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="neighbours">neighbours</h3>
+<p>Create a neighbours table listing neighbours for each catchment.</p>
+<p>For an sf object of catchments with unique CATCHNUM id’s, calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).</p>
+</section>
+<section id="builder" class="level3">
+<h3 class="anchored" data-anchor-id="builder">builder</h3>
+<p>The <code>builder()</code> function calls the BUILDER software from R. It prepares inputs, runs the external executable, and returns the main output table.</p>
+<section id="process" class="level4">
+<h4 class="anchored" data-anchor-id="process">🏗️ Process</h4>
+<ol type="1">
+<li>Prepares input tables: <code>neighbours</code>, <code>seeds</code>, and <code>catchments</code>.</li>
+<li>Writes files to a temp directory (or <code>output_dir</code> if provided).</li>
+<li>Constructs a command to run BUILDER via <code>system()</code>.</li>
+<li>Returns the <code>*_COLUMN_All_Unique_BAs.csv</code> file listing conservation areas and their catchments.</li>
+</ol>
+</section>
+<section id="output" class="level4">
+<h4 class="anchored" data-anchor-id="output">📤 Output</h4>
+<ul>
+<li>Returns a tibble of conservation area names and associated catchments.</li>
+<li>If <code>output_dir</code> is provided, additional BUILDER output tables (e.g., hydrology, summary metrics) are saved.</li>
+</ul>
+</section>
+<section id="key-parameters" class="level4">
+<h4 class="anchored" data-anchor-id="key-parameters">🔧 Key Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Area target</strong></td>
+<td>Set in the <code>seeds</code> table; minimum size (m²) for each conservation area.</td>
+</tr>
+<tr class="even">
+<td><strong>Catchment intactness</strong></td>
+<td>Minimum intactness required for catchments to be included.</td>
+</tr>
+<tr class="odd">
+<td><strong>Conservation area intactness</strong></td>
+<td>Minimum area-weighted intactness for a conservation area to be returned.</td>
+</tr>
+<tr class="even">
+<td><strong>Area target proportion</strong></td>
+<td>Allows output of smaller areas (e.g., 0.9 returns areas &gt;= 90% of the area target).</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tip" class="level4">
+<h4 class="anchored" data-anchor-id="tip">💡 Tip</h4>
+<p>Use <code>output_dir</code> to preserve BUILDER’s complete outputs when running multiple builds. These files can be further analyzed using <code>beaconstools</code>.</p>
+<p><br> <br></p>
+<p>##Citation Please cite the beaconsbuilder package when using it in publications. To cite the latest official version, please use:</p>
 <p>Edwards M, Vernier P, Lisgo K, Houle M, Schmiegelow F (2022). beaconsbuilder: building conservation areas in R. R package version 0.0.0.9000. Available at https://github.com/beaconsproject/beaconsbuilder.</p>
 
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
