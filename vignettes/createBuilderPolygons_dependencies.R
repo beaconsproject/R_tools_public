@@ -224,9 +224,9 @@ prep_input_column <- function(out_dir, type= "BENCHMARKS"){
   if(type =="BENCHMARKS"){
     benchmarks_out <- list.files(out_dir, pattern = "COLUMN_All_Unique_BAs.csv")
   }else if (type == "UPSTREAM"){
-    benchmarks_out <- list.files(outdir, pattern = "UPSTREAM_CATCHMENTS_COLUMN.csv")
+    benchmarks_out <- list.files(out_dir, pattern = "UPSTREAM_CATCHMENTS_COLUMN.csv")
   }else if (type == "DOWNSTREAM"){
-    benchmarks_out <- list.files(outdir, pattern = "DOWNSTREAM_CATCHMENTS_COLUMN.csv")
+    benchmarks_out <- list.files(out_dir, pattern = "DOWNSTREAM_CATCHMENTS_COLUMN.csv")
   }else{
     stop("Wrong Type. Please select BENCHMARK, UPSTREAM or DOWNSTREAM")
   }
