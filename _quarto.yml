@@ -15,9 +15,9 @@ website:
         text: Welcome
       - text: "Functions categories"
         menu:
-          - href: tools/Builder.qmd
+          - href: tools/Builder_index.qmd
             text: Builder    
-          - href: tools/Spatial.qmd
+          - href: tools/Spatial_index.qmd
             text: Spatial
       - text: "Articles"
         menu:
@@ -27,10 +27,11 @@ website:
             text: Create Builder Polygons
 format:
   html:
+    include-after-body: _includes/footer.html
     theme: 
       light: [cosmo, theme.scss]
     css: styles.css
     toc: true
 
 resources:
-  - tools/
+  - downloads/*

@@ -1,80 +1,154 @@
 
-## BEACONs Builder
+# `builder()`
 
-BEACONs Builder allows you to build conservation areas following rules of size, intactness, and hydrological connectivity. You can visit the package website here: https://beaconsproject.github.io/beaconsbuilder.
+The builder() function call the BUILDER software from R. It prepares and passes all input tables and variables to the BUIDLER executable and returns the builder table to R.
 
-beaconsbuilder should be used together with the beaconstools package to construct and analyse sets of conservation areas. More details on how beaconsbuilder works can be found in vignette("builder").
+## Usage
 
-**BEACONs Builder has 4 main functions:**
+```r
+builder(
+  catchments_sf, 
+  seeds, 
+  neighbours, 
+  out_dir = NULL,
+  catchment_level_intactness = 1, 
+  conservation_area_intactness = 1, 
+  area_target_proportion = 1, 
+  area_type = "land", 
+  construct_conservation_areas = TRUE,  
+  area_target_multiplier = 1,
+  handle_isolated_catchments = TRUE, 
+  output_upstream = FALSE, 
+  output_downstream = FALSE, 
+  output_hydrology_metrics = FALSE,
+  area_land = "Area_Land", 
+  area_water = "Area_Water",
+  skeluid = "SKELUID", 
+  catchnum = "CATCHNUM", 
+  subzone = "FDA", 
+  zone = "MDA", 
+  basin = "BASIN", 
+  order1 = "ORDER1",
+  order2 = "ORDER2", 
+  order3 = "ORDER3", 
+  stream_length = "STRMLEN", 
+  intactness = "intact", 
+  isolated = "Isolated",
+  unique_identifier = "PB", 
+  handler_summary = FALSE, 
+  summary_intactness_props = '""', 
+  summary_area_target_props = '""'
+)
+``` 
 
-- [seeds](#seeds)
-- [reserve_seeds](#reserve_seeds)
-- [neighbours](#neighbours)
-- [builder](#builder)
+## Arguments
+
+- catchments_sf: sf object of the catchments dataset with unique identifier column **CATCHNUM**.
+- seeds: Seeds table from **seeds()** listing seed catchments and area targets.
+- neighbours: Neighbours table from **neighbours()** listing all neighbouring pairs of catchments.
+- out_dir: If provided, input (seeds, neighbours and catchments) files and output BUILDER tables will be saved to this directory. Otherwise
+ a temp directory will be used. Function will attempt to create the directory if it doesn't already exist.
+- catchment_level_intactness: Minimum intactness value for catchment inclusion (between 0-1). i.e. if value of 1 is used, only 100% intact
+ catchments will be used.
+- conservation_area_intactness: Minimum area-weighted intactness of final conservation areas. Only conservation areas meeting this value will be returned.
+- area_target_proportion: The proportion of the Area target that conservation areas need to meet (0-1) to be returned by the function.
+- area_type: If 'land', only terrestrial areas are counted towards the area target. If 'water', only water areas are counter. If 'landwater',
+ all areas are counted.
+- construct_conservation_areas: Should builder build conservation areas?
+- area_target_multiplier: Multiplier applied to the area target in the seed list that allows for adjustments to the area target without having
+ to remake the seeds table.
+- handle_isolated_catchments: Should small isolated catchments be merged into the conservation areas?
+- output_upstream: Should upstream catchments be calculated?
+- output_downstream: Should downstream catchments be calculated?
+- output_hydrology_metrics: Should hydrology metrics be calculated?
+- area_land: Catchments column listing the area of land in each catchment.
+- area_water: Catchments column listing the area of water in each catchment.
+- skeluid: Catchments column listing the skeluid field.
+- catchnum: Catchments column listing the unique catchments ID.
+- subzone: Catchments column listing the hydrological subzone.
+- zone: Catchments column listing the hydrological zone.
+- basin: Catchments column listing the basin field.
+- order1: Catchments column listing the order 1 field.
+- order2: Catchments column listing the order 2 field.
+- order3: Catchments column listing the order 3 field.
+- stream_length: Catchments column listing stream length.
+- intactness: Catchments column listing the intactness value.
+- isolated: Catchments column identifying catchments isolated from the stream network.
+- unique_identifier: Prefix for conservation area names.
+- handler_summary: Should a summary listing counts of available conservation areas at different intactness and area target proportions be created?
+- summary_intactness_props: If a summary is created, provide the intactness proportions to be summarised in the format '0.7,0.8,0.9'.
+- summary_area_target_props: If a summary is created, provide the area target proportions to be summarised in the format '0.7,0.8,0.9'.
+
+## Value
+A tibble with column names representing conservation areas, and rows of catchments making up the conservation areas.
+
+## Details
+
+This function prepares the input tables (neighbours, seeds, catchments) required by BUILDER in a temp file, then creates
+a string of parameters that is passed to the BUILDER executable using **system()**. The BUILDER output tables are saved to the
+temp file, and the output table listing conservation area names and catchment lists is returned to the R session.
+
+This function only returns the BUILDER output table describing the lists of catchments making up each conservation area. We typically recommend
+using the **beaconstools** package to calculate hydrology metrics, but hydrology information as well as other summary information is
+produced by BUILDER.
+If users want access to the complete set of BUILDER output tables (e.g. hydrology and summary information), a valid output directory
+can be provided in which case all input and output tables will be saved to that directory. If no output directory is provided a temp
+folder will be used and deleted after the function completes. As well as providing access to the full list of BUILDER output tables,
+an output directory is useful in a looped workflow with multiple calls to BUILDER producing multiple sets of output files. In this
+workflow a different output directory can be used to save each set of output files which can later be processed using the **beaconstools** package.
+The main output file listing conservation area names and their catchments is named "*_COLUMN_All_Unique_BAs.csv".
 
 
-### seeds
+The main parameters to adjust when building conservation areas are:
 
-The `seeds()` function creates a **seeds table**, which is an input to `builder()`.  
-It identifies **seed catchments** and assigns them an **area target**.
+- Area target: Set in the seeds table, this defines the minimum size for each conservation area.
+- Catchment-level intactness: Only catchments with intactness values greater than this value will be added to the conservation area.
+- Conservation area intactness: Only conservation areas with an area-weighted intactness greater than or equal to this value will be returned.
+- Area-target proportion: The proportion of the Area target that conservation areas need to meet. Allows output of conservation areas smaller than
+the area target (e.g. if no conservation areas meet 100% of the area target, area target multiplier can be lowered to 0.9 to search for smaller
+conservation areas).
+ 
+ 
+## Examples
+### Running the examples
 
-#### Filtering
+1. Create the folder structure
+```r
+# Set working directory
+setwd("your/path/to/downloads")
 
-If no filter arguments are used, all catchments in `catchments_sf` are included.
+dirpath <- getwd()
 
-**Options:**
-- Use `dplyr::filter()` to pre-filter.
-- Use `filter_polygon` to keep only catchments whose centroid lies inside the polygon.
+# Create the folder structure
+treedir <- c("R","data","Builder_output")
+for(d in treedir){
+  if (!dir.exists(file.path(dirpath, d))) {
+    dir.create(file.path(dirpath, d), recursive = TRUE)
+  }
+}
+```
 
-#### Area Targets
+2. Download the functions, data and example files and save them in the proper folder.
+- <a href="../downloads/builder.R" download>Download builder functions in the R folder</a>
+- <a href="../downloads/catchments_sample.rds" download>Download catchments sample in the data folder</a>
+- <a href="../downloads/example-builder-script.R" download>Download builder example R script</a>
 
-Area targets (in m²) can be provided using one of the following (priority order):
+2. In R, either:
+   - Place the files in your working directory (`getwd()`), or
+   - Update the path in the examples using a `data_path` variable.
+3. Run the examples below.
 
-1. `areatarget_value`: a single fixed target for all seeds  
-2. `areatarget_col`: column from `catchments_sf`  
-3. `areatarget_polygon` + `areatarget_polygon_col`: spatial join, most overlapping polygon used
+```r
+library(sf)
 
-### reserve_seeds 
+setwd(dirpath)
+source("./R/builder.R")
 
-### neighbours 
-Create a neighbours table listing neighbours for each catchment.
+# Use all catchments as seeds with a single area target
+catchments_sample <- readRDS("data/catchments_sample.rds")
 
-For an sf object of catchments with unique CATCHNUM id's, calculates a list of neighbouring CATCHNUM pairs
-and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
-
-
-### builder
-The `builder()` function calls the BUILDER software from R. It prepares inputs, runs the external executable, and returns the main output table.
-
-#### 🏗️ Process
-
-1. Prepares input tables: `neighbours`, `seeds`, and `catchments`.
-2. Writes files to a temp directory (or `output_dir` if provided).
-3. Constructs a command to run BUILDER via `system()`.
-4. Returns the `*_COLUMN_All_Unique_BAs.csv` file listing conservation areas and their catchments.
-
-#### 📤 Output
-
-- Returns a tibble of conservation area names and associated catchments.
-- If `output_dir` is provided, additional BUILDER output tables (e.g., hydrology, summary metrics) are saved.
-
-#### 🔧 Key Parameters
-
-| Parameter                        | Description                                                                         |
-| -------------------------------- | ----------------------------------------------------------------------------------- |
-| **Area target**                  | Set in the `seeds` table; minimum size (m²) for each conservation area.             |
-| **Catchment intactness**         | Minimum intactness required for catchments to be included.                          |
-| **Conservation area intactness** | Minimum area-weighted intactness for a conservation area to be returned.            |
-| **Area target proportion**       | Allows output of smaller areas (e.g., 0.9 returns areas >= 90% of the area target). |
-
-#### 💡 Tip
-
-Use `output_dir` to preserve BUILDER’s complete outputs when running multiple builds. These files can be further analyzed using `beaconstools`.
-
-<br>
-<br>
-
-##Citation
-Please cite the beaconsbuilder package when using it in publications. To cite the latest official version, please use:
-
-Edwards M, Vernier P, Lisgo K, Houle M, Schmiegelow F (2022). beaconsbuilder: building conservation areas in R. R package version 0.0.0.9000. Available at https://github.com/beaconsproject/beaconsbuilder.
+nghbrs <- neighbours(catchments_sample)
+seed <- seeds(catchments_sf = catchments_sample, areatarget_value = 1000000000)
+seed <- seed[1:10,]
+builder(catchments_sf = catchments_sample, seeds = seed, neighbours = nghbrs, out_dir = file.path(dirpath, "Builder_output"))
+```

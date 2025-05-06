@@ -1,0 +1,69 @@
+
+# `neighbours()` 
+
+The `neighbours()` function creates a **neighbours table** listing neighbours for each catchment, which is an input to `builder()`.  
+
+For an sf object of catchments with unique CATCHNUM id's, calculates a list of neighbouring CATCHNUM pairs
+and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
+
+
+## Usage
+
+```r
+neighbours(
+  catchments_sf
+)
+```
+## Arguments
+
+- catchments_sf: sf object of the catchments dataset with a unique identifier column: CATCHNUM.
+
+
+## Value
+A tibble of neighbouring pairs with columns **CATCHNUM** and **neighbours**.
+
+
+## Examples
+### Running the examples
+
+1. Create the folder structure
+```r
+# Set working directory
+setwd("your/path/to/downloads")
+
+dirpath <- getwd()
+
+# Create the folder structure
+treedir <- c("R","data","Builder_input")
+for(d in treedir){
+  if (!dir.exists(file.path(dirpath, d))) {
+    dir.create(file.path(dirpath, d), recursive = TRUE)
+  }
+}
+```
+
+2. Download the functions, data and example files and save them in the proper folder.
+- <a href="../downloads/builder.R" download>Download builder functions in the R folder</a>
+- <a href="../downloads/catchments_sample.rds" download>Download catchments sample in the data folder</a>
+- <a href="../downloads/example-neighbours-script.R" download>Download neighbours example R script</a>
+
+2. In R, either:
+   - Place the files in your working directory (`getwd()`), or
+   - Update the path in the examples using a `data_path` variable.
+3. Run the examples below.
+
+```r
+library(dplyr)
+library(sf)
+library(utils)
+
+source("./R/builder.R")
+
+# Use all catchments as seeds with a single area target
+catchments_sample <- readRDS("data/catchments_sample.rds")
+neighbours(catchments_sf = catchments_sample)
+
+# save neighbours as csv
+neighbour <- neighbours(catchments_sf = catchments_sample, areatarget_value = 1000000000)
+write.csv(neighbour, file=file.path(dirpath,"Builder_input/neighbours.csv"), row.names=FALSE)
+```

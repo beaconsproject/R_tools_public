@@ -1,0 +1,89 @@
+<a href="downloads/builder.R" download>Download builder functions</a>
+<br>
+
+## BEACONs BUILDER
+
+
+BUILDER is a user friendly software application, developed in C# .NET framework, to assist conservation planners with the design of ecological benchmarks. This package provides a set of R functions to call BUILDER and fetch the main output table. The partner package `beaconstools` provides functions to process and analyse output tables from BUILDER in R.  
+
+BUILDER explicitly incorporates hydrologic connectivity for the integration of aquatic and terrestrial conservation planning in protected areas design. BUILDER constructs ecological benchmarks using a deterministic construction algorithm that aggregates catchments to a user defined size and intactness. For the purpose of this demo, we will refer to the conservation areas created by BUILDER as benchmarks, however BUILDER can also be used to design conservation areas not intended to serve as benchmarks.  
+
+BUILDER constructs ecological benchmarks based on three principal criteria:  
+
+* Intactness, a measure of the absence of human industrial activity and a proxy for the intactness of biological and physical processes
+* Hydrologic connectivity of intact water catchments, as a measure of the integrity of aquatic systems
+* Size, as a measure of the resilience of the system to disturbance
+
+## Catchments
+The building blocks for BUILDER is a set of catchments with associated flow directions for the underlying stream network. This allows BUILDER to identify upstream and downstream catchments for any given location. <font color="red">Should we provide a brief description of the catchments dataset and how to download them?</font>
+
+## Aggregation algorithm
+BUILDER ‘grows’ ecological benchmarks using a deterministic construction algorithm that aggregates catchments. This process enables intactness, size and hydrologic criteria to be incorporated into benchmark design.   
+
+The starting catchments for building benchmarks are called seeds. <font color="red">These can be selected using size and intactness criteria e.g., all catchments that are 100% intact and greater than 500km2.</font> Starting from a seed, BUILDER grows a benchmark by aggregating neighbouring catchments that exceed the user defined catchment-level intactness threshold. As catchments are added, growth is prioritized in the upstream direction. This emphasizes inclusion of headwaters within benchmarks, and encourages the formation of benchmarks along stream networks. Further, by adding all eligible upstream catchments before re-querying for more, benchmarks are grown with a more compact shape. If re-querying were to occur after adding each upstream catchment, benchmarks would tend to grow along single streams, resulting in linear configurations. To further compact the shape of the benchmark, BUILDER prioritizes the addition of catchments within hydrological zones (i.e. Fundamental Drainage Areas, FDAs) associated with the benchmark before adding catchments in a neighbouring FDA.  
+
+Once all available upstream catchments are added, BUILDER grows downstream. Downstream growth adds all neighbouring catchments downstream of the catchment aggregation then re-queries for upstream catchments. Benchmarks are grown until: 
+
+  1. There are no more neighbouring, intact catchments to add, or 
+  2. The benchmarks area exceeds the user-specified Area Target. 
+
+If the latter occurs, and the area-weighted intactness of the benchmark exceeds the benchmark-level intactness threshold, then the benchmark is included in the output.
+
+## R Functions
+
+**BEACONs Builder has 4 main functions:**
+
+- [seeds](#seeds)
+- [reserve_seeds](#reserve_seeds)
+- [neighbours](#neighbours)
+- [builder](#builder)
+
+### seeds
+
+The function [seeds()](seeds.qmd) creates a **seeds table**, which is an input to `builder()`.  
+It identifies **seed catchments** and assigns them an **area target**.
+
+### reserve_seeds 
+
+### neighbours 
+The function [neighbours()](neighbours.qmd) creates a table listing pairwise catchment neighbours. Used as an input to `builder()`.
+
+### builder
+The function [builder()](builder.qmd) prepares the input files and parameters and passes them to a command line version of BUILDER executable software that resides inside the `benchmarkbuilder` package. The function then fetches and returns the main BUILDER output table into the R environment. <font color="red">Should we put something about how to obtain the executable and where to place it?</font>
+
+Ultimately we hope to rewrite the BUILDER executable in R to avoid having to call a third party application. In the meantime, this package allows users to access and automate calls to BUILDER from R.
+
+#### 📤 Output
+
+- Returns a tibble of conservation area names and associated catchments.
+- If `output_dir` is provided, additional BUILDER output tables (e.g., hydrology, summary metrics) are saved.
+
+#### 🏗️ Process
+
+1. Prepares input tables: `neighbours`, `seeds`, and `catchments`.
+2. Writes files to a temp directory (or `output_dir` if provided).
+3. Constructs a command to run BUILDER via `system()`.
+4. `builder()` returns the `*_COLUMN_All_Unique_BAs.csv` file listing conservation areas and their catchments.
+5. Subsequent processing, such as creating polygons of benchmarks using `builder()` output and assessing ecological attributes is done using others BEACONs functions (see examples in section Articles).
+
+
+#### 🔧 Key Parameters
+
+| Parameter                        | Description                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------------------- |
+| **Area target**                  | Set in the `seeds` table; minimum size (m²) for each conservation area.             |
+| **Catchment intactness**         | Minimum intactness required for catchments to be included.                          |
+| **Conservation area intactness** | Minimum area-weighted intactness for a conservation area to be returned.            |
+| **Area target proportion**       | Allows output of smaller areas (e.g., 0.9 returns areas >= 90% of the area target). |
+
+#### 💡 Tip
+
+Use `output_dir` to preserve BUILDER’s complete outputs when running multiple builds. These files can be further analyzed using others BEACONs functions.
+
+<br>
+<br>
+
+##Citation
+Please cite the beaconsbuilder package when using it in publications. To cite the latest official version, please use:
+
+Edwards M, Vernier P, Lisgo K, Houle M, Schmiegelow F (2022). beaconsbuilder: building conservation areas in R. R package version 0.0.0.9000. Available at https://github.com/beaconsproject/beaconsbuilder.
