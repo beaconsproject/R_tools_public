@@ -172,11 +172,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#reserve_seeds" id="toc-reserve_seeds" class="nav-link active" data-scroll-target="#reserve_seeds"><code>reserve_seeds()</code></a>
+  <li><a href="#builder-r-functions" id="toc-builder-r-functions" class="nav-link active" data-scroll-target="#builder-r-functions">BUILDER R Functions</a></li>
+  <li><a href="#reserve_seeds" id="toc-reserve_seeds" class="nav-link" data-scroll-target="#reserve_seeds"><code>reserve_seeds()</code></a>
   <ul class="collapse">
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
-  <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">📤 Output</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
   <ul class="collapse">
   <li><a href="#running-the-examples" id="toc-running-the-examples" class="nav-link" data-scroll-target="#running-the-examples">Running the examples</a></li>
@@ -191,6 +192,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<section id="builder-r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="builder-r-functions">BUILDER R Functions</h2>
+</section>
 <section id="reserve_seeds" class="level1">
 <h1><code>reserve_seeds()</code></h1>
 <p>The <code>reserve_seeds()</code> function creates a <strong>seeds table</strong> based on conservation areas, which is an input to <code>builder()</code>.<br>
@@ -217,8 +221,8 @@ This function provides methods for filtering the catchments dataset and assignin
 <li><p>joinType: A character string. Type of spatial join to identify catchments within conservation areas. Options are <code>"INTERSECT"</code> or <code>"CENTROID"</code>. Default is <code>"CENTROID"</code>.</p></li>
 </ul>
 </section>
-<section id="value" class="level2">
-<h2 class="anchored" data-anchor-id="value">Value</h2>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">📤 Output</h2>
 <p>A tibble of reserve seed catchments and their associated area targets.</p>
 </section>
 <section id="examples" class="level2">
@@ -246,7 +250,7 @@ This function provides methods for filtering the catchments dataset and assignin
 <ul>
 <li><a href="../downloads/builder.R" download="">Download builder functions in the R folder</a></li>
 <li><a href="../downloads/catchments_sample.rds" download="">Download catchments sample in the data folder</a></li>
-<li><a href="../downloads/reserves_sample.rds" download="">Download catchments sample in the data folder</a></li>
+<li><a href="../downloads/reserves_sample.rds" download="">Download reserves sample in the data folder</a></li>
 <li><a href="../downloads/example-reserve_seeds-script.R" download="">Download reserve_seeds example R script</a></li>
 </ul>
 <ol start="2" type="1">
@@ -270,7 +274,7 @@ This function provides methods for filtering the catchments dataset and assignin
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># save seeds as csv</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>reserve_seed <span class="ot">&lt;-</span> <span class="fu">reserve_seeds</span>(<span class="at">catchments_sf =</span> catchments_sample, <span class="at">CAs_sf =</span> reserves_sample, <span class="at">CAs_name =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">1000000000</span>)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(reserve_seed, <span class="at">file=</span><span class="fu">file.path</span>(dirpath,<span class="st">"Builder_input/reserve_seeds.csv"</span>), <span class="at">row.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(reserve_seed, <span class="at">file=</span><span class="fu">file.path</span>(dirpath,<span class="st">"Builder_input/reserve_seeds.csv"</span>), <span class="at">na =</span> <span class="st">""</span>, <span class="at">row.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>

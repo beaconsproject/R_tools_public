@@ -1,3 +1,4 @@
+## BUILDER R Functions
 
 # `neighbours()` 
 
@@ -19,7 +20,7 @@ neighbours(
 - catchments_sf: sf object of the catchments dataset with a unique identifier column: CATCHNUM.
 
 
-## Value
+## 📤 Output
 A tibble of neighbouring pairs with columns **CATCHNUM** and **neighbours**.
 
 
@@ -64,6 +65,6 @@ catchments_sample <- readRDS("data/catchments_sample.rds")
 neighbours(catchments_sf = catchments_sample)
 
 # save neighbours as csv
-neighbour <- neighbours(catchments_sf = catchments_sample, areatarget_value = 1000000000)
+neighbour <- neighbours(catchments_sf = catchments_sample)
 write.csv(neighbour, file=file.path(dirpath,"Builder_input/neighbours.csv"), row.names=FALSE)
 ```

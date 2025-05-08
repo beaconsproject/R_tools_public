@@ -8,18 +8,21 @@ format: html
 
 This script creates the three required input to run BUILDER (neighbour, seeds and catchments tables).  
 
-The first step is to locate the catchments shapefiles and point on an output directory where the derived files will be saved. The script uses two functions from the beaconsbuilder package: `seeds` and `neighbour`. 
+The first step is to locate the catchments layer and point on an output directory where the derived files will be saved. The script uses three BUILDER functions: `neighbour`, `seeds` and `reserve_seeds`. 
 
-The `neighbours` function calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
+The `neighbours()` function calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
 
-The `seeds` function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.  
+The `seeds()` function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.  
+
+The `reserve_seeds()` function creates a **seeds table** based on conservation areas, which is an input to `builder()`.  
+It identifies **seed catchments inside a conservation area** and assigns them an **area target**.
 
 Both functions need the catchments dataset with unique identifier column 'CATCHNUM'
 
 
-### Generate neighbour file
+### Generate neighbour table
 
-```{r generate neighbour, echo=TRUE, message=FALSE, results='hide'}
+```r 
 # Load libraries
 library(sf)
 library(utils)
@@ -29,19 +32,19 @@ source("./createBuilderInput_dependencies.R")
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
-#Set access path 
-dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/createBuilderInput"
+# Set working directory
+setwd("your/path/to/downloads")
 
-#Create output folder
-out_dir <- file.path(dirpath, "Builder_input")
-for(d in out_dir){
-  if(!dir.exists(file.path(out_dir))){
-    dir.create(file.path(out_dir))
-  }
+dirpath <- getwd()
+
+# Create the folder structure
+input_dir <- "Builder_input"
+if (!dir.exists(file.path(dirpath, input_dir))) {
+  dir.create(file.path(dirpath, input_dir), recursive = TRUE)
 }
 
 #Set access path catchment layer
-catchments <- file.path(dirpath, "data", "catch1M_KBA_MDA06.shp")
+catchments <- file.path(dirpath, "data", "catchments.shp")
 
 
 # --------------------------------------
@@ -51,13 +54,13 @@ catchments <- file.path(dirpath, "data", "catch1M_KBA_MDA06.shp")
 catchments_sf <- st_read(catchments)
 
 nghbrs <- neighbours(catchments_sf)
-write.csv(nghbrs, file=file.path(out_dir,"nghbrs.csv"), row.names=FALSE) 
+write.csv(nghbrs, file=file.path(dirpath, input_dir, "nghbrs.csv"), row.names=FALSE) 
 ```
 
 
-### Generate seeds file
+### Generate seeds table
 
-```{r generate seed, echo=TRUE, message=FALSE, results='hide'}
+```r
 # Load libraries
 library(sf)
 library(dplyr)
@@ -68,19 +71,19 @@ source("./createBuilderInput_dependencies.R")
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
-#Set access path 
-dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/createBuilderInput"
+# Set working directory
+setwd("your/path/to/downloads")
 
-#Create output folder
-out_dir <- file.path(dirpath, "Builder_input")
-for(d in out_dir){
-  if(!dir.exists(file.path(out_dir))){
-    dir.create(file.path(out_dir))
-  }
+dirpath <- getwd()
+
+# Create the folder structure
+input_dir <- "Builder_input"
+if (!dir.exists(file.path(dirpath, input_dir))) {
+  dir.create(file.path(dirpath, input_dir), recursive = TRUE)
 }
 
 #Set access path catchment layer
-catchments <- file.path(dirpath, "data", "catch1M_KBA_MDA06.shp")
+catchments <- file.path(dirpath, "data", "catchments.shp")
 
 ##OPTION: Filter potential seeds according to catchments intactness and STHRALER index
 intactColname <- "intactKBA" # set catchment intactness column
@@ -120,13 +123,13 @@ if (!is.null(areatarget)) {
   stop("You need to set at least one option") # Handle case where neither exists
 }
 
-write.csv(seed, file=file.path(out_dir, "seeds.csv"), row.names=FALSE) # Convert neighbours table to csv file.
+write.csv(seed, file=file.path(dirpath, input_dir, "seeds.csv"), row.names=FALSE) 
 ```
 
 
-### Generate reserve seeds file
+### Generate reserve seeds table
 
-```{r generate reserveseed, echo=TRUE, message=FALSE, results='hide'}
+```r 
 # Load libraries
 library(sf)
 library(dplyr)
@@ -138,19 +141,20 @@ source("./createBuilderInput_dependencies.R")
 # SET PARAMS  --------------------
 # --------------------------------------
 #Set access path 
-dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/createBuilderInput"
+# Set working directory
+setwd("your/path/to/downloads")
 
-#Create output folder
-out_dir <- file.path(dirpath, "Builder_input")
-for(d in out_dir){
-  if(!dir.exists(file.path(out_dir))){
-    dir.create(file.path(out_dir))
-  }
+dirpath <- getwd()
+
+# Create the folder structure
+input_dir <- "Builder_input"
+if (!dir.exists(file.path(dirpath, input_dir))) {
+  dir.create(file.path(dirpath, input_dir), recursive = TRUE)
 }
 
 #Set access path 
-catchments <- file.path(dirpath, "data", "catch1M_KBA_MDA06.shp")
-pas <- file.path(dirpath, "data", "PAs_MDA06.shp")
+catchments <- file.path(dirpath, "data", "catchments.shp")
+pas <- file.path(dirpath, "data", "reserves_sample.shp")
 
 # --------------------------------------
 #--RUN
@@ -160,14 +164,14 @@ catchments_sf <- st_read(catchments)
 pas_sf <- st_read(pas)
 
 
-seed <- reserve_seeds(catchments_sf, CAs_sf=pas_sf, CAs_name = "PARENT_ID", areatarget_value = 10000, joinType = "INTERSECT", out_dir = file.path(dirpath, "Builder_input"))
-
+reserve_seed <- reserve_seeds(catchments_sf, CAs_sf=pas_sf, CAs_name = "PARENT_ID", areatarget_value = 10000, joinType = "INTERSECT")
+write.csv(reserve_seed, file=file.path(dirpath, input_dir, "reserve_seeds.csv"), row.names=FALSE) 
 ```
 
 
 ### Generate catchments table
 
-```{r generate catchment csv, echo=TRUE, message=FALSE, results='hide'}
+```r
 # Load libraries
 library(sf)
 library(utils)
@@ -175,20 +179,18 @@ library(utils)
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
-#Set access path 
-dirpath <- "E:/MelinaStuff/BEACONs/request/Kim/createBuilderInput"
+setwd("your/path/to/downloads")
 
-#Create output folder
-out_dir <- file.path(dirpath, "Builder_input")
-for(d in out_dir){
-  if(!dir.exists(file.path(out_dir))){
-    dir.create(file.path(out_dir))
-  }
+dirpath <- getwd()
+
+# Create the folder structure
+input_dir <- "Builder_input"
+if (!dir.exists(file.path(dirpath, input_dir))) {
+  dir.create(file.path(dirpath, input_dir), recursive = TRUE)
 }
 
 #Set access path 
-catchments <- file.path(dirpath, "data", "catch1M_KBA_MDA06.shp")
-pas <- file.path(dirpath, "data", "PAs_MDA06.shp")
+catchments <- file.path(dirpath, "data", "catchments.shp")
 
 # --------------------------------------
 #--RUN
@@ -198,7 +200,7 @@ catchments_sf <- st_read(catchments)
 
 catchment <- catchments_sf %>%
   st_drop_geometry()
-write.csv(catchment, file=file.path(out_dir, "catchments.csv"), row.names=FALSE) # Convert neighbours table to csv file.
+write.csv(catchment, file=file.path(dirpath, input_dir, "catchments.csv"), row.names=FALSE)
 
 ```
 

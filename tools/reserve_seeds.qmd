@@ -1,3 +1,4 @@
+## BUILDER R Functions
 
 # `reserve_seeds()`
 
@@ -31,7 +32,7 @@ reserve_seeds(
 - joinType: A character string. Type of spatial join to identify catchments within conservation areas. 
 Options are `"INTERSECT"` or `"CENTROID"`. Default is `"CENTROID"`.
 
-## Value
+## 📤 Output
 A tibble of reserve seed catchments and their associated area targets.
 
 
@@ -57,7 +58,7 @@ for(d in treedir){
 2. Download the functions, data and example files and save them in the proper folder.
 - <a href="../downloads/builder.R" download>Download builder functions in the R folder</a>
 - <a href="../downloads/catchments_sample.rds" download>Download catchments sample in the data folder</a>
-- <a href="../downloads/reserves_sample.rds" download>Download catchments sample in the data folder</a>
+- <a href="../downloads/reserves_sample.rds" download>Download reserves sample in the data folder</a>
 - <a href="../downloads/example-reserve_seeds-script.R" download>Download reserve_seeds example R script</a>
 
 2. In R, either:
@@ -79,6 +80,6 @@ reserve_seeds(catchments_sf = catchments_sample, CAs_sf = reserves_sample, CAs_n
 
 # save seeds as csv
 reserve_seed <- reserve_seeds(catchments_sf = catchments_sample, CAs_sf = reserves_sample, CAs_name = "reserve", areatarget_value = 1000000000)
-write.csv(reserve_seed, file=file.path(dirpath,"Builder_input/reserve_seeds.csv"), row.names=FALSE)
+write.csv(reserve_seed, file=file.path(dirpath,"Builder_input/reserve_seeds.csv"), na = "", row.names=FALSE)
 ```
 

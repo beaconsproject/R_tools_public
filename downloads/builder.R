@@ -278,69 +278,22 @@ seeds <- function(catchments_sf, filter_polygon = NULL, areatarget_value = NULL,
 #'
 reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NULL, joinType = "CENTROID"){
   options(scipen = 999)
-
+  
   # JOIN TYPE
   if(joinType =="INTERSECT"){
-    catch_join <- st_intersects(CAs_sf, catchments_sf)
+    catch_join <- suppressWarnings(st_intersects(CAs_sf, catchments_sf))
   }else if(joinType =="CENTROID"){
-    
-    catch_centroids <- st_centroid(catchments_sf)
-    catch_join <- st_intersects(CAs_sf, catch_centroids, sparse = TRUE)
+    catch_centroids <- suppressWarnings(st_centroid(catchments_sf))
+    catch_join <- suppressWarnings(st_intersects(CAs_sf, catch_centroids, sparse = TRUE))
   }
   
-  out_tab <- data.frame(
+  out_tab <- tibble::tibble(
     CAs_name = CAs_sf[[CAs_name]],
     Areatarget = areatarget_value,
-    CATCHNUM  = sapply(catch_join, function(idx) {
-      paste(catchments_sf$CATCHNUM[idx], collapse = ",")
-    })
-  ) 
+    CATCHNUM = sapply(catch_join, function(idx) paste(catchments_sf$CATCHNUM[idx], collapse = ","))
+  )
   
-  # # Split the 'CATCHNUM' column into a list of vectors
-  catchnum_list <- strsplit(out_tab$CATCHNUM, ",")
-  
-  # Determine the maximum number of catch numbers
-  max_catchnums <- max(sapply(catchnum_list, length))
-  
-  # Create a row with the specified values
-  row <- c("CAs_name", "Areatarget", "CATCHNUM", rep(NA, max_catchnums-1))
-  
-  # Specify the output file path
-  output_file <- tempfile(fileext = ".csv")
-
-  # Create the data frame
-  seed_init <- as.data.frame(t(row), stringsAsFactors = FALSE)
-  utils::write.table(seed_init, file = output_file, sep= ",", na= "", row.names = FALSE, col.names= FALSE)
-  
-  # Open a connection to the output file
-  file_conn <- file(output_file, open = "a")
-  
-  # Pad shorter vectors with NA
-  catchnum_list <- lapply(catchnum_list, function(x) {
-    length(x) <- max_catchnums
-    return(x)
-  })
-  
-  # Iterate over each row in the data list
-  for (i in 1:length(catchnum_list)) {
-    CAs_name <- as.character(out_tab[i, 1])
-    Areatarget <- as.character(out_tab[i, 2])
-    CATCHNUM <- catchnum_list[[i]]
-    # Combine the elements into a single comma-separated string
-    last_non_na <- max(which(CATCHNUM != ""))
-    CATCHNUM <- CATCHNUM[1:last_non_na]
-    
-    line <- paste(c(CAs_name, Areatarget, CATCHNUM), collapse = ",")
-    
-    # Write the line to the file
-    writeLines(line, con = file_conn)
-  }
-  
-  # Close the file connection
-  close(file_conn)
-  
-  out_tab <- utils::read.csv(output_file)
-  return(dplyr::as_tibble(out_tab))
+  return(out_tab)
 }
 
 ### builder ###
@@ -379,6 +332,7 @@ reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NU
 #' @param neighbours Neighbours table from \code{neighbours()} listing all neighbouring pairs of catchments.
 #' @param out_dir If provided, input (seeds, neighbours and catchments) files and output BUILDER tables will be saved to this directory. Otherwise
 #' a temp directory will be used. Function will attempt to create the directory if it doesn't already exist.
+#' @param builder_local_path Directory path to the benchmarkbuilder executable. 
 #' @param catchment_level_intactness Minimum intactness value for catchment inclusion (between 0-1). i.e. if value of 1 is used, only 100% intact
 #' catchments will be used.
 #' @param conservation_area_intactness Minimum area-weighted intactness of final conservation areas. Only conservation areas meeting this value will be returned.
@@ -426,6 +380,7 @@ reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NU
 #' builder(catchments_sf = builder_catchments_sample, seeds = seed, neighbours = nghbrs)
 builder <- function(catchments_sf, seeds, neighbours, # input tables
                     out_dir = NULL, # output dir
+                    builder_local_path,
                     catchment_level_intactness = 1, conservation_area_intactness = 1, area_target_proportion = 1, # main parameters
                     area_type = "land", construct_conservation_areas = TRUE,  area_target_multiplier = 1,
                     handle_isolated_catchments = TRUE, output_upstream = FALSE, output_downstream = FALSE, output_hydrology_metrics = FALSE,
@@ -437,10 +392,10 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
 
   # builder path
   #if(exists("builder_local_path")){
-    #builder_cmd <- builder_local_path # This is a temporary solution to avoid publishing builder.exe on github during the review process.
+    builder_cmd <- file.path(builder_local_path, "BenchmarkBuilder_cmd.exe") # This is a temporary solution to avoid publishing builder.exe on github during the review process.
   #} else{
-    builder_cmd <- system.file("exec", "BenchmarkBuilder_cmd.exe", package = "beaconsbuilder")
-  #s}
+  #  builder_cmd <- system.file("exec", "BenchmarkBuilder_cmd.exe", package = "beaconsbuilder")
+  #}
 
   # set up output directory. Default is a temp folder. out_dir can be used if builder output should be saved, e.g. in a looped analysis.
   if(is.null(out_dir)){

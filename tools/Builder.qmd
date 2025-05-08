@@ -1,3 +1,4 @@
+## BUILDER R Functions
 
 # `builder()`
 
@@ -11,6 +12,7 @@ builder(
   seeds, 
   neighbours, 
   out_dir = NULL,
+  builder_local_path, 
   catchment_level_intactness = 1, 
   conservation_area_intactness = 1, 
   area_target_proportion = 1, 
@@ -48,6 +50,7 @@ builder(
 - neighbours: Neighbours table from **neighbours()** listing all neighbouring pairs of catchments.
 - out_dir: If provided, input (seeds, neighbours and catchments) files and output BUILDER tables will be saved to this directory. Otherwise
  a temp directory will be used. Function will attempt to create the directory if it doesn't already exist.
+- builder_local_path: Directory path to the benchmarkbuilder executable.
 - catchment_level_intactness: Minimum intactness value for catchment inclusion (between 0-1). i.e. if value of 1 is used, only 100% intact
  catchments will be used.
 - conservation_area_intactness: Minimum area-weighted intactness of final conservation areas. Only conservation areas meeting this value will be returned.
@@ -79,8 +82,9 @@ builder(
 - summary_intactness_props: If a summary is created, provide the intactness proportions to be summarised in the format '0.7,0.8,0.9'.
 - summary_area_target_props: If a summary is created, provide the area target proportions to be summarised in the format '0.7,0.8,0.9'.
 
-## Value
-A tibble with column names representing conservation areas, and rows of catchments making up the conservation areas.
+## 📤 Output
+
+A tibble with column names representing conservation areas, and rows of catchments making up the conservation areas. If `output_dir` is provided, additional BUILDER output tables (e.g., hydrology, summary metrics) are saved.
 
 ## Details
 
@@ -130,6 +134,7 @@ for(d in treedir){
 
 2. Download the functions, data and example files and save them in the proper folder.
 - <a href="../downloads/builder.R" download>Download builder functions in the R folder</a>
+- <a href="../downloads/utils.R" download>Download utils functions in the R folder</a>
 - <a href="../downloads/catchments_sample.rds" download>Download catchments sample in the data folder</a>
 - <a href="../downloads/example-builder-script.R" download>Download builder example R script</a>
 
@@ -141,14 +146,18 @@ for(d in treedir){
 ```r
 library(sf)
 
-setwd(dirpath)
 source("./R/builder.R")
+source("./R/utils")
 
 # Use all catchments as seeds with a single area target
 catchments_sample <- readRDS("data/catchments_sample.rds")
 
 nghbrs <- neighbours(catchments_sample)
 seed <- seeds(catchments_sf = catchments_sample, areatarget_value = 1000000000)
-seed <- seed[1:10,]
-builder(catchments_sf = catchments_sample, seeds = seed, neighbours = nghbrs, out_dir = file.path(dirpath, "Builder_output"))
+builder(catchments_sf = catchments_sample, seeds = seed, neighbours = nghbrs, out_dir = file.path(dirpath, "Builder_output"), builder_local_path = dirpath)
 ```
+
+
+
+
+

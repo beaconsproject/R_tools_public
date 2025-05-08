@@ -84,11 +84,11 @@ seeds <- function(catchments_sf, filter_polygon = NULL, areatarget_value = NULL,
 
     # subset areatarget_polygon to drop any columns that might interfere with join (e.g. a CATCHNUM col)
     areatarget_polygon <- areatarget_polygon %>%
-      dplyr::select(areatarget_polygon_col)
+      dplyr::select(any_of(areatarget_polygon_col))
 
     sf::st_agr(areatarget_polygon) = "constant"
     sf::st_agr(filtered_catchments) = "constant"
-    browser()
+    
     filtered_catchments <- suppressWarnings(filtered_catchments %>%
       sf::st_join(areatarget_polygon, left = FALSE, largest = TRUE) %>% # inner join, assign catchnum area target to polygon value with largest overlap
       dplyr::mutate(Areatarget = as.integer(ceiling(.[[areatarget_polygon_col]]))) # round up to next m2
@@ -116,7 +116,7 @@ neighbours <- function(catchments_sf){
 
   # check catchnum and convert to integer
   catchments_sf <- make_catchnum_integer(catchments_sf)
-
+  
   st_queen <- function(a, b = a) sf::st_relate(a, b, pattern = "****T****") # this tests for an intersect of at least one shared point between a and b
   nbr_df <- as.data.frame(st_queen(sf::st_buffer(catchments_sf, dist=0.1)))
 
@@ -141,75 +141,24 @@ neighbours <- function(catchments_sf){
 
   return(nbr_df)
 }
-reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NULL, joinType = "CENTROID", out_dir){
+reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NULL, joinType = "CENTROID"){
   options(scipen = 999)
   
   # JOIN TYPE
   if(joinType =="INTERSECT"){
-    catch_join <- st_intersects(CAs_sf, catchments_sf)
+    catch_join <- suppressWarnings(st_intersects(CAs_sf, catchments_sf))
   }else if(joinType =="CENTROID"){
-    #browser()
-    catch_centroids <- st_centroid(catchments_sf)
-    catch_join <- st_intersects(CAs_sf, catch_centroids, sparse = TRUE)
+    catch_centroids <- suppressWarnings(st_centroid(catchments_sf))
+    catch_join <- suppressWarnings(st_intersects(CAs_sf, catch_centroids, sparse = TRUE))
   }
   
-  out_tab <- data.frame(
+  out_tab <- tibble::tibble(
     CAs_name = CAs_sf[[CAs_name]],
     Areatarget = areatarget_value,
-    CATCHNUM  = sapply(catch_join, function(idx) {
-      paste(catchments_sf$CATCHNUM[idx], collapse = ",")
-    })
-  ) 
+    CATCHNUM = sapply(catch_join, function(idx) paste(catchments_sf$CATCHNUM[idx], collapse = ","))
+  )
   
-  # # Split the 'CATCHNUM' column into a list of vectors
-  catchnum_list <- strsplit(out_tab$CATCHNUM, ",")
-  
-  # Determine the maximum number of catch numbers
-  max_catchnums <- max(sapply(catchnum_list, length))
-  
-  # Create a row with the specified values
-  row <- c("CAs_name", "Areatarget", "CATCHNUM", rep(NA, max_catchnums-1))
-  
-  # Specify the output file path
-  output_file <- file.path(out_dir, "Builder_input/seeds.csv")
-  if(!dir.exists(file.path(out_dir, "Builder_input"))){
-    dir.create(file.path(out_dir, "Builder_input"))
-  }
-  
-  # Create the data frame
-  seed_init <- as.data.frame(t(row), stringsAsFactors = FALSE)
-  utils::write.table(seed_init, file = output_file, sep= ",", na= "", row.names = FALSE, col.names= FALSE)
-  
-  # Open a connection to the output file
-  file_conn <- file(output_file, open = "a")
-  
-  # Pad shorter vectors with NA
-  catchnum_list <- lapply(catchnum_list, function(x) {
-    length(x) <- max_catchnums
-    return(x)
-  })
-  
-  # Iterate over each row in the data list
-  for (i in 1:length(catchnum_list)) {
-    CAs_name <- as.character(out_tab[i, 1])
-    Areatarget <- as.character(out_tab[i, 2])
-    CATCHNUM <- catchnum_list[[i]]
-    # Combine the elements into a single comma-separated string
-    last_non_na <- max(which(CATCHNUM != ""))
-    CATCHNUM <- CATCHNUM[1:last_non_na]
-    
-    line <- paste(c(CAs_name, Areatarget, CATCHNUM), collapse = ",")
-    
-    # Write the line to the file
-    writeLines(line, con = file_conn)
-  }
-  
-  # Close the file connection
-  close(file_conn)
-  #browser()
-  out_tab <- utils::read.csv(output_file)
-  return(dplyr::as_tibble(out_tab))
-  return(seed)
+  return(out_tab)
 }
 make_catchnum_integer <- function(catchments_sf){
 

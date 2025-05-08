@@ -1,3 +1,4 @@
+## BUILDER R Functions
 
 # `seeds()`
 
@@ -33,7 +34,7 @@ seeds(
 
 - areatarget_polygon_col: (Optional) Column in areatarget_polygon containing area target values.
 
-## Value
+## 📤 Output
 A tibble of seed catchments and their assigned area targets.
 
 ## Details
