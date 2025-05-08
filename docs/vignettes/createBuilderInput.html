@@ -215,9 +215,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="intro">Intro</h2>
 <p>This script creates the three required input to run BUILDER (neighbour, seeds and catchments tables).</p>
 <p>The first step is to locate the catchments layer and point on an output directory where the derived files will be saved. The script uses three BUILDER functions: <code>neighbour</code>, <code>seeds</code> and <code>reserve_seeds</code>.</p>
-<p>The <code>neighbours()</code> function calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).</p>
-<p>The <code>seeds()</code> function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.</p>
-<p>The <code>reserve_seeds()</code> function creates a <strong>seeds table</strong> based on conservation areas, which is an input to <code>builder()</code>.<br>
+<p>The <a href="../tools/neighbours.html"><code>neighbours()</code></a> function calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).</p>
+<p>The <a href="../tools/seeds.html"><code>seeds()</code></a> function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.</p>
+<p>The <a href="../tools/reserve_seeds.html"><code>reserve_seeds()</code></a> function creates a <strong>seeds table</strong> based on conservation areas, which is an input to <code>builder()</code>.<br>
 It identifies <strong>seed catchments inside a conservation area</strong> and assigns them an <strong>area target</strong>.</p>
 <p>Both functions need the catchments dataset with unique identifier column ‘CATCHNUM’</p>
 <section id="generate-neighbour-table" class="level3">
