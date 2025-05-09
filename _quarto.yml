@@ -25,6 +25,8 @@ website:
             text: Create Builder Input    
           - href: vignettes/createBuilderPolygons.qmd
             text: Create Builder Polygons
+          - href: vignettes/calcDCI.qmd
+            text: Calculate DCI
 format:
   html:
     include-after-body: _includes/footer.html

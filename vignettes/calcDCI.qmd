@@ -1,0 +1,85 @@
+---
+title: "Calculate dendritic connectivity index (DCI) on reserves"
+author: "Melina Houle"
+format: html
+---
+
+## Intro
+
+This script calculates Dendritic Connectivity Index (DCI).  
+
+The first step is to locate the reserves (e.g., potential benchmarks, protected area) and stream network layers and point on an output directory where result layer will be saved. 
+
+**The shapefiles must have the same CRS**. 
+
+Function `calc_dci` calculate dendritic connectivity index (DCI) for a set of input polygons. Values range between 0 and 1, with 1 indicating a completely connected river network. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of reserves based on the expected probability of an organism being able to move between two random points in the network. 
+
+Function `calc_lwdci` calculate stream network length-weighted dendritic connectivity index (DCI) for a set of input polygons. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of conservation areas based on the expected probability of an organism being able to move between two random points in the network. 
+
+Both functions need the following:
+
+- **reserves**: Point to a polygon sf object 
+- **streams**: Point to an stream_sf object. The provided streams need to have information on BASIN. 
+- **col_name**: Column name  holding the unique ID of the pas_sf. Default is network. 
+- **buffer_width**: Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis.
+
+```r 
+# Load libraries
+library(sf)
+library(dplyr)
+
+source("./R/calcDCI_dependencies.R")
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+
+# Set working directory
+setwd("your/path/to/downloads")
+
+dirpath <- getwd()
+
+#Set access path 
+reserves <- file.path(dirpath, "data/reserves.shp")
+streams <- file.path(dirpath, "data/streams.shp")
+
+colName <- "reserve"
+
+#Create output folder
+out_dir <- file.path(dirpath, "shp_output")
+if(!dir.exists(out_dir)){
+  dir.create(out_dir)
+}
+
+# Set if DCI and LWDCI should be added
+addDCI <- TRUE
+addLWDCI <- TRUE
+
+
+
+# --------------------------------------
+#--RUN
+# --------------------------------------
+# Initialize sf objects
+reserves_sf <- st_read(reserves)
+streams_sf <- st_read(streams)
+
+if(addDCI){
+  reserves_sf <- reserves_sf %>%
+  mutate(dci = sapply(1:nrow(reserves_sf), function(i) {
+    i <- reserves_sf[i, ]
+    calc_dci(i, streams_sf, col_name = colName) 
+  }))
+}
+if(addLWDCI){
+  reserves_sf <- reserves_sf %>%
+  mutate(lwdci = sapply(1:nrow(reserves_sf), function(j) {
+    j <- reserves_sf[j, ]
+    calc_lwdci(j, streams_sf, col_name = colName) 
+  }))
+}
+
+#Save results
+write_sf(reserves_sf, dsn=file.path(out_dir, "reserves_dci.shp"), append = FALSE)
+
+```

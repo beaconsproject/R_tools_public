@@ -1,7 +1,6 @@
 dissolve_catchments_from_table <- function(catchments_sf, input_table, out_feature_id=NULL, calc_area = FALSE, intactness_id = NULL, dissolve_list = c(), drop_table = NULL){
   check_catchnum(catchments_sf) # check for CATCHNUM
   check_for_geometry(catchments_sf)
-  #check_catchnum_class(catchments_sf, input_table) # Check catchments match, warning if not
   input_table <- remove_oid(input_table) #drop oid column is it exists
   check_for_rows(input_table)
   
@@ -84,76 +83,8 @@ dissolve_catchments_from_table <- function(catchments_sf, input_table, out_featu
   }
   return(out_sf)
 }
-calc_dci <- function(conservation_area_sf, stream_sf, col_name = "network", buffer_width = 0.1){
-  
-  stopifnot(sf::st_crs(conservation_area_sf) == sf::st_crs(stream_sf))
-  
-  # set stream and conservation area attributes to be constant throughout each polygon to avoid warnings in st_intersection
-  sf::st_agr(stream_sf) = "constant"
-  sf::st_agr(conservation_area_sf) = "constant"
-  
-  # clip streams to full area of all conservation areas
-  reserve_dci <- conservation_area_sf %>%
-    sf::st_intersection(stream_sf, sf::st_union()) %>% # get streams just for the required region
-    dplyr::filter(BASIN != -1) %>% # remove isolated stream segments
-    sf::st_buffer(dist = buffer_width, endCapStyle = "ROUND") %>% # buffer to make sure streams are connected
-    dplyr::summarise(geometry = sf::st_union(geometry)) %>% # merge into single feature
-    sf::st_intersection(conservation_area_sf) %>% # intersect with reserves to get buffered stream for each reserve
-    dplyr::select(dplyr::all_of(col_name)) %>%
-    sf::st_cast("MULTIPOLYGON", warn = FALSE) %>% # this is needed to avoid geometries being lost in the POLYGON cast
-    sf::st_cast("POLYGON", warn = FALSE) %>% # explode into individual stream segments
-    dplyr::mutate(stream_length = as.numeric(sf::st_area(geometry)) / buffer_width) %>% # divide area by buffer to get length of each stream segment
-    sf::st_drop_geometry() %>% # drop the geometry for speed
-    dplyr::group_by(!!sym(col_name)) %>% # for each network...
-    dplyr::summarise(L = sum(stream_length), dci = sum((stream_length*stream_length) / (L*L)))  # calculate L2 then use to calculate dci
-  
-  # reserves that do not intersect the stream network get dropped during st_intersection.
-  # join dci back to original reserves and set missing reserves to have dci of 0
-  dci <- dplyr::left_join(sf::st_drop_geometry(conservation_area_sf), reserve_dci, by = col_name) %>%
-    tidyr::replace_na(list(dci=0)) %>%
-    dplyr::pull(dci) %>%
-    round(3)
-  
-  return(dci)
-}
-calc_lwdci <- function(conservation_area_sf, stream_sf, col_name = "network", buffer_width = 0.1){
-  
-  stopifnot(sf::st_crs(conservation_area_sf) == sf::st_crs(stream_sf))
-  # set stream and reserve attributes to be constant throughout each polygon to avoid warnings in st_intersection
-  sf::st_agr(stream_sf) = "constant"
-  sf::st_agr(conservation_area_sf) = "constant"
-  
-  # clip streams to full area of all reserves
-  stream_prepped <- 
-    sf::st_intersection(stream_sf, sf::st_union(conservation_area_sf$geometry)) %>%
-    dplyr::filter(BASIN != -1) %>% # remove isolated stream segments
-    sf::st_buffer(dist = buffer_width, endCapStyle = "ROUND") %>% # buffer to make sure streams are connected
-    dplyr::group_by(BASIN) %>%
-    dplyr::summarise(geometry = sf::st_union(geometry)) # merge into single feature per BASIN
-  
-  sf::st_agr(stream_prepped) = "constant"
-  
-  reserve_lwdci <- sf::st_intersection(conservation_area_sf, stream_prepped) %>% # intersect with reserves to get buffered stream for each reserve
-    dplyr::select(dplyr::all_of(col_name), BASIN) %>%
-    sf::st_cast("MULTIPOLYGON", warn = FALSE) %>% # this is needed to avoid geometries being lost in the POLYGON cast
-    sf::st_cast("POLYGON", warn = FALSE) %>% # explode into individual stream segments
-    dplyr::mutate(stream_length = as.numeric(sf::st_area(geometry)) / buffer_width) %>% # divide area by buffer to get length of each stream segment
-    sf::st_drop_geometry() %>% # drop the geometry for speed
-    dplyr::group_by(!!sym(col_name), BASIN) %>% # for each network and basin...
-    dplyr::summarise(L_basin = sum(stream_length), 
-                     dci_basin = sum((stream_length*stream_length) / (L_basin*L_basin)), .groups = "drop") %>% # calculate L2 then use to calculate dci
-    dplyr::group_by(!!sym(col_name)) %>%
-    dplyr::summarise(lwdci = sum((L_basin / sum(L_basin)) * dci_basin), .groups = "drop") # calc lwdci. Weight is proportion of reserve streams in each basin
-  
-  # reserves that do not intersect the stream network get dropped during st_intersection.
-  # join dci back to original reserves and set missing reserves to have dci of 0
-  lwdci <- dplyr::left_join(sf::st_drop_geometry(conservation_area_sf), reserve_lwdci, by = col_name) %>%
-    tidyr::replace_na(list(lwdci=0)) %>%
-    dplyr::pull(lwdci) %>%
-    round(3)
-  
-  return(lwdci)
-}
+
+
 sep_network_names <- function(network_names){
   
   if(length(network_names) == 1){
@@ -175,12 +106,7 @@ check_catchnum <- function(catchments_sf){
     stop("Catchments must contain column 'CATCHNUM'")
   }
 }
-check_catchnum_class <- function(catchments_sf, builder_table){
-  col_classes <- sapply(colnames(builder_table), function(x) class(builder_table[[x]]))
-  if(!all(col_classes == class(catchments_sf$CATCHNUM))){
-    warning(paste0("Table column classes do not match class(catchments_sf$CATCHNUM) for columns: ", paste0(colnames(builder_table)[col_classes != class(catchments_sf$CATCHNUM)], collapse=", ")))
-  }
-}
+
 get_catch_list <- function(pa_ids, input_table){
   
   # check nets are in input_table
