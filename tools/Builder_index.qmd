@@ -1,4 +1,4 @@
-<a href="downloads/builder.R" download>Download builder functions</a>
+<a href="downloads/builder.R" download>Download BUILDER functions</a>
 <br>
 
 ## BEACONs BUILDER
@@ -31,7 +31,7 @@ If the latter occurs, and the area-weighted intactness of the benchmark exceeds 
 
 ## BUILDER R Functions
 
-**BEACONs Builder has 4 main functions:**
+**BEACONs BUILDER has 4 main functions:**
 
 - [seeds](#seeds)
 - [reserve_seeds](#reserve_seeds)

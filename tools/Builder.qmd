@@ -2,7 +2,7 @@
 
 # `builder()`
 
-The builder() function call the BUILDER software from R. It prepares and passes all input tables and variables to the BUIDLER executable and returns the builder table to R.
+The `builder()` function call the BUILDER software from R. It prepares and passes all input tables and variables to the BUIDLER executable and returns the builder table to R.
 
 ## Usage
 
