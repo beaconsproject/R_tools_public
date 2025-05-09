@@ -193,7 +193,7 @@
     "href": "tools/Builder_index.html",
     "title": "BEACONs R Tools",
     "section": "",
-    "text": "Download builder functions"
+    "text": "Download BUILDER functions"
   },
   {
     "objectID": "tools/Builder_index.html#beacons-builder",
@@ -221,7 +221,7 @@
     "href": "tools/Builder_index.html#builder-r-functions",
     "title": "BEACONs R Tools",
     "section": "BUILDER R Functions",
-    "text": "BUILDER R Functions\nBEACONs Builder has 4 main functions:\n\nseeds\nreserve_seeds\nneighbours\nbuilder\n\n\nseeds\nThe function seeds() creates a seeds table, which is an input to builder().\nIt identifies seed catchments and assigns them an area target.\n\n\nreserve_seeds\nThe function reserve_seeds() creates a seeds table based on conservation areas, which is an input to builder().\nIt identifies seed catchments inside a conservation area and assigns them an area target.\n\n\nneighbours\nThe function neighbours() creates a table listing pairwise catchment neighbours. Used as an input to builder().\n\n\nbuilder\nThe function builder() prepares the input files and parameters and passes them to a command line version of BUILDER executable software that resides inside the benchmarkbuilder package. The function then fetches and returns the main BUILDER output table into the R environment. Should we put something about how to obtain the executable and where to place it?\nUltimately we hope to rewrite the BUILDER executable in R to avoid having to call a third party application. In the meantime, this package allows users to access and automate calls to BUILDER from R."
+    "text": "BUILDER R Functions\nBEACONs BUILDER has 4 main functions:\n\nseeds\nreserve_seeds\nneighbours\nbuilder\n\n\nseeds\nThe function seeds() creates a seeds table, which is an input to builder().\nIt identifies seed catchments and assigns them an area target.\n\n\nreserve_seeds\nThe function reserve_seeds() creates a seeds table based on conservation areas, which is an input to builder().\nIt identifies seed catchments inside a conservation area and assigns them an area target.\n\n\nneighbours\nThe function neighbours() creates a table listing pairwise catchment neighbours. Used as an input to builder().\n\n\nbuilder\nThe function builder() prepares the input files and parameters and passes them to a command line version of BUILDER executable software that resides inside the benchmarkbuilder package. The function then fetches and returns the main BUILDER output table into the R environment. Should we put something about how to obtain the executable and where to place it?\nUltimately we hope to rewrite the BUILDER executable in R to avoid having to call a third party application. In the meantime, this package allows users to access and automate calls to BUILDER from R."
   },
   {
     "objectID": "tools/Builder_index.html#process",
