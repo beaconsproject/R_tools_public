@@ -1,6 +1,5 @@
 ---
 title: "Calculate dendritic connectivity index (DCI) on reserves"
-author: "Melina Houle"
 format: html
 ---
 
