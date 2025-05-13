@@ -126,13 +126,6 @@
     "text": "Examples\n\nRunning the examples\n\nCreate the folder structure\n\n# Set working directory\nsetwd(\"your/path/to/downloads\")\n\ndirpath &lt;- getwd()\n\n# Create the folder structure\ntreedir &lt;- c(\"R\",\"data\",\"Builder_output\")\nfor(d in treedir){\n  if (!dir.exists(file.path(dirpath, d))) {\n    dir.create(file.path(dirpath, d), recursive = TRUE)\n  }\n}\n\nDownload the functions, data and example files and save them in the proper folder.\n\n\nDownload builder functions in the R folder\nDownload utils functions in the R folder\nDownload catchments sample in the data folder\nDownload builder example R script\n\n\nIn R, either:\n\nPlace the files in your working directory (getwd()), or\nUpdate the path in the examples using a data_path variable.\n\nRun the examples below.\n\nlibrary(sf)\n\nsource(\"./R/builder.R\")\nsource(\"./R/utils\")\n\n# Use all catchments as seeds with a single area target\ncatchments_sample &lt;- readRDS(\"data/catchments_sample.rds\")\n\nnghbrs &lt;- neighbours(catchments_sample)\nseed &lt;- seeds(catchments_sf = catchments_sample, areatarget_value = 1000000000)\nbuilder(catchments_sf = catchments_sample, seeds = seed, neighbours = nghbrs, out_dir = file.path(dirpath, \"Builder_output\"), builder_local_path = dirpath)"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "BEACONs R Tools",
-    "section": "",
-    "text": "Welcome to the BEACONs R tools pages!\nOver the years, BEACONs develops a series of function to ease conservation planning across the landscape. Those functions have been group into categories. This pages aims to document each function and demonstrate their use through example. The functions are target advanced users who work with environmental data at large scale."
-  },
-  {
     "objectID": "methods.html",
     "href": "methods.html",
     "title": "Workflow",
@@ -187,6 +180,20 @@
     "title": "Workflow",
     "section": "Step 7",
     "text": "Step 7"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "BEACONs R Tools",
+    "section": "",
+    "text": "Welcome to the BEACONs R tools pages!\nOver the years, BEACONs develops a series of function to ease conservation planning across the landscape. Those functions have been group into categories. This pages aims to document each function and demonstrate their use through example. The functions are target advanced users who work with environmental data at large scale."
+  },
+  {
+    "objectID": "report-issues.html",
+    "href": "report-issues.html",
+    "title": "Report an issue",
+    "section": "",
+    "text": "Reporting an Issue\nIf you’ve found a bug or something isn’t working as expected, please follow the instructions below before reporting:\n\nClearly describe the issue.\nProvide a minimal reproducible example, if possible.\nMention the function name(s) involved.\nInclude error messages or screenshots if available.\n\nClick the button below to go to our GitHub issues page and submit your bug report.\n\n 🚨 Report an Issue on GitHub"
   },
   {
     "objectID": "tools/Builder_index.html",

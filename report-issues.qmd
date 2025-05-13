@@ -1,0 +1,25 @@
+<center><img src="pics/bp_banner.png" alt="BEACONs Project"></center>
+<hr>
+
+---
+title: "Report an issue"
+format: html
+---
+
+
+# Reporting an Issue
+
+If you've found a bug or something isn’t working as expected, please follow the instructions below before reporting:
+
+1. Clearly describe the issue.
+2. Provide a minimal reproducible example, if possible.
+3. Mention the function name(s) involved.
+4. Include error messages or screenshots if available.
+
+Click the button below to go to our GitHub issues page and submit your bug report.
+
+<div style="margin-top: 1em;">
+  <a href="https://github.com/beaconsproject/R_tools_public/issues" target="_blank" style="background-color: #d73a49; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+    🚨 Report an Issue on GitHub
+  </a>
+</div>
