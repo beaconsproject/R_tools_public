@@ -193,7 +193,7 @@
     "href": "report-issues.html",
     "title": "Reporting an Issue",
     "section": "",
-    "text": "Reporting an Issue\nIf you’ve found a bug or something isn’t working as expected, please follow the instructions below before reporting:\n\nClearly describe the issue.\nProvide a minimal reproducible example, if possible.\nMention the function name(s) involved.\nInclude error messages or screenshots if available.\n\nClick the button below to go to our GitHub issues page and submit your bug report.\n\n 🚨 Report an Issue on GitHub"
+    "text": "Reporting an Issue\nIf you’ve found a bug or something isn’t working as expected, please follow the instructions below before reporting:\n\nClick the button below to go to our GitHub issues page and submit your bug report.\nClick the green button 🐛 New Issue to open an issue.\nClearly describe the issue. Mention the function name(s) involved.\nProvide a minimal reproducible example, if possible.\nInclude error messages or screenshots if available.\n\nClick the button below to go to our GitHub issues page and submit your bug report.\n\n 🚨 Report an Issue on GitHub"
   },
   {
     "objectID": "tools/Builder_index.html",

@@ -6,10 +6,11 @@
 
 If you've found a bug or something isn’t working as expected, please follow the instructions below before reporting:
 
-1. Clearly describe the issue.
-2. Provide a minimal reproducible example, if possible.
-3. Mention the function name(s) involved.
-4. Include error messages or screenshots if available.
+1. Click the button below to go to our GitHub issues page and submit your bug report.
+2. Click the green button 🐛 New Issue to open an issue. 
+3. Clearly describe the issue. Mention the function name(s) involved.
+4. Provide a minimal reproducible example, if possible.
+5. Include error messages or screenshots if available.
 
 Click the button below to go to our GitHub issues page and submit your bug report.
 
