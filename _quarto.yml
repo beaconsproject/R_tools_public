@@ -10,6 +10,13 @@ website:
   image: "pics/bp_banner.png"
   navbar:
     background: primary
+    right:
+      - text: "More"
+        menu:
+          - text: "BEACONs Website"
+            href: https://beaconsproject.ualberta.ca/
+          - text: "Report an Issue"
+            href: https://github.com/beaconsproject/R_tools_public/issues
     left:
       - href: index.qmd
         text: Welcome
