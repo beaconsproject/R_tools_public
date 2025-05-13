@@ -1,11 +1,6 @@
 <center><img src="pics/bp_banner.png" alt="BEACONs Project"></center>
 <hr>
 
----
-title: "Report an issue"
-format: html
----
-
 
 # Reporting an Issue
 
