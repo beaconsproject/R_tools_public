@@ -288,7 +288,7 @@ reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NU
   }
   
   out_tab <- tibble::tibble(
-    CAs_name = CAs_sf[[CAs_name]],
+    !!CAs_name := CAs_sf[[CAs_name]],
     Areatarget = areatarget_value,
     CATCHNUM = sapply(catch_join, function(idx) paste(catchments_sf$CATCHNUM[idx], collapse = ","))
   )

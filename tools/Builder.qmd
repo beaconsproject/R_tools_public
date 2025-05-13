@@ -121,29 +121,22 @@ conservation areas).
 ### Running the examples
 ** Prior to run the example, the benchmarkbuilder executable needs to be acquired by contacting the BEACONs Project. 
 
-1. Download the zip folder containing BEACONs R Tools functions, data and example 
-- <a href="../downloads/BEACONs_R_Tools.zip" download>Download BEACONs R Tools</a>
+1. Download and unzip BEACONs R Tools 
+ <a href="../downloads/BEACONs_R_Tools.zip" download>Download BEACONs R Tools</a>
 
-2. Unzip BEACONS_R_Tools.zip, create the folder structure and point on the folder containing the benchmarkbuilder executable
+2. Set the folder path to the benchmarkbuilder executable and the unzipped BEACONs_R_Tools folder. 
 ```r
-# Path to the ZIP file
-zip_path <- "path/to/BEACONs_R_Tools.zip"
+# Folder path to the benchmarkbuilder executable
+builder_path <- "path/to/builder/folder"
 
 # Destination folder
 dest_folder <- "path/to/extract/folder"
 setwd(dest_folder)
 
-# Unzip
-unzip(zipfile = zip_path, exdir = dest_folder)
-
-# Create the folder structure
-if (!dir.exists(file.path(dest_folder, "Builder_output"))) {
-  dir.create(file.path(dest_folder, "Builder_output"))
-}
-
 ```
 
-3. Run the examples below.
+3. Run **BUILDER**
+- Using catchments seed type.
 
 ```r
 library(sf)
@@ -151,15 +144,38 @@ library(sf)
 source("./R/builder.R")
 source("./R/utils")
 
+# Create the folder structure
+if (!dir.exists(file.path(dest_folder, "Builder_output"))) {
+  dir.create(file.path(dest_folder, "Builder_output"))
+}
+
 # Use all catchments as seeds with a single area target
 catchments <- st_read("./data/catchments_sample.shp")
 
 nghbrs <- neighbours(catchments)
 seed <- seeds(catchments_sf = catchments, areatarget_value = 1000000000)
-builder(catchments_sf = catchments, seeds = seed, neighbours = nghbrs, out_dir = file.path(dest_folder, "Builder_output"), builder_local_path = dest_folder)
+builder(catchments_sf = catchments, seeds = seed, neighbours = nghbrs, out_dir = file.path(dest_folder, "Builder_output"), builder_local_path = builder_path)
 ```
 
+- Using reserves seed type.
 
+```r
+library(sf)
 
+source("./R/builder.R")
+source("./R/utils.R")
 
+# Create the folder structure
+if (!dir.exists(file.path(dest_folder, "Builder_output"))) {
+  dir.create(file.path(dest_folder, "Builder_output"))
+}
+
+# Use conservation areas as reserve seeds
+catchments <- st_read("./data/catchments_sample.shp")
+conservation_areas <- st_read("./data/reserves_sample.shp")
+
+nghbrs <- neighbours(catchments)
+reserve_seed <- reserve_seeds(catchments, CAs_sf=conservation_areas, CAs_name = "reserve", areatarget_value = 10000, joinType = "INTERSECT")
+builder(catchments_sf = catchments, data_source = "Reserve", seeds = reserve_seed, reserve_name = "reserve", neighbours = nghbrs, out_dir = file.path(dest_folder, "Builder_output"), builder_local_path = builder_path, catchment_level_intactness = 0.8, conservation_area_intactness = 0.8)
+```
 
