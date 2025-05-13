@@ -328,7 +328,9 @@ reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NU
 #'   }
 #'
 #' @param catchments_sf sf object of the catchments dataset with unique identifier column: CATCHNUM.
+#' @param data_source Specify the seed type (catchment or reserve). Default is catchment. 
 #' @param seeds Seeds table from \code{seeds()} listing seed catchments and area targets.
+#' @param reserve_name Reserve column listing the name or the reserve. Only used if data_source Reserve is selected. 
 #' @param neighbours Neighbours table from \code{neighbours()} listing all neighbouring pairs of catchments.
 #' @param out_dir If provided, input (seeds, neighbours and catchments) files and output BUILDER tables will be saved to this directory. Otherwise
 #' a temp directory will be used. Function will attempt to create the directory if it doesn't already exist.
@@ -378,7 +380,7 @@ reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NU
 #'               seeds(catchments_sf = ., areatarget_value = 500000000)
 #' seed <- seed[1:10,]
 #' builder(catchments_sf = builder_catchments_sample, seeds = seed, neighbours = nghbrs)
-builder <- function(catchments_sf, seeds, neighbours, # input tables
+builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_name= NULL, neighbours, # input tables
                     out_dir = NULL, # output dir
                     builder_local_path,
                     catchment_level_intactness = 1, conservation_area_intactness = 1, area_target_proportion = 1, # main parameters
@@ -388,15 +390,15 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
                     skeluid = "SKELUID", catchnum = "CATCHNUM", subzone = "FDA", zone = "MDA", basin = "BASIN", order1 = "ORDER1",
                     order2 = "ORDER2", order3 = "ORDER3", stream_length = "STRMLEN", intactness = "intact", isolated = "Isolated",
                     unique_identifier = "PB", handler_summary = FALSE, summary_intactness_props = '""', summary_area_target_props = '""'
-                    ){
-
+){
+  
   # builder path
   #if(exists("builder_local_path")){
-    builder_cmd <- file.path(builder_local_path, "BenchmarkBuilder_cmd.exe") # This is a temporary solution to avoid publishing builder.exe on github during the review process.
+  builder_cmd <- file.path(builder_local_path, "BenchmarkBuilder_cmd.exe") # This is a temporary solution to avoid publishing builder.exe on github during the review process.
   #} else{
   #  builder_cmd <- system.file("exec", "BenchmarkBuilder_cmd.exe", package = "beaconsbuilder")
   #}
-
+  
   # set up output directory. Default is a temp folder. out_dir can be used if builder output should be saved, e.g. in a looped analysis.
   if(is.null(out_dir)){
     tmpdir <- file.path(tempdir(), "builder")
@@ -414,35 +416,43 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
       dir.create(outdir, recursive = TRUE)
     }
   }
-
+  
   # Count benchmark tables in out_dir
   benchmarks_out_pre <- length(list.files(outdir, pattern = "COLUMN_All_Unique_BAs.csv"))
-
+  
   # save seeds table to outdir
   message("checking seeds table")
-  seeds <- make_all_integer(seeds)
-  check_colnames(seeds, "seeds", c("CATCHNUM", "Areatarget"))
+  
+  if(data_source == "catchment"){
+    seeds <- make_all_integer(seeds)
+    check_colnames(seeds, "seeds", c("CATCHNUM", "Areatarget"))
+  }else if(data_source == "Reserve"){
+    check_colnames(seeds, "seeds", c(reserve_name, "Areatarget", "CATCHNUM"))
+  }else{
+    stop("data_source must be either catchment or Reserve")
+  }
+  
   check_seeds_areatargets(seeds)
   check_seeds_in_catchments(seeds, catchments_sf)
   utils::write.csv(seeds, file.path(outdir, "seeds.txt"), row.names = FALSE)
-
+  
   # save neighbours table to outdir
   message("checking neighbours table")
   check_colnames(neighbours, "neighbours", c("CATCHNUM", "neighbours", "key"))
   neighbours <- make_all_integer(neighbours)
   utils::write.csv(neighbours, file.path(outdir, "neighbours.csv"), row.names = FALSE)
-
+  
   # save catchment attributes
   catchments_csv <- sf::st_drop_geometry(catchments_sf)
   check_colnames(catchments_csv, "catchments_sf", c(area_land, area_water, skeluid, catchnum, subzone, zone, basin, order1, order2, order3, stream_length, intactness, isolated)) # check all provided columns are present
   catchments_csv <- make_all_character(catchments_csv, c(order1, order3, zone, subzone, basin)) # check type
   catchments_csv <- make_all_integer(catchments_csv, c(catchnum, skeluid, isolated))
   catchments_csv <- make_all_numeric(catchments_csv, c(order2, area_land, area_water, intactness))
-
+  
   catchments_file <- file.path(outdir, "catchments.csv")
   catchments_table_name <- "catchments"
   utils::write.csv(catchments_csv, catchments_file, row.names = FALSE)
-
+  
   # convert TRUE FALSE to 1 0
   construct_conservation_areas <- logical_to_integer(construct_conservation_areas)
   handle_isolated_catchments <- logical_to_integer(handle_isolated_catchments)
@@ -450,7 +460,7 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
   output_downstream <- logical_to_integer(output_downstream)
   output_hydrology_metrics <- logical_to_integer(output_hydrology_metrics)
   handler_summary <- logical_to_integer(handler_summary)
-
+  
   # set system variables
   seeds_file <- file.path(outdir, "seeds.txt")
   seeds_table_name <- "seeds"
@@ -460,49 +470,99 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
   neighbours_file_name <- "neighbours"
   neighbours_catchnum_field <- "CATCHNUM"
   neighbours_neighbours_field <- "neighbours"
-
+  
   # construct system call
-  system_string <- paste(sep = " ",
-    builder_cmd,
-    "builder", "1",
-    outdir,
-    "catchment",
-    seeds_file,
-    seeds_table_name,
-    seeds_catchnum_field,
-    seeds_areatarget_field,
-    area_type,
-    construct_conservation_areas,
-    catchment_level_intactness,
-    area_target_multiplier,
-    handle_isolated_catchments,
-    output_upstream,
-    output_downstream,
-    output_hydrology_metrics,
-    catchments_file,
-    catchments_table_name,
-    area_land,
-    area_water,
-    skeluid,
-    catchnum,
-    subzone,
-    basin,
-    order1,
-    order2,
-    order3,
-    stream_length,
-    intactness,
-    zone,
-    isolated,
-    neighbours_file,
-    neighbours_file_name,
-    neighbours_catchnum_field,
-    neighbours_neighbours_field
-  )
-
+  if(data_source == "catchment"){
+    system_string <- paste(sep = " ",
+                           builder_cmd,
+                           "builder", "1",
+                           outdir,
+                           "catchment",
+                           seeds_file,
+                           seeds_table_name,
+                           seeds_catchnum_field,
+                           seeds_areatarget_field,
+                           area_type,
+                           construct_conservation_areas,
+                           catchment_level_intactness,
+                           area_target_multiplier,
+                           handle_isolated_catchments,
+                           output_upstream,
+                           output_downstream,
+                           output_hydrology_metrics,
+                           catchments_file,
+                           catchments_table_name,
+                           area_land,
+                           area_water,
+                           skeluid,
+                           catchnum,
+                           subzone,
+                           basin,
+                           order1,
+                           order2,
+                           order3,
+                           stream_length,
+                           intactness,
+                           zone,
+                           isolated,
+                           neighbours_file,
+                           neighbours_file_name,
+                           neighbours_catchnum_field,
+                           neighbours_neighbours_field
+    )
+  }else{
+    if(is.null(reserve_name)){
+      stop("You must provide the column name holder the reserve name")
+    }else{
+      if(reserve_name %in% colnames(seeds)){
+        system_string <- paste(sep = " ",
+                               builder_cmd,
+                               "builder", "1",
+                               outdir,
+                               "Reserve",
+                               seeds_file,
+                               seeds_table_name,
+                               reserve_name,
+                               seeds_catchnum_field,
+                               seeds_areatarget_field,
+                               area_type,
+                               construct_conservation_areas,
+                               catchment_level_intactness,
+                               area_target_multiplier,
+                               handle_isolated_catchments,
+                               output_upstream,
+                               output_downstream,
+                               output_hydrology_metrics,
+                               catchments_file,
+                               catchments_table_name,
+                               area_land,
+                               area_water,
+                               skeluid,
+                               catchnum,
+                               subzone,
+                               basin,
+                               order1,
+                               order2,
+                               order3,
+                               stream_length,
+                               intactness,
+                               zone,
+                               isolated,
+                               neighbours_file,
+                               neighbours_file_name,
+                               neighbours_catchnum_field,
+                               neighbours_neighbours_field
+        )
+      }else {
+        stop("reserve_name must be contained in the reserve seed file provided")
+      }
+    }
+  }
+  
+  
   # call BUILDER
   system(system_string)
-
+  
   # prep for HANDLER
   h1 <- list.files(outdir, pattern = "_ROW.csv", full.names = TRUE)
   h1 <- ifelse(length(h1) > 0, h1[[length(h1)]], '""') # if multiple, return the last one which should be most recent
@@ -514,7 +574,7 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
   h4 <- ifelse(length(h4) > 0, h4[[length(h4)]], '""') # if multiple, return the last one which should be most recent
   h5 <- list.files(outdir, pattern = "_ROW_DOWNSTREAM_CATCHMENTS.csv", full.names = TRUE)
   h5 <- ifelse(length(h5) > 0, h5[[length(h5)]], '""') # if multiple, return the last one which should be most recent
-
+  
   # prep HANDLER system string
   handler_string <- paste(sep = " ",
                           builder_cmd,
@@ -526,10 +586,10 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
                           handler_summary,
                           summary_intactness_props,
                           summary_area_target_props
-                          )
+  )
   # call HANDLER
   system(handler_string)
-
+  
   # Load output tables
   benchmarks_out <- list.files(outdir, pattern = "COLUMN_All_Unique_BAs.csv")
   if(length(benchmarks_out) > benchmarks_out_pre){ # If new table was added, it becomes the output path
@@ -543,22 +603,22 @@ builder <- function(catchments_sf, seeds, neighbours, # input tables
     }
     stop("No output produced. Check parameters, file paths and input tables.")
   }
-
+  
   message(paste0("Returning BUILDER table: ", benchmarks_out))
-
+  
   out_tab <- utils::read.csv(file.path(outdir, benchmarks_out))
-
+  
   # delete temp directory. If out_dir was provided, don't delete
   if(is.null(out_dir)){
     unlink(outdir, recursive = TRUE)
   }
-
+  
   # make sure BUILDER made some conservation areas
   if(nrow(out_tab) == 0){
     warning("No conservation areas to return, try changing the BUILDER parameters by decreasing intactness and/or area requirements")
     return(NULL)
   }
-
+  
   # return
   out_tab$OID <- NULL
   return(dplyr::as_tibble(out_tab))
