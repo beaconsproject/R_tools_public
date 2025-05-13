@@ -3,5 +3,5 @@
 
 **Welcome to the BEACONs R tools pages!**
 
-Over the years, BEACONs develops a series of function to ease conservation planning across the landscape. Those functions have been group into categories. This pages aims to document each function and demonstrate their use through example. The functions are target advanced users who work with environmental data at large scale.
+Over the years, BEACONs develops a series of function to ease conservation planning across the landscape. Those functions ranges from constructing ecological benchmarks and creating conservation area networks to assessing ecological representation. The functions are organized into different categories. This pages aims to document each function and demonstrate their use through example. The functions are intended for advanced users working with large-scale environmental data.
 

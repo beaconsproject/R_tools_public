@@ -9,7 +9,9 @@ The `builder()` function call the BUILDER software from R. It prepares and passe
 ```r
 builder(
   catchments_sf, 
+  data_source = "catchment",
   seeds, 
+  reserve_name,
   neighbours, 
   out_dir = NULL,
   builder_local_path, 
@@ -46,7 +48,9 @@ builder(
 ## Arguments
 
 - catchments_sf: sf object of the catchments dataset with unique identifier column **CATCHNUM**.
+- data_source: Specify the seed type (catchment or reserve). Default is catchment.
 - seeds: Seeds table from **seeds()** listing seed catchments and area targets.
+- reserve_name: Reserve column listing the name of the reserve. Only used if data_source Reserve is selected.
 - neighbours: Neighbours table from **neighbours()** listing all neighbouring pairs of catchments.
 - out_dir: If provided, input (seeds, neighbours and catchments) files and output BUILDER tables will be saved to this directory. Otherwise
  a temp directory will be used. Function will attempt to create the directory if it doesn't already exist.
@@ -115,32 +119,30 @@ conservation areas).
  
 ## Examples
 ### Running the examples
+** Prior to run the example, the benchmarkbuilder executable needs to be acquired by contacting the BEACONs Project. 
 
-1. Create the folder structure
+1. Download the zip folder containing BEACONs R Tools functions, data and example 
+- <a href="../downloads/BEACONs_R_Tools.zip" download>Download BEACONs R Tools</a>
+
+2. Unzip BEACONS_R_Tools.zip, create the folder structure and point on the folder containing the benchmarkbuilder executable
 ```r
-# Set working directory
-setwd("your/path/to/downloads")
+# Path to the ZIP file
+zip_path <- "path/to/BEACONs_R_Tools.zip"
 
-dirpath <- getwd()
+# Destination folder
+dest_folder <- "path/to/extract/folder"
+setwd(dest_folder)
+
+# Unzip
+unzip(zipfile = zip_path, exdir = dest_folder)
 
 # Create the folder structure
-treedir <- c("R","data","Builder_output")
-for(d in treedir){
-  if (!dir.exists(file.path(dirpath, d))) {
-    dir.create(file.path(dirpath, d), recursive = TRUE)
-  }
+if (!dir.exists(file.path(dest_folder, "Builder_output"))) {
+  dir.create(file.path(dest_folder, "Builder_output"))
 }
+
 ```
 
-2. Download the functions, data and example files and save them in the proper folder.
-- <a href="../downloads/builder.R" download>Download builder functions in the R folder</a>
-- <a href="../downloads/utils.R" download>Download utils functions in the R folder</a>
-- <a href="../downloads/catchments_sample.rds" download>Download catchments sample in the data folder</a>
-- <a href="../downloads/example-builder-script.R" download>Download builder example R script</a>
-
-2. In R, either:
-   - Place the files in your working directory (`getwd()`), or
-   - Update the path in the examples using a `data_path` variable.
 3. Run the examples below.
 
 ```r
@@ -150,11 +152,11 @@ source("./R/builder.R")
 source("./R/utils")
 
 # Use all catchments as seeds with a single area target
-catchments_sample <- readRDS("data/catchments_sample.rds")
+catchments <- st_read("./data/catchments_sample.shp")
 
-nghbrs <- neighbours(catchments_sample)
-seed <- seeds(catchments_sf = catchments_sample, areatarget_value = 1000000000)
-builder(catchments_sf = catchments_sample, seeds = seed, neighbours = nghbrs, out_dir = file.path(dirpath, "Builder_output"), builder_local_path = dirpath)
+nghbrs <- neighbours(catchments)
+seed <- seeds(catchments_sf = catchments, areatarget_value = 1000000000)
+builder(catchments_sf = catchments, seeds = seed, neighbours = nghbrs, out_dir = file.path(dest_folder, "Builder_output"), builder_local_path = dest_folder)
 ```
 
 
