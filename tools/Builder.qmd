@@ -56,33 +56,33 @@ builder(
  a temp directory will be used. Function will attempt to create the directory if it doesn't already exist.
 - builder_local_path: Directory path to the benchmarkbuilder executable.
 - catchment_level_intactness: Minimum intactness value for catchment inclusion (between 0-1). i.e. if value of 1 is used, only 100% intact
- catchments will be used.
-- conservation_area_intactness: Minimum area-weighted intactness of final conservation areas. Only conservation areas meeting this value will be returned.
-- area_target_proportion: The proportion of the Area target that conservation areas need to meet (0-1) to be returned by the function.
+ catchments will be used. Default is 1.
+- conservation_area_intactness: Minimum area-weighted intactness of final conservation areas. Only conservation areas meeting this value will be returned.  Default is 1.
+- area_target_proportion: The proportion of the Area target that conservation areas need to meet (0-1) to be returned by the function. Default is 1.
 - area_type: If 'land', only terrestrial areas are counted towards the area target. If 'water', only water areas are counter. If 'landwater',
- all areas are counted.
-- construct_conservation_areas: Should builder build conservation areas?
+ all areas are counted. Default is 'land'.
+- construct_conservation_areas: Should builder build conservation areas? Default is TRUE. 
 - area_target_multiplier: Multiplier applied to the area target in the seed list that allows for adjustments to the area target without having
- to remake the seeds table.
-- handle_isolated_catchments: Should small isolated catchments be merged into the conservation areas?
-- output_upstream: Should upstream catchments be calculated?
-- output_downstream: Should downstream catchments be calculated?
-- output_hydrology_metrics: Should hydrology metrics be calculated?
-- area_land: Catchments column listing the area of land in each catchment.
-- area_water: Catchments column listing the area of water in each catchment.
-- skeluid: Catchments column listing the skeluid field.
-- catchnum: Catchments column listing the unique catchments ID.
-- subzone: Catchments column listing the hydrological subzone.
-- zone: Catchments column listing the hydrological zone.
-- basin: Catchments column listing the basin field.
-- order1: Catchments column listing the order 1 field.
-- order2: Catchments column listing the order 2 field.
-- order3: Catchments column listing the order 3 field.
-- stream_length: Catchments column listing stream length.
-- intactness: Catchments column listing the intactness value.
-- isolated: Catchments column identifying catchments isolated from the stream network.
-- unique_identifier: Prefix for conservation area names.
-- handler_summary: Should a summary listing counts of available conservation areas at different intactness and area target proportions be created?
+ to remake the seeds table. Default is 1. 
+- handle_isolated_catchments: Should small isolated catchments be merged into the conservation areas? Default is TRUE. 
+- output_upstream: Should upstream catchments be calculated? Default is FALSE.
+- output_downstream: Should downstream catchments be calculated? Default is FALSE.
+- output_hydrology_metrics: Should hydrology metrics be calculated? Default is FALSE.
+- area_land: Catchments column listing the area of land in each catchment. Default is 'Area_Land'.
+- area_water: Catchments column listing the area of water in each catchment. Default is 'Area_Water'.
+- skeluid: Catchments column listing the skeluid field. Default is 'SKELUID'
+- catchnum: Catchments column listing the unique catchments ID. Default is 'CATCHNUM'
+- subzone: Catchments column listing the hydrological subzone. Default is 'FDA'
+- zone: Catchments column listing the hydrological zone. Default is 'MDA'
+- basin: Catchments column listing the basin field. Default is 'BASIN'
+- order1: Catchments column listing the order 1 field. Default is 'ORDER1'
+- order2: Catchments column listing the order 2 field. Default is 'ORDER2'
+- order3: Catchments column listing the order 3 field. Default is 'ORDER3'
+- stream_length: Catchments column listing stream length. Default is 'STRMLEN'
+- intactness: Catchments column listing the intactness value. Default is 'intact'
+- isolated: Catchments column identifying catchments isolated from the stream network. Default is 'Isolated'
+- unique_identifier: Prefix for conservation area names. Default is 'PB'
+- handler_summary: Should a summary listing counts of available conservation areas at different intactness and area target proportions be created? Default is FALSE
 - summary_intactness_props: If a summary is created, provide the intactness proportions to be summarised in the format '0.7,0.8,0.9'.
 - summary_area_target_props: If a summary is created, provide the area target proportions to be summarised in the format '0.7,0.8,0.9'.
 
@@ -107,16 +107,6 @@ workflow a different output directory can be used to save each set of output fil
 The main output file listing conservation area names and their catchments is named "*_COLUMN_All_Unique_BAs.csv".
 
 
-The main parameters to adjust when building conservation areas are:
-
-- Area target: Set in the seeds table, this defines the minimum size for each conservation area.
-- Catchment-level intactness: Only catchments with intactness values greater than this value will be added to the conservation area.
-- Conservation area intactness: Only conservation areas with an area-weighted intactness greater than or equal to this value will be returned.
-- Area-target proportion: The proportion of the Area target that conservation areas need to meet. Allows output of conservation areas smaller than
-the area target (e.g. if no conservation areas meet 100% of the area target, area target multiplier can be lowered to 0.9 to search for smaller
-conservation areas).
- 
- 
 ## Examples
 ### Running the examples
 ** Prior to run the example, the benchmarkbuilder executable needs to be acquired by contacting the BEACONs Project. 
@@ -124,23 +114,36 @@ conservation areas).
 1. Download and unzip BEACONs R Tools 
  <a href="../downloads/BEACONs_R_Tools.zip" download>Download BEACONs R Tools</a>
 
-2. Set the folder path to the benchmarkbuilder executable and the unzipped BEACONs_R_Tools folder. 
-```r
-# Folder path to the benchmarkbuilder executable
-builder_path <- "path/to/builder/folder"
+2. Run **BUILDER**
 
-# Destination folder
-dest_folder <- "path/to/extract/folder"
-setwd(dest_folder)
-
-```
-
-3. Run **BUILDER**
-- Using catchments seed type.
+The main parameters to adjust when building conservation areas are:
+- data_source: Is the provided seed list catchment or reserve?
+- Area target: Set in the seeds table, this defines the minimum size for each conservation area.
+- Catchment-level intactness: Only catchments with intactness values greater than this value will be added to the conservation area.
+- Conservation area intactness: Only conservation areas with an area-weighted intactness greater than or equal to this value will be returned.
+- Area-target proportion: The proportion of the Area target that conservation areas need to meet. Allows output of conservation areas smaller than
+the area target (e.g. if no conservation areas meet 100% of the area target, area target multiplier can be lowered to 0.9 to search for smaller
+conservation areas).
+ 
+- Running 'builder()' using catchments seed type.
 
 ```r
 library(sf)
 
+########################
+##    PARAMS   
+########################
+# Folder path to the benchmarkbuilder executable
+builder_path <- "path/to/builder/folder"
+
+# Folder path to unzipped BEACONs_R_Tools folder
+dest_folder <- "path/to/extract/folder"
+
+setwd(dest_folder)
+
+########################
+##    RUN   
+########################
 source("./R/builder.R")
 source("./R/utils")
 
@@ -155,15 +158,30 @@ catchments <- st_read("./data/catchments_sample.shp")
 nghbrs <- neighbours(catchments)
 seed <- seeds(catchments_sf = catchments, areatarget_value = 1000000000)
 builder(catchments_sf = catchments, seeds = seed, neighbours = nghbrs, out_dir = file.path(dest_folder, "Builder_output"), builder_local_path = builder_path)
+
 ```
 
-- Using reserves seed type.
+- Running 'builder()' using reserves seed type.
 
 ```r
 library(sf)
 
+########################
+##    PARAMS   
+########################
+# Folder path to the benchmarkbuilder executable
+builder_path <- "path/to/builder/folder"
+
+# Folder path to unzipped BEACONs_R_Tools folder
+dest_folder <- "path/to/extract/folder"
+
+setwd(dest_folder)
+
+########################
+##    RUN   
+########################
 source("./R/builder.R")
-source("./R/utils.R")
+source("./R/utils")
 
 # Create the folder structure
 if (!dir.exists(file.path(dest_folder, "Builder_output"))) {

@@ -162,6 +162,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../downloads/BEACONs_R_Tools.zip"> <i class="bi bi-download" role="img">
+</i> 
+<span class="menu-text">Download ZIP</span></a>
+  </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">More</span>
@@ -269,31 +274,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>neighbours: Neighbours table from <strong>neighbours()</strong> listing all neighbouring pairs of catchments.</li>
 <li>out_dir: If provided, input (seeds, neighbours and catchments) files and output BUILDER tables will be saved to this directory. Otherwise a temp directory will be used. Function will attempt to create the directory if it doesn’t already exist.</li>
 <li>builder_local_path: Directory path to the benchmarkbuilder executable.</li>
-<li>catchment_level_intactness: Minimum intactness value for catchment inclusion (between 0-1). i.e.&nbsp;if value of 1 is used, only 100% intact catchments will be used.</li>
-<li>conservation_area_intactness: Minimum area-weighted intactness of final conservation areas. Only conservation areas meeting this value will be returned.</li>
-<li>area_target_proportion: The proportion of the Area target that conservation areas need to meet (0-1) to be returned by the function.</li>
-<li>area_type: If ‘land’, only terrestrial areas are counted towards the area target. If ‘water’, only water areas are counter. If ‘landwater’, all areas are counted.</li>
-<li>construct_conservation_areas: Should builder build conservation areas?</li>
-<li>area_target_multiplier: Multiplier applied to the area target in the seed list that allows for adjustments to the area target without having to remake the seeds table.</li>
-<li>handle_isolated_catchments: Should small isolated catchments be merged into the conservation areas?</li>
-<li>output_upstream: Should upstream catchments be calculated?</li>
-<li>output_downstream: Should downstream catchments be calculated?</li>
-<li>output_hydrology_metrics: Should hydrology metrics be calculated?</li>
-<li>area_land: Catchments column listing the area of land in each catchment.</li>
-<li>area_water: Catchments column listing the area of water in each catchment.</li>
-<li>skeluid: Catchments column listing the skeluid field.</li>
-<li>catchnum: Catchments column listing the unique catchments ID.</li>
-<li>subzone: Catchments column listing the hydrological subzone.</li>
-<li>zone: Catchments column listing the hydrological zone.</li>
-<li>basin: Catchments column listing the basin field.</li>
-<li>order1: Catchments column listing the order 1 field.</li>
-<li>order2: Catchments column listing the order 2 field.</li>
-<li>order3: Catchments column listing the order 3 field.</li>
-<li>stream_length: Catchments column listing stream length.</li>
-<li>intactness: Catchments column listing the intactness value.</li>
-<li>isolated: Catchments column identifying catchments isolated from the stream network.</li>
-<li>unique_identifier: Prefix for conservation area names.</li>
-<li>handler_summary: Should a summary listing counts of available conservation areas at different intactness and area target proportions be created?</li>
+<li>catchment_level_intactness: Minimum intactness value for catchment inclusion (between 0-1). i.e.&nbsp;if value of 1 is used, only 100% intact catchments will be used. Default is 1.</li>
+<li>conservation_area_intactness: Minimum area-weighted intactness of final conservation areas. Only conservation areas meeting this value will be returned. Default is 1.</li>
+<li>area_target_proportion: The proportion of the Area target that conservation areas need to meet (0-1) to be returned by the function. Default is 1.</li>
+<li>area_type: If ‘land’, only terrestrial areas are counted towards the area target. If ‘water’, only water areas are counter. If ‘landwater’, all areas are counted. Default is ‘land’.</li>
+<li>construct_conservation_areas: Should builder build conservation areas? Default is TRUE.</li>
+<li>area_target_multiplier: Multiplier applied to the area target in the seed list that allows for adjustments to the area target without having to remake the seeds table. Default is 1.</li>
+<li>handle_isolated_catchments: Should small isolated catchments be merged into the conservation areas? Default is TRUE.</li>
+<li>output_upstream: Should upstream catchments be calculated? Default is FALSE.</li>
+<li>output_downstream: Should downstream catchments be calculated? Default is FALSE.</li>
+<li>output_hydrology_metrics: Should hydrology metrics be calculated? Default is FALSE.</li>
+<li>area_land: Catchments column listing the area of land in each catchment. Default is ‘Area_Land’.</li>
+<li>area_water: Catchments column listing the area of water in each catchment. Default is ‘Area_Water’.</li>
+<li>skeluid: Catchments column listing the skeluid field. Default is ‘SKELUID’</li>
+<li>catchnum: Catchments column listing the unique catchments ID. Default is ‘CATCHNUM’</li>
+<li>subzone: Catchments column listing the hydrological subzone. Default is ‘FDA’</li>
+<li>zone: Catchments column listing the hydrological zone. Default is ‘MDA’</li>
+<li>basin: Catchments column listing the basin field. Default is ‘BASIN’</li>
+<li>order1: Catchments column listing the order 1 field. Default is ‘ORDER1’</li>
+<li>order2: Catchments column listing the order 2 field. Default is ‘ORDER2’</li>
+<li>order3: Catchments column listing the order 3 field. Default is ‘ORDER3’</li>
+<li>stream_length: Catchments column listing stream length. Default is ‘STRMLEN’</li>
+<li>intactness: Catchments column listing the intactness value. Default is ‘intact’</li>
+<li>isolated: Catchments column identifying catchments isolated from the stream network. Default is ‘Isolated’</li>
+<li>unique_identifier: Prefix for conservation area names. Default is ‘PB’</li>
+<li>handler_summary: Should a summary listing counts of available conservation areas at different intactness and area target proportions be created? Default is FALSE</li>
 <li>summary_intactness_props: If a summary is created, provide the intactness proportions to be summarised in the format ‘0.7,0.8,0.9’.</li>
 <li>summary_area_target_props: If a summary is created, provide the area target proportions to be summarised in the format ‘0.7,0.8,0.9’.</li>
 </ul>
@@ -306,13 +311,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="details">Details</h2>
 <p>This function prepares the input tables (neighbours, seeds, catchments) required by BUILDER in a temp file, then creates a string of parameters that is passed to the BUILDER executable using <strong>system()</strong>. The BUILDER output tables are saved to the temp file, and the output table listing conservation area names and catchment lists is returned to the R session.</p>
 <p>This function only returns the BUILDER output table describing the lists of catchments making up each conservation area. We typically recommend using the <strong>beaconstools</strong> package to calculate hydrology metrics, but hydrology information as well as other summary information is produced by BUILDER. If users want access to the complete set of BUILDER output tables (e.g.&nbsp;hydrology and summary information), a valid output directory can be provided in which case all input and output tables will be saved to that directory. If no output directory is provided a temp folder will be used and deleted after the function completes. As well as providing access to the full list of BUILDER output tables, an output directory is useful in a looped workflow with multiple calls to BUILDER producing multiple sets of output files. In this workflow a different output directory can be used to save each set of output files which can later be processed using the <strong>beaconstools</strong> package. The main output file listing conservation area names and their catchments is named “*_COLUMN_All_Unique_BAs.csv”.</p>
-<p>The main parameters to adjust when building conservation areas are:</p>
-<ul>
-<li>Area target: Set in the seeds table, this defines the minimum size for each conservation area.</li>
-<li>Catchment-level intactness: Only catchments with intactness values greater than this value will be added to the conservation area.</li>
-<li>Conservation area intactness: Only conservation areas with an area-weighted intactness greater than or equal to this value will be returned.</li>
-<li>Area-target proportion: The proportion of the Area target that conservation areas need to meet. Allows output of conservation areas smaller than the area target (e.g.&nbsp;if no conservation areas meet 100% of the area target, area target multiplier can be lowered to 0.9 to search for smaller conservation areas).</li>
-</ul>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
@@ -321,56 +319,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>** Prior to run the example, the benchmarkbuilder executable needs to be acquired by contacting the BEACONs Project.</p>
 <ol type="1">
 <li><p>Download and unzip BEACONs R Tools <a href="../downloads/BEACONs_R_Tools.zip" download="">Download BEACONs R Tools</a></p></li>
-<li><p>Set the folder path to the benchmarkbuilder executable and the unzipped BEACONs_R_Tools folder.</p></li>
+<li><p>Run <strong>BUILDER</strong></p></li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Folder path to the benchmarkbuilder executable</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>builder_path <span class="ot">&lt;-</span> <span class="st">"path/to/builder/folder"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Destination folder</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dest_folder <span class="ot">&lt;-</span> <span class="st">"path/to/extract/folder"</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dest_folder)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ol start="3" type="1">
-<li>Run <strong>BUILDER</strong></li>
-</ol>
+<p>The main parameters to adjust when building conservation areas are: - data_source: Is the provided seed list catchment or reserve? - Area target: Set in the seeds table, this defines the minimum size for each conservation area. - Catchment-level intactness: Only catchments with intactness values greater than this value will be added to the conservation area. - Conservation area intactness: Only conservation areas with an area-weighted intactness greater than or equal to this value will be returned. - Area-target proportion: The proportion of the Area target that conservation areas need to meet. Allows output of conservation areas smaller than the area target (e.g.&nbsp;if no conservation areas meet 100% of the area target, area target multiplier can be lowered to 0.9 to search for smaller conservation areas).</p>
 <ul>
-<li>Using catchments seed type.</li>
+<li>Running ‘builder()’ using catchments seed type.</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="do">##    PARAMS   </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Folder path to the benchmarkbuilder executable</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>builder_path <span class="ot">&lt;-</span> <span class="st">"path/to/builder/folder"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Folder path to unzipped BEACONs_R_Tools folder</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>dest_folder <span class="ot">&lt;-</span> <span class="st">"path/to/extract/folder"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dest_folder)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="do">##    RUN   </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/builder.R"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the folder structure</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))) {</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Use all catchments as seeds with a single area target</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"./data/catchments_sample.shp"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>nghbrs <span class="ot">&lt;-</span> <span class="fu">neighbours</span>(catchments)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>seed <span class="ot">&lt;-</span> <span class="fu">seeds</span>(<span class="at">catchments_sf =</span> catchments, <span class="at">areatarget_value =</span> <span class="dv">1000000000</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">builder</span>(<span class="at">catchments_sf =</span> catchments, <span class="at">seeds =</span> seed, <span class="at">neighbours =</span> nghbrs, <span class="at">out_dir =</span> <span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>), <span class="at">builder_local_path =</span> builder_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Running ‘builder()’ using reserves seed type.</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/builder.R"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the folder structure</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))) {</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Use all catchments as seeds with a single area target</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"./data/catchments_sample.shp"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">##    PARAMS   </span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Folder path to the benchmarkbuilder executable</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>builder_path <span class="ot">&lt;-</span> <span class="st">"path/to/builder/folder"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Folder path to unzipped BEACONs_R_Tools folder</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>dest_folder <span class="ot">&lt;-</span> <span class="st">"path/to/extract/folder"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dest_folder)</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>nghbrs <span class="ot">&lt;-</span> <span class="fu">neighbours</span>(catchments)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>seed <span class="ot">&lt;-</span> <span class="fu">seeds</span>(<span class="at">catchments_sf =</span> catchments, <span class="at">areatarget_value =</span> <span class="dv">1000000000</span>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">builder</span>(<span class="at">catchments_sf =</span> catchments, <span class="at">seeds =</span> seed, <span class="at">neighbours =</span> nghbrs, <span class="at">out_dir =</span> <span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>), <span class="at">builder_local_path =</span> builder_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
-<li>Using reserves seed type.</li>
-</ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/builder.R"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils.R"</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the folder structure</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))) {</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Use conservation areas as reserve seeds</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"./data/catchments_sample.shp"</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>conservation_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"./data/reserves_sample.shp"</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>nghbrs <span class="ot">&lt;-</span> <span class="fu">neighbours</span>(catchments)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>reserve_seed <span class="ot">&lt;-</span> <span class="fu">reserve_seeds</span>(catchments, <span class="at">CAs_sf=</span>conservation_areas, <span class="at">CAs_name =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">10000</span>, <span class="at">joinType =</span> <span class="st">"INTERSECT"</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">builder</span>(<span class="at">catchments_sf =</span> catchments, <span class="at">data_source =</span> <span class="st">"Reserve"</span>, <span class="at">seeds =</span> reserve_seed, <span class="at">reserve_name =</span> <span class="st">"reserve"</span>, <span class="at">neighbours =</span> nghbrs, <span class="at">out_dir =</span> <span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>), <span class="at">builder_local_path =</span> builder_path, <span class="at">catchment_level_intactness =</span> <span class="fl">0.8</span>, <span class="at">conservation_area_intactness =</span> <span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="do">##    RUN   </span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/builder.R"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the folder structure</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))) {</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(<span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>))</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Use conservation areas as reserve seeds</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"./data/catchments_sample.shp"</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>conservation_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"./data/reserves_sample.shp"</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>nghbrs <span class="ot">&lt;-</span> <span class="fu">neighbours</span>(catchments)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>reserve_seed <span class="ot">&lt;-</span> <span class="fu">reserve_seeds</span>(catchments, <span class="at">CAs_sf=</span>conservation_areas, <span class="at">CAs_name =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">10000</span>, <span class="at">joinType =</span> <span class="st">"INTERSECT"</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">builder</span>(<span class="at">catchments_sf =</span> catchments, <span class="at">data_source =</span> <span class="st">"Reserve"</span>, <span class="at">seeds =</span> reserve_seed, <span class="at">reserve_name =</span> <span class="st">"reserve"</span>, <span class="at">neighbours =</span> nghbrs, <span class="at">out_dir =</span> <span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>), <span class="at">builder_local_path =</span> builder_path, <span class="at">catchment_level_intactness =</span> <span class="fl">0.8</span>, <span class="at">conservation_area_intactness =</span> <span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>

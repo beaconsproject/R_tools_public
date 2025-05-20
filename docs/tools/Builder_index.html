@@ -128,6 +128,11 @@ ul.task-list li input[type="checkbox"] {
   </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../downloads/BEACONs_R_Tools.zip"> <i class="bi bi-download" role="img">
+</i> 
+<span class="menu-text">Download ZIP</span></a>
+  </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">More</span>
@@ -213,10 +218,10 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="builder-r-functions">BUILDER R Functions</h2>
 <p><strong>BEACONs BUILDER has 4 main functions:</strong></p>
 <ul>
-<li><a href="#seeds">seeds</a></li>
-<li><a href="#reserve_seeds">reserve_seeds</a></li>
-<li><a href="#neighbours">neighbours</a></li>
-<li><a href="#builder">builder</a></li>
+<li><a href="../tools/seeds.html">seeds</a></li>
+<li><a href="../tools/reserve_seeds.html">reserve_seeds</a></li>
+<li><a href="../tools/neighbours.html">neighbours</a></li>
+<li><a href="../tools/builder.html">builder</a></li>
 </ul>
 <section id="seeds" class="level3">
 <h3 class="anchored" data-anchor-id="seeds">seeds</h3>
@@ -234,16 +239,14 @@ It identifies <strong>seed catchments inside a conservation area</strong> and as
 </section>
 <section id="builder" class="level3">
 <h3 class="anchored" data-anchor-id="builder">builder</h3>
-<p>The function <a href="../tools/builder.html">builder()</a> prepares the input files and parameters and passes them to a command line version of BUILDER executable software that resides inside the <code>benchmarkbuilder</code> package. The function then fetches and returns the main BUILDER output table into the R environment. <font color="red">Should we put something about how to obtain the executable and where to place it?</font></p>
-<p>Ultimately we hope to rewrite the BUILDER executable in R to avoid having to call a third party application. In the meantime, this package allows users to access and automate calls to BUILDER from R.</p>
+<p>The function <a href="../tools/builder.html">builder()</a> prepares the input files and parameters and passes them to a command line version of BUILDER executable software. The function then fetches and returns the main BUILDER output table into the R environment.</p>
 </section>
 </section>
 <section id="process" class="level2">
 <h2 class="anchored" data-anchor-id="process">🏗️ Process</h2>
 <ol type="1">
-<li>Prepares input tables: <code>neighbours</code>, <code>seeds</code>, and <code>catchments</code>.</li>
-<li>Writes files to a temp directory (or <code>output_dir</code> if provided).</li>
-<li>Constructs a command to run BUILDER via <code>system()</code>.</li>
+<li>Prepares input tables: <code>neighbours</code>, either <code>seeds</code> or <code>reserve_seeds</code>, and <code>catchments</code>.</li>
+<li>Make sure default parameters are relevant and Set <strong>BUILDER</strong> parameters such as catchment_level_intactness, conservation_area_intactness.</li>
 <li><code>builder()</code> returns the <code>*_COLUMN_All_Unique_BAs.csv</code> file listing conservation areas and their catchments.</li>
 <li>Subsequent processing, such as creating polygons of benchmarks using <code>builder()</code> output and assessing ecological attributes is done using others BEACONs functions (see examples in section Articles).</li>
 </ol>

@@ -11,6 +11,9 @@ website:
   navbar:
     background: primary
     right:
+      - text: "Download ZIP"
+        href: downloads/BEACONs_R_Tools.zip
+        icon: download
       - text: "More"
         menu:
           - text: "BEACONs Website"
