@@ -1,20 +1,20 @@
 ## BEACONs Hydrology R Functions
-BEACONs developped a range of hydrology functions for adding ecological attributes to conservation areas, such as identifying all watershed catchments upstream (or downstream) and calculates their area and intactness values and calculating hydrological connectivity within each conservation area or network.
+BEACONs developped a range of hydrology functions for adding ecological attributes to conservation areas, such as identifying all watershed catchments upstream (or downstream), calculating their area and intactness values and calculating hydrological connectivity within each conservation area or network.
 
 **The 4 main hydrology functions are:**
 
-- [calc_dci](calc_dci.qmd)
-- [calc_lwdci](calc_lwdci.qmd)
+- [calc_dci](dci.qmd)
+- [calc_lwdci](dci.qmd)
 - [get_upstream_catchments](get_upstream_catchments.qmd)
 - [get_downstream_catchments](get_downstream_catchments.qmd)
 
 ### calc_dci
 
-The function [calc_dci()](dci.qmd) calculate dendritic connectivity index (DCI) for a set of conservation areas, which quantifies the “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network” (Cote et al. 2009).
+The function [calc_dci()](dci.qmd) calculates dendritic connectivity index (DCI) for a set of conservation areas, which quantifies the “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network” (Cote et al. 2009).
 
 ### calc_lwdci 
 
-The function [calc_lwdci()](dci.qmd) calculate stream network length-weighted dendritic connectivity index (DCI) for a set of input polygons.It emphasizes the impact of fragmentation on streams, due to a lack of connection (different ocean drainage or loss of connectivity due to disturbances), giving a more realistic picture of how much of the functional network remains connected for species movement.
+The function [calc_lwdci()](dci.qmd) computes a distinct DCI value for each group of BASIN streams within the conservation area. It then calculates a weighted average of these values, using the stream lengths in each BASIN as weights. It minimize the impact of fragmentation on streams inside a conservation areas, due to different ocean drainage basin, giving a more realistic picture of how much of the functional network remains connected for species movement.
 
 ### get_upstream_catchments 
 The function [get_upstream_catchments()](get_upstream_catchments.qmd) calculates the area upstream of a given polygon using catchments and stream flow attributes.

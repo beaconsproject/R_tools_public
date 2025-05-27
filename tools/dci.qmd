@@ -2,9 +2,9 @@
 
 # `calc_dci()` and`calc_lwdci()`
 
-Dendritic connectivity index (DCI) describes the hydrologic connectedness of the stream network within an area. The Length-Weighted Dendritic Connectivity Index (lwDCI) builds on this concept by placing greater importance on the connectivity of the stream segments involved. In lwDCI, longer stream sections have a greater influence on the final connectivity score, recognizing that losing connectivity in longer sections of a river has a more significant ecological impact than in shorter ones. While DCI treats all stream segments equally, lwDCI offers a more nuanced view by emphasizing the relative importance of different parts of the network.  
+Dendritic connectivity index (DCI) describes the hydrologic connectedness of the stream network within an area. The Length-Weighted Dendritic Connectivity Index (lwDCI) builds on this concept by placing greater importance on the connectivity of the stream segments that are part of the same basin. While DCI treats all stream segments equally, lwDCI offers a more nuanced view by accounting for the relative importance of different parts of the network.  
 
-Values range between 0 and 1, with 1 indicating a completely connected river network. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of reserves based on the expected probability of an organism being able to move between two random points in the network. 
+Values range between 0 and 1, with 1 indicating a completely connected river network.  
 
 ## Usage
 
@@ -27,14 +27,14 @@ calc_lwdci(
 Both functions need the following:
 - conservation_area_sf: sf object of conservation areas in which to calculate DCI.
 
-- stream_sf: (Optional) sf object of river network. Must have streams grouped in a BASIN attribute.
+- stream_sf: sf object of river network. Must have streams grouped in a BASIN attribute.
 
-- col_name: (Optional) Single area target value (in m²) to apply to all seeds.
+- col_name: Column in catchments_sf specify unique identifier. Default is network.
 
-- buffer_width: (Optional) Column in catchments_sf containing individual area targets.
+- buffer_width: (Optional) Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis.
 
 ## 📤 Output
-A vector of numeric DCI or LWDCI values matching the input features.
+A vector of numeric DCI or lwDCI values matching the input features.
 
 ## Details
 Developed by Cote et al. (2009), the Dendritic Connectivity Index quantifies “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network.” Longitudinal connectivity refers to connections between upstream and downstream sections of the network. The index is calculated as 
@@ -45,7 +45,7 @@ Developed by Cote et al. (2009), the Dendritic Connectivity Index quantifies “
 
 where li is the length of a stream (or river) section and L is the total length of the stream network within the benchmark. The index ranges from 0 (low longitudinal connectivity) to 1 (high longitudinal connectivity). 
 
-If the conservation areas overlap two ocean drainage or the stream network is fragmented due to disturbances, calc_lwdci() is more suitable.
+If the conservation areas overlap two ocean drainage, the use of calc_lwdci() is more suitable.
 
 ## Examples
 ### Running the examples

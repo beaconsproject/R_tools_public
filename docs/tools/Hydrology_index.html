@@ -187,21 +187,21 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="beacons-hydrology-r-functions" class="level2">
 <h2 class="anchored" data-anchor-id="beacons-hydrology-r-functions">BEACONs Hydrology R Functions</h2>
-<p>BEACONs developped a range of hydrology functions for adding ecological attributes to conservation areas, such as identifying all watershed catchments upstream (or downstream) and calculates their area and intactness values and calculating hydrological connectivity within each conservation area or network.</p>
+<p>BEACONs developped a range of hydrology functions for adding ecological attributes to conservation areas, such as identifying all watershed catchments upstream (or downstream), calculating their area and intactness values and calculating hydrological connectivity within each conservation area or network.</p>
 <p><strong>The 4 main hydrology functions are:</strong></p>
 <ul>
-<li><a href="calc_dci.qmd">calc_dci</a></li>
-<li><a href="../tools/calc_lwdci.html">calc_lwdci</a></li>
+<li><a href="../tools/dci.html">calc_dci</a></li>
+<li><a href="../tools/dci.html">calc_lwdci</a></li>
 <li><a href="../tools/get_upstream_catchments.html">get_upstream_catchments</a></li>
 <li><a href="../tools/get_downstream_catchments.html">get_downstream_catchments</a></li>
 </ul>
 <section id="calc_dci" class="level3">
 <h3 class="anchored" data-anchor-id="calc_dci">calc_dci</h3>
-<p>The function <a href="../tools/dci.html">calc_dci()</a> calculate dendritic connectivity index (DCI) for a set of conservation areas, which quantifies the “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network” (Cote et al.&nbsp;2009).</p>
+<p>The function <a href="../tools/dci.html">calc_dci()</a> calculates dendritic connectivity index (DCI) for a set of conservation areas, which quantifies the “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network” (Cote et al.&nbsp;2009).</p>
 </section>
 <section id="calc_lwdci" class="level3">
 <h3 class="anchored" data-anchor-id="calc_lwdci">calc_lwdci</h3>
-<p>The function <a href="../tools/dci.html">calc_lwdci()</a> calculate stream network length-weighted dendritic connectivity index (DCI) for a set of input polygons.It emphasizes the impact of fragmentation on streams, due to a lack of connection (different ocean drainage or loss of connectivity due to disturbances), giving a more realistic picture of how much of the functional network remains connected for species movement.</p>
+<p>The function <a href="../tools/dci.html">calc_lwdci()</a> computes a distinct DCI value for each group of BASIN streams within the conservation area. It then calculates a weighted average of these values, using the stream lengths in each BASIN as weights. It minimize the impact of fragmentation on streams inside a conservation areas, due to different ocean drainage basin, giving a more realistic picture of how much of the functional network remains connected for species movement.</p>
 </section>
 <section id="get_upstream_catchments" class="level3">
 <h3 class="anchored" data-anchor-id="get_upstream_catchments">get_upstream_catchments</h3>
