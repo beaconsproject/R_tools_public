@@ -136,6 +136,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Builder</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../tools/Hydrology_index.html">
+ <span class="dropdown-text">Hydrology</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../tools/Spatial_index.html">
  <span class="dropdown-text">Spatial</span></a>
   </li>  
@@ -155,8 +159,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Create Builder Polygons</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../vignettes/calcDCI.html">
- <span class="dropdown-text">Calculate DCI</span></a>
+    <a class="dropdown-item" href="../vignettes/hydro.html">
+ <span class="dropdown-text">Assessing hydrology on reserves</span></a>
   </li>  
     </ul>
   </li>
@@ -165,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="../downloads/BEACONs_R_Tools.zip"> <i class="bi bi-download" role="img">
 </i> 
-<span class="menu-text">Download ZIP</span></a>
+<span class="menu-text"><span class="download-zip">Download BEACONs R Tools</span></span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -246,7 +250,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="running-the-examples" class="level3">
 <h3 class="anchored" data-anchor-id="running-the-examples">Running the examples</h3>
 <ol type="1">
-<li>Create the folder structure</li>
+<li><p>Download and unzip BEACONs R Tools</p></li>
+<li><p>Create the folder structure</p></li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"your/path/to/downloads"</span>)</span>
@@ -260,20 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dir.create</span>(<span class="fu">file.path</span>(dirpath, d), <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ol start="2" type="1">
-<li>Download the functions, data and example files and save them in the proper folder.</li>
-</ol>
-<ul>
-<li><a href="../downloads/builder.R" download="">Download builder functions in the R folder</a></li>
-<li><a href="../downloads/catchments_sample.rds" download="">Download catchments sample in the data folder</a></li>
-<li><a href="../downloads/example-neighbours-script.R" download="">Download neighbours example R script</a></li>
-</ul>
-<ol start="2" type="1">
-<li>In R, either:
-<ul>
-<li>Place the files in your working directory (<code>getwd()</code>), or</li>
-<li>Update the path in the examples using a <code>data_path</code> variable.</li>
-</ul></li>
+<ol start="3" type="1">
 <li>Run the examples below.</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>

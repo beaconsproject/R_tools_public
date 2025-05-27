@@ -26,7 +26,8 @@ All functions are input to [`builder()`](../tools/builder.html) and need the cat
 library(sf)
 library(utils)
 
-source("./createBuilderInput_dependencies.R")
+source("./R/builder.R")
+source("./R/utils.R")
 
 # --------------------------------------
 # SET PARAMS  --------------------

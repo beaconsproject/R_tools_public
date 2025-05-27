@@ -11,7 +11,7 @@ website:
   navbar:
     background: primary
     right:
-      - text: "Download ZIP"
+      - text: "<span class='download-zip'>Download BEACONs R Tools</span>" 
         href: downloads/BEACONs_R_Tools.zip
         icon: download
       - text: "More"
@@ -27,6 +27,8 @@ website:
         menu:
           - href: tools/Builder_index.qmd
             text: Builder    
+          - href: tools/Hydrology_index.qmd
+            text: Hydrology
           - href: tools/Spatial_index.qmd
             text: Spatial
       - text: "Articles"
@@ -35,8 +37,8 @@ website:
             text: Create Builder Input    
           - href: vignettes/createBuilderPolygons.qmd
             text: Create Builder Polygons
-          - href: vignettes/calcDCI.qmd
-            text: Calculate DCI
+          - href: vignettes/hydro.qmd
+            text: Assessing hydrology on reserves
 format:
   html:
     include-after-body: _includes/footer.html

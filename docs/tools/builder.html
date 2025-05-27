@@ -136,6 +136,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Builder</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../tools/Hydrology_index.html">
+ <span class="dropdown-text">Hydrology</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../tools/Spatial_index.html">
  <span class="dropdown-text">Spatial</span></a>
   </li>  
@@ -155,8 +159,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Create Builder Polygons</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../vignettes/calcDCI.html">
- <span class="dropdown-text">Calculate DCI</span></a>
+    <a class="dropdown-item" href="../vignettes/hydro.html">
+ <span class="dropdown-text">Assessing hydrology on reserves</span></a>
   </li>  
     </ul>
   </li>
@@ -165,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="../downloads/BEACONs_R_Tools.zip"> <i class="bi bi-download" role="img">
 </i> 
-<span class="menu-text">Download ZIP</span></a>
+<span class="menu-text"><span class="download-zip">Download BEACONs R Tools</span></span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-more" role="link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -318,7 +322,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="running-the-examples">Running the examples</h3>
 <p>** Prior to run the example, the benchmarkbuilder executable needs to be acquired by contacting the BEACONs Project.</p>
 <ol type="1">
-<li><p>Download and unzip BEACONs R Tools <a href="../downloads/BEACONs_R_Tools.zip" download="">Download BEACONs R Tools</a></p></li>
+<li><p>Download and unzip BEACONs R Tools</p></li>
 <li><p>Run <strong>BUILDER</strong></p></li>
 </ol>
 <p>The main parameters to adjust when building conservation areas are: - data_source: Is the provided seed list catchment or reserve? - Area target: Set in the seeds table, this defines the minimum size for each conservation area. - Catchment-level intactness: Only catchments with intactness values greater than this value will be added to the conservation area. - Conservation area intactness: Only conservation areas with an area-weighted intactness greater than or equal to this value will be returned. - Area-target proportion: The proportion of the Area target that conservation areas need to meet. Allows output of conservation areas smaller than the area target (e.g.&nbsp;if no conservation areas meet 100% of the area target, area target multiplier can be lowered to 0.9 to search for smaller conservation areas).</p>

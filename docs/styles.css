@@ -3,3 +3,16 @@
 .navbar-dark, .navbar-light, .navbar {
   background-color: #212529;
 }
+
+.navbar-nav .nav-item a[href$="BEACONs_R_Tools.zip"] {
+  background-color: #ff9800;
+  color: white !important;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-weight: bold;
+}
+
+.navbar-nav .nav-item a[href$="BEACONs_R_Tools.zip"]:hover {
+  background-color: #e68900;
+  color: white !important;
+}

@@ -112,7 +112,6 @@ The main output file listing conservation area names and their catchments is nam
 ** Prior to run the example, the benchmarkbuilder executable needs to be acquired by contacting the BEACONs Project. 
 
 1. Download and unzip BEACONs R Tools 
- <a href="../downloads/BEACONs_R_Tools.zip" download>Download BEACONs R Tools</a>
 
 2. Run **BUILDER**
 

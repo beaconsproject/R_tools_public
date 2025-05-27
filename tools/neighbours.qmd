@@ -27,7 +27,9 @@ A tibble of neighbouring pairs with columns **CATCHNUM** and **neighbours**.
 ## Examples
 ### Running the examples
 
-1. Create the folder structure
+1. Download and unzip BEACONs R Tools 
+
+2. Create the folder structure
 ```r
 # Set working directory
 setwd("your/path/to/downloads")
@@ -43,14 +45,6 @@ for(d in treedir){
 }
 ```
 
-2. Download the functions, data and example files and save them in the proper folder.
-- <a href="../downloads/builder.R" download>Download builder functions in the R folder</a>
-- <a href="../downloads/catchments_sample.rds" download>Download catchments sample in the data folder</a>
-- <a href="../downloads/example-neighbours-script.R" download>Download neighbours example R script</a>
-
-2. In R, either:
-   - Place the files in your working directory (`getwd()`), or
-   - Update the path in the examples using a `data_path` variable.
 3. Run the examples below.
 
 ```r

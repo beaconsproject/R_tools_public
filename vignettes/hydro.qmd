@@ -1,19 +1,10 @@
 ---
-title: "Calculate dendritic connectivity index (DCI) on reserves"
+title: "Assessing hydrology on reserves"
 format: html
 ---
 
 ## Intro
 
-This script calculates Dendritic Connectivity Index (DCI).  
-
-The first step is to locate the reserves (e.g., potential benchmarks, protected area) and stream network layers and point on an output directory where result layer will be saved. 
-
-**The shapefiles must have the same CRS**. 
-
-Function `calc_dci` calculate dendritic connectivity index (DCI) for a set of input polygons. Values range between 0 and 1, with 1 indicating a completely connected river network. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of reserves based on the expected probability of an organism being able to move between two random points in the network. 
-
-Function `calc_lwdci` calculate stream network length-weighted dendritic connectivity index (DCI) for a set of input polygons. Dendritic connectivity measures the longitudinal connectivity of a river network inside a set of conservation areas based on the expected probability of an organism being able to move between two random points in the network. 
 
 Both functions need the following:
 
@@ -21,6 +12,8 @@ Both functions need the following:
 - **streams**: Point to an stream_sf object. The provided streams need to have information on BASIN. 
 - **col_name**: Column name  holding the unique ID of the pas_sf. Default is network. 
 - **buffer_width**: Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis.
+
+To estimate DCI index within a reserve (e.g., potential benchmarks, protected area), the user needs to provide the stream network layers that uses **the same coordinate reference system (CRS) as the reserve layer.**. 
 
 ```r 
 # Load libraries

@@ -1,6 +1,3 @@
-<a href="downloads/builder.R" download>Download BUILDER functions</a>
-<br>
-
 ## BEACONs BUILDER
 
 
