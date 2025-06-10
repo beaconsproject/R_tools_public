@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>hydrology_index – BEACONs R Tools</title>
+<title>index_representation – BEACONs R Tools</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -89,7 +89,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../index_main.html"> 
 <span class="menu-text">Welcome</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -98,15 +98,19 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-functions-categories">    
         <li>
-    <a class="dropdown-item" href="../tools/Builder_index.html">
+    <a class="dropdown-item" href="../tools/index_Builder.html">
  <span class="dropdown-text">Builder</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../tools/Hydrology_index.html">
+    <a class="dropdown-item" href="../tools/index_Hydrology.html">
  <span class="dropdown-text">Hydrology</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../tools/Spatial_index.html">
+    <a class="dropdown-item" href="../tools/index_Representation.html">
+ <span class="dropdown-text">Representation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tools/index_Spatial.html">
  <span class="dropdown-text">Spatial</span></a>
   </li>  
     </ul>
@@ -168,12 +172,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#beacons-hydrology-r-functions" id="toc-beacons-hydrology-r-functions" class="nav-link active" data-scroll-target="#beacons-hydrology-r-functions">BEACONs Hydrology R Functions</a>
+  <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a>
   <ul class="collapse">
-  <li><a href="#calc_dci" id="toc-calc_dci" class="nav-link" data-scroll-target="#calc_dci">calc_dci</a></li>
-  <li><a href="#calc_lwdci" id="toc-calc_lwdci" class="nav-link" data-scroll-target="#calc_lwdci">calc_lwdci</a></li>
-  <li><a href="#get_upstream_catchments" id="toc-get_upstream_catchments" class="nav-link" data-scroll-target="#get_upstream_catchments">get_upstream_catchments</a></li>
-  <li><a href="#get_downstream_catchments" id="toc-get_downstream_catchments" class="nav-link" data-scroll-target="#get_downstream_catchments">get_downstream_catchments</a></li>
+  <li><a href="#evaluate_criteria_using_clip" id="toc-evaluate_criteria_using_clip" class="nav-link" data-scroll-target="#evaluate_criteria_using_clip">evaluate_criteria_using_clip</a></li>
   </ul></li>
   <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation">Citation</a></li>
   </ul>
@@ -185,38 +186,26 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="beacons-hydrology-r-functions" class="level2">
-<h2 class="anchored" data-anchor-id="beacons-hydrology-r-functions">BEACONs Hydrology R Functions</h2>
-<p>BEACONs developped a range of hydrology functions for adding ecological attributes to conservation areas, such as identifying all watershed catchments upstream (or downstream), calculating their area and intactness values and calculating hydrological connectivity within each conservation area or network.</p>
-<p><strong>The 4 main hydrology functions are:</strong></p>
+<section id="beacons-representation-r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="beacons-representation-r-functions">BEACONs Representation R Functions</h2>
+<p>BEACONs developped a variety of functions for two types of representation analysis:</p>
+<p>The <code>calc_dissimilarity()</code> function compares the distributions of a raster layer between a conservation area and a broader study region that we are trying to represent. The closer the distributions of raster values, the lower the dissimilarity score. Values of 0.2 or less are considered ‘good’ representation.</p>
+<p>Another approach focus on the second type of representation analysis, a target-based approach using proportional representation. The latter ensure specific target areas of different representation classes are met in one or multiple conservation areas.</p>
+<p>Representation analyses typically include multiple layers assumed to represent a range of ecological processes. They often include climate layers, productivity, riparian zones etc. The goal of the representation analysis is to identify conservation areas that adequately capture the target amounts of representation classes (in our case NALC classes) deemed to be proportionally representative of the study region. Usually the target amounts should be met in full in a conservation area, rather than being split between multiple conservation areas. The idea being that the conservation area should provide a sufficient area for the ecological processes associated with specific target classes to operate. In a network of multiple conservation areas, different target classes and different ecological processes may therefore be represented by different conservation areas.</p>
+<p>Note that the tools can accommodate different objectives. For example, meeting a set of targets across a network rather than meeting each target in full in a single conservation area. We give an example of this below.</p>
+<p><strong>The xx main hydrology functions are:</strong></p>
 <ul>
-<li><a href="../tools/dci.html">calc_dci</a></li>
-<li><a href="../tools/dci.html">calc_lwdci</a></li>
-<li><a href="../tools/get_upstream_catchments.html">get_upstream_catchments</a></li>
-<li><a href="../tools/get_downstream_catchments.html">get_downstream_catchments</a></li>
+<li><a href="../tools/evaluate_criteria_using_clip.html">evaluate_criteria_using_clip</a></li>
 </ul>
-<section id="calc_dci" class="level3">
-<h3 class="anchored" data-anchor-id="calc_dci">calc_dci</h3>
-<p>The function <a href="../tools/dci.html">calc_dci()</a> calculates dendritic connectivity index (DCI) for a set of conservation areas, which quantifies the “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network” (Cote et al.&nbsp;2009).</p>
-</section>
-<section id="calc_lwdci" class="level3">
-<h3 class="anchored" data-anchor-id="calc_lwdci">calc_lwdci</h3>
-<p>The function <a href="../tools/dci.html">calc_lwdci()</a> computes a distinct DCI value for each group of BASIN streams within the conservation area. It then calculates a weighted average of these values, using the stream lengths in each BASIN as weights. It minimize the impact of fragmentation on streams inside a conservation areas, due to different ocean drainage basin, giving a more realistic picture of how much of the functional network remains connected for species movement.</p>
-</section>
-<section id="get_upstream_catchments" class="level3">
-<h3 class="anchored" data-anchor-id="get_upstream_catchments">get_upstream_catchments</h3>
-<p>The function <a href="../tools/get_upstream_catchments.html">get_upstream_catchments()</a> calculates the area upstream of a given polygon using catchments and stream flow attributes.</p>
-</section>
-<section id="get_downstream_catchments" class="level3">
-<h3 class="anchored" data-anchor-id="get_downstream_catchments">get_downstream_catchments</h3>
-<p>The function <a href="../tools/get_downstream_catchments.html">get_downstream_catchments()</a> calculates the area downstream of a given polygon using catchments and stream flow attributes.</p>
+<section id="evaluate_criteria_using_clip" class="level3">
+<h3 class="anchored" data-anchor-id="evaluate_criteria_using_clip">evaluate_criteria_using_clip</h3>
+<p>The function <a href="../tools/evaluate_criteria_using_clip.html">evaluate_criteria_using_clip()</a> Clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
 <p><br> <br></p>
 </section>
 </section>
 <section id="citation" class="level2">
 <h2 class="anchored" data-anchor-id="citation">Citation</h2>
-<p>Please cite the beaconsbuilder package when using it in publications. To cite the latest official version, please use:</p>
-<p>Edwards M, Vernier P, Lisgo K, Houle M, Schmiegelow F (2022). beaconsbuilder: building conservation areas in R. R package version 0.0.0.9000. Available at https://github.com/beaconsproject/beaconsbuilder.</p>
+<p>Houle M, Vernier P, Lisgo K, Edwards M, Schmiegelow F (2025). BEACONs R_Tools_Public: Building conservation areas in R. Available at https://beaconsproject.github.io/R_tools_public/.</p>
 
 
 </section>

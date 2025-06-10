@@ -123,7 +123,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../index_main.html"> 
 <span class="menu-text">Welcome</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -132,15 +132,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-functions-categories">    
         <li>
-    <a class="dropdown-item" href="../tools/Builder_index.html">
+    <a class="dropdown-item" href="../tools/index_Builder.html">
  <span class="dropdown-text">Builder</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../tools/Hydrology_index.html">
+    <a class="dropdown-item" href="../tools/index_Hydrology.html">
  <span class="dropdown-text">Hydrology</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../tools/Spatial_index.html">
+    <a class="dropdown-item" href="../tools/index_Representation.html">
+ <span class="dropdown-text">Representation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tools/index_Spatial.html">
  <span class="dropdown-text">Spatial</span></a>
   </li>  
     </ul>
@@ -391,7 +395,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>conservation_areas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"./data/reserves_sample.shp"</span>)</span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>nghbrs <span class="ot">&lt;-</span> <span class="fu">neighbours</span>(catchments)</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>reserve_seed <span class="ot">&lt;-</span> <span class="fu">reserve_seeds</span>(catchments, <span class="at">CAs_sf=</span>conservation_areas, <span class="at">CAs_name =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">10000</span>, <span class="at">joinType =</span> <span class="st">"INTERSECT"</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>reserve_seed <span class="ot">&lt;-</span> <span class="fu">reserve_seeds</span>(catchments, <span class="at">CAs_sf=</span>conservation_areas, <span class="at">CAs_id =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">10000</span>, <span class="at">joinType =</span> <span class="st">"INTERSECT"</span>)</span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">builder</span>(<span class="at">catchments_sf =</span> catchments, <span class="at">data_source =</span> <span class="st">"Reserve"</span>, <span class="at">seeds =</span> reserve_seed, <span class="at">reserve_name =</span> <span class="st">"reserve"</span>, <span class="at">neighbours =</span> nghbrs, <span class="at">out_dir =</span> <span class="fu">file.path</span>(dest_folder, <span class="st">"Builder_output"</span>), <span class="at">builder_local_path =</span> builder_path, <span class="at">catchment_level_intactness =</span> <span class="fl">0.8</span>, <span class="at">conservation_area_intactness =</span> <span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 

@@ -21,15 +21,17 @@ website:
           - text: "Report an Issue"
             href: report-issues.qmd
     left:
-      - href: index.qmd
+      - href: index_main.qmd
         text: Welcome
       - text: "Functions categories"
         menu:
-          - href: tools/Builder_index.qmd
+          - href: tools/index_Builder.qmd
             text: Builder    
-          - href: tools/Hydrology_index.qmd
+          - href: tools/index_Hydrology.qmd
             text: Hydrology
-          - href: tools/Spatial_index.qmd
+          - href: tools/index_Representation.qmd
+            text: Representation
+          - href: tools/index_Spatial.qmd
             text: Spatial
       - text: "Articles"
         menu:

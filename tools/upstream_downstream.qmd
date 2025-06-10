@@ -1,0 +1,94 @@
+## BEACONs Hydrology R Functions
+
+# `get_upstream_catchments()` and`get_downstream_catchemnts()`
+
+
+## Usage
+
+```r
+get_upstream_catchments(
+  conservation_area_sf,
+  stream_sf = NULL,
+  col_name = "network",
+  buffer_width = 0.1
+)
+
+calc_lwdci(
+  conservation_area_sf,
+  stream_sf = NULL,
+  col_name = "network",
+  buffer_width = 0.1
+)
+```
+## Arguments
+Both functions need the following:
+
+- CAs_sf: sf object of protected area polygons.
+
+- CAs_id: String matching the unique identifier column in \code{CAs_sf}.
+
+- catchments_sf: sf object of the catchments dataset with unique identifier column: CATCHNUM .
+
+
+
+## 📤 Output
+A tibble where each column name is a unique polygon id, and each row is a catchment making up the upstream area for the polygon. Blank rows are filled with NA. CATCHNUMs are returned as integers. 
+
+## Details
+The upstream and downstream regions of a targeted polygons (i.e. conservation  area) can inform on potential sources of external vulnerability due to water-mediated influences. For instance, assessing a conservation area’s vulnerability may involve examining upstream human disturbances—such as pollutant inputs or water diversions (e.g., dams)—while looking at downstream areas of a disturbed regions (i.e. mine) can provide insight into the potential spread of ecological impacts originating from the region.
+
+
+## Examples
+### Running the examples
+
+The example below allow to identify upstream and downstream areas and save them as layers. 
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```r
+# Load libraries
+library(sf)
+library(dplyr)
+
+# Set working directory
+setwd("your/path/to/downloads/folder")
+
+source("./R/hydrology.R")
+source("./R/spatial.R")
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+dirpath <- getwd()
+
+#Set access path 
+reserves <- file.path(dirpath, "data/reserves_sample.shp")
+catchments <- file.path(dirpath, "data/catchments_sample.shp")
+
+colName <- "reserve"
+
+#Create output folder
+out_dir <- file.path(dirpath, "shp_output")
+if(!dir.exists(out_dir)){
+  dir.create(out_dir)
+}
+
+
+# --------------------------------------
+#--RUN
+# --------------------------------------
+# Initialize sf objects
+reserves_sf <- st_read(reserves)
+catchments_sf <- st_read(catchments)
+
+upstream_tbl <- get_upstream_catchments(reserves_sf, colName, catchments_sf)
+
+
+upstream_sf <- dissolve_catchments_from_table(catchments_sf, upstream_tbl, "reserve")
+
+
+#Save results
+write_sf(reserves_sf, dsn=file.path(out_dir, "reserves_dci.shp"), append = FALSE)
+```
+

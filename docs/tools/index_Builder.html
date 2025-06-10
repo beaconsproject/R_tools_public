@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Create builder polygons – BEACONs R Tools</title>
+<title>index_builder – BEACONs R Tools</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,40 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -206,124 +172,135 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a>
+  <li><a href="#beacons-builder" id="toc-beacons-builder" class="nav-link active" data-scroll-target="#beacons-builder">BEACONs BUILDER</a></li>
+  <li><a href="#catchments" id="toc-catchments" class="nav-link" data-scroll-target="#catchments">Catchments</a></li>
+  <li><a href="#aggregation-algorithm" id="toc-aggregation-algorithm" class="nav-link" data-scroll-target="#aggregation-algorithm">Aggregation algorithm</a></li>
+  <li><a href="#builder-r-functions" id="toc-builder-r-functions" class="nav-link" data-scroll-target="#builder-r-functions">BUILDER R Functions</a>
   <ul class="collapse">
-  <li><a href="#generate-potential-benchmarks-upstream-and-downstream-polygons-from-catchments-using-builder-output-files" id="toc-generate-potential-benchmarks-upstream-and-downstream-polygons-from-catchments-using-builder-output-files" class="nav-link" data-scroll-target="#generate-potential-benchmarks-upstream-and-downstream-polygons-from-catchments-using-builder-output-files">Generate potential benchmarks, upstream and downstream polygons from catchments using <strong>BUILDER</strong> output files</a></li>
+  <li><a href="#seeds" id="toc-seeds" class="nav-link" data-scroll-target="#seeds">seeds</a></li>
+  <li><a href="#reserve_seeds" id="toc-reserve_seeds" class="nav-link" data-scroll-target="#reserve_seeds">reserve_seeds</a></li>
+  <li><a href="#neighbours" id="toc-neighbours" class="nav-link" data-scroll-target="#neighbours">neighbours</a></li>
+  <li><a href="#builder" id="toc-builder" class="nav-link" data-scroll-target="#builder">builder</a></li>
   </ul></li>
+  <li><a href="#process" id="toc-process" class="nav-link" data-scroll-target="#process">🏗️ Process</a></li>
+  <li><a href="#key-parameters" id="toc-key-parameters" class="nav-link" data-scroll-target="#key-parameters">🔧 Key Parameters</a></li>
+  <li><a href="#tip" id="toc-tip" class="nav-link" data-scroll-target="#tip">💡 Tip</a></li>
+  <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation">Citation</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Create builder polygons</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<section id="intro" class="level2">
-<h2 class="anchored" data-anchor-id="intro">Intro</h2>
-<p>This script generates potential benchmarks, as well as upstream and downstream polygons based on the <strong>BUILDER</strong> output.</p>
-<p>The first step is to locate catchments layer and specify the directory where BUILDER output were saved.</p>
-<p>These polygons are then used to <a href="calcDCI.html">assess dendritic connectivity</a> by clipping the stream network to each polygon and analyzing how water flows within its boundaries.</p>
-<section id="generate-potential-benchmarks-upstream-and-downstream-polygons-from-catchments-using-builder-output-files" class="level3">
-<h3 class="anchored" data-anchor-id="generate-potential-benchmarks-upstream-and-downstream-polygons-from-catchments-using-builder-output-files">Generate potential benchmarks, upstream and downstream polygons from catchments using <strong>BUILDER</strong> output files</h3>
-<p>Function <code>prep_input_column</code> allow to read Builder output tables that uses column format. The output can then be passed to dissolve_catchment_from_table to generate polygons using enumerated ‘CATCHNUM’. <code>prep_input_column</code> needs the following:</p>
+<section id="beacons-builder" class="level2">
+<h2 class="anchored" data-anchor-id="beacons-builder">BEACONs BUILDER</h2>
+<p>BUILDER is a user friendly software application, developed in C# .NET framework, to assist conservation planners with the design of ecological benchmarks. This package provides a set of R functions to call BUILDER and fetch the main output table. The partner package <code>beaconstools</code> provides functions to process and analyse output tables from BUILDER in R.</p>
+<p>BUILDER explicitly incorporates hydrologic connectivity for the integration of aquatic and terrestrial conservation planning in protected areas design. BUILDER constructs ecological benchmarks using a deterministic construction algorithm that aggregates catchments to a user defined size and intactness. For the purpose of this demo, we will refer to the conservation areas created by BUILDER as benchmarks, however BUILDER can also be used to design conservation areas not intended to serve as benchmarks.</p>
+<p>BUILDER constructs ecological benchmarks based on three principal criteria:</p>
 <ul>
-<li><strong>out_dir</strong>: Point to a directory that contains Builder output</li>
-<li><strong>type</strong>: Indicate which file to read. Type can be ‘BENCHMARKS’, ‘UPSTREAM’ or ‘DOWNSTREAM’. Default is ‘BENCHMARKS’.</li>
+<li>Intactness, a measure of the absence of human industrial activity and a proxy for the intactness of biological and physical processes</li>
+<li>Hydrologic connectivity of intact water catchments, as a measure of the integrity of aquatic systems</li>
+<li>Size, as a measure of the resilience of the system to disturbance</li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(utils)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/createBuilderPolygons_dependencies.R"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"your/path/to/downloads"</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">getwd</span>()</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the folder structure</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>builder_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"Builder_output"</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"shp_output"</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(out_dir)) {</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(out_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"data/catchments.shp"</span>)</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path catchments layer and initialize</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>catchments_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(catchments)</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Name given to identify unique benchmark</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>colName <span class="ot">&lt;-</span> <span class="st">"PB"</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#--RUN</span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>type <span class="ot">&lt;-</span> <span class="st">"BENCHMARKS"</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>out_tab <span class="ot">&lt;-</span> <span class="fu">prep_input_column</span>(builder_dir, <span class="at">type =</span> type)</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert builder output tables to polygons</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>poly_sf <span class="ot">&lt;-</span> <span class="fu">dissolve_catchments_from_table</span>(<span class="at">catchments_sf =</span> catchments_sf, </span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">input_table =</span> out_tab, </span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">out_feature_id =</span> colName)</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(poly_sf, <span class="at">dsn =</span><span class="fu">file.path</span>(out_dir, <span class="st">"benchmarks_poly.shp"</span>), <span class="at">append =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="do">#############################################</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co">#  Generate upstream polygons</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="do">#############################################</span></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>type <span class="ot">&lt;-</span> <span class="st">"UPSTREAM"</span></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>out_tab <span class="ot">&lt;-</span> <span class="fu">prep_input_column</span>(builder_dir, <span class="at">type =</span> type)</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert builder output tables to polygons</span></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>poly_sf <span class="ot">&lt;-</span> <span class="fu">dissolve_catchments_from_table</span>(<span class="at">catchments_sf =</span> catchments_sf, </span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">input_table =</span> out_tab, </span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">out_feature_id =</span> colName)</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(poly_sf, <span class="at">dsn =</span><span class="fu">file.path</span>(out_dir, <span class="st">"upstream_poly.shp"</span>), <span class="at">append =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="do">#############################################</span></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="co">#  Generate downstream polygons</span></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="do">#############################################</span></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>type <span class="ot">&lt;-</span> <span class="st">"DOWNSTREAM"</span></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>out_tab <span class="ot">&lt;-</span> <span class="fu">prep_input_column</span>(builder_dir, <span class="at">type =</span> type)</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert builder output tables to polygons</span></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>poly_sf <span class="ot">&lt;-</span> <span class="fu">dissolve_catchments_from_table</span>(<span class="at">catchments_sf =</span> catchments_sf, </span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">input_table =</span> out_tab, </span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">out_feature_id =</span> colName)</span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(poly_sf, <span class="at">dsn =</span><span class="fu">file.path</span>(out_dir, <span class="st">"downstream_poly.shp"</span>), <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-
 </section>
+<section id="catchments" class="level2">
+<h2 class="anchored" data-anchor-id="catchments">Catchments</h2>
+<p>The building blocks for BUILDER is a set of catchments with associated flow directions for the underlying stream network. This allows BUILDER to identify upstream and downstream catchments for any given location. <font color="red">Should we provide a brief description of the catchments dataset and how to download them?</font></p>
+</section>
+<section id="aggregation-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="aggregation-algorithm">Aggregation algorithm</h2>
+<p>BUILDER ‘grows’ ecological benchmarks using a deterministic construction algorithm that aggregates catchments. This process enables intactness, size and hydrologic criteria to be incorporated into benchmark design.</p>
+<p>The starting catchments for building benchmarks are called seeds. <font color="red">These can be selected using size and intactness criteria e.g., all catchments that are 100% intact and greater than 500km2.</font> Starting from a seed, BUILDER grows a benchmark by aggregating neighbouring catchments that exceed the user defined catchment-level intactness threshold. As catchments are added, growth is prioritized in the upstream direction. This emphasizes inclusion of headwaters within benchmarks, and encourages the formation of benchmarks along stream networks. Further, by adding all eligible upstream catchments before re-querying for more, benchmarks are grown with a more compact shape. If re-querying were to occur after adding each upstream catchment, benchmarks would tend to grow along single streams, resulting in linear configurations. To further compact the shape of the benchmark, BUILDER prioritizes the addition of catchments within hydrological zones (i.e.&nbsp;Fundamental Drainage Areas, FDAs) associated with the benchmark before adding catchments in a neighbouring FDA.</p>
+<p>Once all available upstream catchments are added, BUILDER grows downstream. Downstream growth adds all neighbouring catchments downstream of the catchment aggregation then re-queries for upstream catchments. Benchmarks are grown until:</p>
+<ol type="1">
+<li>There are no more neighbouring, intact catchments to add, or</li>
+<li>The benchmarks area exceeds the user-specified Area Target.</li>
+</ol>
+<p>If the latter occurs, and the area-weighted intactness of the benchmark exceeds the benchmark-level intactness threshold, then the benchmark is included in the output.</p>
+</section>
+<section id="builder-r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="builder-r-functions">BUILDER R Functions</h2>
+<p><strong>BEACONs BUILDER has 4 main functions:</strong></p>
+<ul>
+<li><a href="../tools/seeds.html">seeds</a></li>
+<li><a href="../tools/reserve_seeds.html">reserve_seeds</a></li>
+<li><a href="../tools/neighbours.html">neighbours</a></li>
+<li><a href="../tools/builder.html">builder</a></li>
+</ul>
+<section id="seeds" class="level3">
+<h3 class="anchored" data-anchor-id="seeds">seeds</h3>
+<p>The function <a href="../tools/seeds.html">seeds()</a> creates a <strong>seeds table</strong>, which is an input to <code>builder()</code>.<br>
+It identifies <strong>seed catchments</strong> and assigns them an <strong>area target</strong>.</p>
+</section>
+<section id="reserve_seeds" class="level3">
+<h3 class="anchored" data-anchor-id="reserve_seeds">reserve_seeds</h3>
+<p>The function <a href="../tools/reserve_seeds.html">reserve_seeds()</a> creates a <strong>seeds table</strong> based on conservation areas, which is an input to <code>builder()</code>.<br>
+It identifies <strong>seed catchments inside a conservation area</strong> and assigns them an <strong>area target</strong>.</p>
+</section>
+<section id="neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="neighbours">neighbours</h3>
+<p>The function <a href="../tools/neighbours.html">neighbours()</a> creates a table listing pairwise catchment neighbours. Used as an input to <code>builder()</code>.</p>
+</section>
+<section id="builder" class="level3">
+<h3 class="anchored" data-anchor-id="builder">builder</h3>
+<p>The function <a href="../tools/builder.html">builder()</a> prepares the input files and parameters and passes them to a command line version of BUILDER executable software. The function then fetches and returns the main BUILDER output table into the R environment.</p>
+</section>
+</section>
+<section id="process" class="level2">
+<h2 class="anchored" data-anchor-id="process">🏗️ Process</h2>
+<ol type="1">
+<li>Prepares input tables: <code>neighbours</code>, either <code>seeds</code> or <code>reserve_seeds</code>, and <code>catchments</code>.</li>
+<li>Make sure default parameters are relevant and Set <strong>BUILDER</strong> parameters such as catchment_level_intactness, conservation_area_intactness.</li>
+<li><code>builder()</code> returns the <code>*_COLUMN_All_Unique_BAs.csv</code> file listing conservation areas and their catchments.</li>
+<li>Subsequent processing, such as creating polygons of benchmarks using <code>builder()</code> output and assessing ecological attributes is done using others BEACONs functions (see examples in section Articles).</li>
+</ol>
+</section>
+<section id="key-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="key-parameters">🔧 Key Parameters</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Area target</strong></td>
+<td>Set in the <code>seeds</code> table; minimum size (m²) for each conservation area.</td>
+</tr>
+<tr class="even">
+<td><strong>Catchment intactness</strong></td>
+<td>Minimum intactness required for catchments to be included.</td>
+</tr>
+<tr class="odd">
+<td><strong>Conservation area intactness</strong></td>
+<td>Minimum area-weighted intactness for a conservation area to be returned.</td>
+</tr>
+<tr class="even">
+<td><strong>Area target proportion</strong></td>
+<td>Allows output of smaller areas (e.g., 0.9 returns areas &gt;= 90% of the area target).</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tip" class="level2">
+<h2 class="anchored" data-anchor-id="tip">💡 Tip</h2>
+<p>Use <code>output_dir</code> to preserve BUILDER’s complete outputs when running multiple builds. These files can be further analyzed using others BEACONs functions.</p>
+<p><br> <br></p>
+</section>
+<section id="citation" class="level2">
+<h2 class="anchored" data-anchor-id="citation">Citation</h2>
+<p>Houle M, Vernier P, Lisgo K, Edwards M, Schmiegelow F (2025). BEACONs R_Tools_Public: Building conservation areas in R. Available at https://beaconsproject.github.io/R_tools_public/.</p>
+
+
 </section>
 
 </main> <!-- /main -->

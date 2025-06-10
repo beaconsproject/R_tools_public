@@ -244,7 +244,7 @@ seeds <- function(catchments_sf, filter_polygon = NULL, areatarget_value = NULL,
 #' 
 #' @param catchments_sf An `sf` object of the catchments dataset. Must contain a unique identifier column named `CATCHNUM`.
 #' @param CAs_sf An `sf` polygon object representing conservation areas from which the catchments will be extracted.
-#' @param CAs_name A character string. Name of the column holding conservation area unique identifiers. 
+#' @param CAs_id A character string. Name of the column holding conservation area unique identifiers. 
 #' @param areatarget_value Optional. A single numeric value specifying the area target to apply to all seeds.
 #' @param joinType A character string. Type of spatial join to identify catchments within conservation areas. 
 #'        Options are `"INTERSECT"` or `"CENTROID"`. Default is `"CENTROID"`.
@@ -273,10 +273,10 @@ seeds <- function(catchments_sf, filter_polygon = NULL, areatarget_value = NULL,
 #'  crs = st_crs(builder_catchments_sample)  # use same CRS as your other data
 #') 
 #' reserve_seeds(catchments_sf = builder_catchments_sample,
-#'       CAs_sf = ref_poly, CAs_name = "ID",
+#'       CAs_sf = ref_poly, CAs_id = "ID",
 #'       areatarget_value = 10000, joinType = "CENTROID")
 #'
-reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NULL, joinType = "CENTROID"){
+reserve_seeds <- function (catchments_sf, CAs_sf, CAs_id, areatarget_value= NULL, joinType = "CENTROID"){
   options(scipen = 999)
   
   # JOIN TYPE
@@ -288,7 +288,7 @@ reserve_seeds <- function (catchments_sf, CAs_sf, CAs_name, areatarget_value= NU
   }
   
   out_tab <- tibble::tibble(
-    !!CAs_name := CAs_sf[[CAs_name]],
+    !!CAs_id := CAs_sf[[CAs_id]],
     Areatarget = areatarget_value,
     CATCHNUM = sapply(catch_join, function(idx) paste(catchments_sf$CATCHNUM[idx], collapse = ","))
   )

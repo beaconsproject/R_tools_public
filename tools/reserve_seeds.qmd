@@ -14,7 +14,7 @@ This function provides methods for filtering the catchments dataset and assignin
 reserve_seeds(
   catchments_sf,
   CAs_sf,
-  CAs_name = NULL,
+  CAs_id = NULL,
   areatarget_value = NULL,
   joinType = NULL
 )
@@ -25,7 +25,7 @@ reserve_seeds(
 
 - CAs_sf: A character string. Name of the column holding conservation area unique identifiers.
 
-- CAs_name: A character string. Name of the column holding conservation area unique identifiers.
+- CAs_id: A character string. Name of the column holding conservation area unique identifiers.
 
 - areatarget_value: (Optional) A single numeric value specifying the area target to apply to all seeds.
 
@@ -69,10 +69,10 @@ source("./R/builder.R")
 # Use all catchments as seeds with a single area target
 catchments_sample <- readRDS("data/catchments_sample.rds")
 reserves_sample <- readRDS("data/reserves_sample.rds")
-reserve_seeds(catchments_sf = catchments_sample, CAs_sf = reserves_sample, CAs_name = "reserve", areatarget_value = 1000000000)
+reserve_seeds(catchments_sf = catchments_sample, CAs_sf = reserves_sample, CAs_id = "reserve", areatarget_value = 1000000000)
 
 # save seeds as csv
-reserve_seed <- reserve_seeds(catchments_sf = catchments_sample, CAs_sf = reserves_sample, CAs_name = "reserve", areatarget_value = 1000000000)
+reserve_seed <- reserve_seeds(catchments_sf = catchments_sample, CAs_sf = reserves_sample, CAs_id = "reserve", areatarget_value = 1000000000)
 write.csv(reserve_seed, file=file.path(dirpath,"Builder_input/reserve_seeds.csv"), na = "", row.names=FALSE)
 ```
 

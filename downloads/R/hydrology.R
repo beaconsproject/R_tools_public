@@ -228,7 +228,7 @@ getAggregationUpstreamCatchments_R <- function(catchment_tab, agg_catchments){
         dplyr::filter(BASIN == current_BASIN & 
                         grepl(current_ORDER1, ORDER1) &
                         utf32_greaterthan_vectorized(ORDER1, paste0(current_ORDER1, current_ORDER3))) %>%
-        dplyr::pull(.data$CATCHNUM)
+        dplyr::pull(CATCHNUM)
       
       # add new upstream catchments to out list
       catchList <- c(catchList, test1, test2)
@@ -270,8 +270,8 @@ getAggregationUpstreamCatchments_R <- function(catchment_tab, agg_catchments){
 #' Calculates all upstream catchments for each provided protected area polygon and returns as a table, with column names as the unique id 
 #' of the protected areas.
 #'
-#' @param pa_sf sf object of protected area polygons.
-#' @param pa_id String matching the unique identifier column in \code{pa_sf}.
+#' @param CAs_sf sf object of protected area polygons.
+#' @param CAs_id String matching the unique identifier column in \code{CAs_sf}.
 #' @param catchments_sf sf object of the catchments dataset with unique identifier column: CATCHNUM .
 #'
 #' @return Tibble where each column name is a unique protected area id, and each row is a catchment making up the 
@@ -288,7 +288,7 @@ getAggregationUpstreamCatchments_R <- function(catchment_tab, agg_catchments){
 #'   "network", 
 #'   dissolve_list = c("PB_0001", "PB_0002", "PB_0003"))
 #' get_upstream_catchments(reserves, "network", catchments_sample)
-get_upstream_catchments <- function(pa_sf, pa_id, catchments_sf){
+get_upstream_catchments <- function(CAs_sf, CAs_id, catchments_sf){
   
   if(!all(c("ORDER1", "ORDER2", "ORDER3", "BASIN", "CATCHNUM") %in% colnames(catchments_sf))){
     stop("catchments_sf must have attributes: ORDER1, ORDER2, ORDER3, BASIN, CATCHNUM")
@@ -298,13 +298,13 @@ get_upstream_catchments <- function(pa_sf, pa_id, catchments_sf){
   catchments_sf <- make_catchnum_integer(catchments_sf)
   
   # get list of catchnums in each PA
-  pa_catchnums_tab <- catchnums_in_polygon(pa_sf, pa_id, catchments_sf)
+  CAs_catchnums_tab <- catchnums_in_polygon(CAs_sf, CAs_id, catchments_sf)
   
   up_agg_list <- list()
-  for(col_id in colnames(pa_catchnums_tab)){
+  for(col_id in colnames(CAs_catchnums_tab)){
     
     # get list of catchments
-    agg_catchments <- get_catch_list(col_id, pa_catchnums_tab)
+    agg_catchments <- get_catch_list(col_id, CAs_catchnums_tab)
     up_agg <- getAggregationUpstreamCatchments_R(catchments_sf, agg_catchments)
     
     # add to up_agg_list
@@ -411,8 +411,8 @@ getAggregationDownstreamCatchments_R <- function(catchment_tab, agg_catchments){
 #' Calculates all downstream catchments for each provided protected area polygon and returns as a table, with column names as the unique id 
 #' of the protected areas.
 #'
-#' @param pa_sf sf object of protected area polygons.
-#' @param pa_id String matching the unique identifier column in \code{pa_sf}.
+#' @param CAs_sf sf object of protected area polygons.
+#' @param CAs_id String matching the unique identifier column in \code{CAs_sf}.
 #' @param catchments_sf sf object of the catchments dataset with unique identifier column: CATCHNUM .
 #'
 #' @return Tibble where each column name is a unique protected area id, and each row is a catchment making up the 
@@ -429,7 +429,7 @@ getAggregationDownstreamCatchments_R <- function(catchment_tab, agg_catchments){
 #'   "network", 
 #'   dissolve_list = c("PB_0001", "PB_0002", "PB_0003"))
 #' get_downstream_catchments(reserves, "network", catchments_sample)
-get_downstream_catchments <- function(pa_sf, pa_id, catchments_sf){
+get_downstream_catchments <- function(CAs_sf, CAs_id, catchments_sf){
   
   if(!all(c("ORDER1", "ORDER2", "ORDER3", "BASIN", "CATCHNUM") %in% colnames(catchments_sf))){
     stop("catchments_sf must have attributes: ORDER1, ORDER2, ORDER3, BASIN, CATCHNUM")
@@ -439,13 +439,13 @@ get_downstream_catchments <- function(pa_sf, pa_id, catchments_sf){
   catchments_sf <- make_catchnum_integer(catchments_sf)
   
   # get list of catchnums in each PA
-  pa_catchnums_tab <- catchnums_in_polygon(pa_sf, pa_id, catchments_sf)
+  CAs_catchnums_tab <- catchnums_in_polygon(CAs_sf, CAs_id, catchments_sf)
   
   down_agg_list <- list()
-  for(col_id in colnames(pa_catchnums_tab)){
+  for(col_id in colnames(CAs_catchnums_tab)){
     
     # get list of catchments
-    agg_catchments <- get_catch_list(col_id, pa_catchnums_tab)
+    agg_catchments <- get_catch_list(col_id, CAs_catchnums_tab)
     down_agg <- getAggregationDownstreamCatchments_R(catchments_sf, agg_catchments)
     
     # add to up_agg_list
@@ -472,9 +472,9 @@ get_downstream_catchments <- function(pa_sf, pa_id, catchments_sf){
 #' L - total length of all stream sections in conservation area
 #' 
 #'
-#' @param conservation_area_sf sf object of conservation areas in which to calculate DCI.
+#' @param CAs_sf sf object of conservation areas in which to calculate DCI.
 #' @param stream_sf sf object of river network. Must have streams grouped in a BASIN attribute.
-#' @param col_name character specify unique identifier. Default is network.
+#' @param CAs_id character specify unique identifier. Default is network.
 #' @param buffer_width Width of buffer to apply to stream segments. Defaults to 0.1. Used to
 #' ensure adjacent stream segments are connected during analysis.
 #'
@@ -491,32 +491,32 @@ get_downstream_catchments <- function(pa_sf, pa_id, catchments_sf){
 #'   dissolve_list = c("PB_0001", "PB_0002"))
 #' calc_dci(conservation_areas, streams_sample)
 #' 
-calc_dci <- function(conservation_area_sf, stream_sf, col_name = "network", buffer_width = 0.1){
+calc_dci <- function(CAs_sf, stream_sf, CAs_id = "network", buffer_width = 0.1){
   
-  stopifnot(sf::st_crs(conservation_area_sf) == sf::st_crs(stream_sf))
+  stopifnot(sf::st_crs(CAs_sf) == sf::st_crs(stream_sf))
   
   # set stream and conservation area attributes to be constant throughout each polygon to avoid warnings in st_intersection
   sf::st_agr(stream_sf) = "constant"
-  sf::st_agr(conservation_area_sf) = "constant"
+  sf::st_agr(CAs_sf) = "constant"
   
   # clip streams to full area of all conservation areas
-  reserve_dci <- conservation_area_sf %>%
+  reserve_dci <- CAs_sf %>%
     sf::st_intersection(stream_sf, sf::st_union()) %>% # get streams just for the required region
     dplyr::filter(BASIN != -1) %>% # remove isolated stream segments
     sf::st_buffer(dist = buffer_width, endCapStyle = "ROUND") %>% # buffer to make sure streams are connected
     dplyr::summarise(geometry = sf::st_union(geometry)) %>% # merge into single feature
-    sf::st_intersection(conservation_area_sf) %>% # intersect with reserves to get buffered stream for each reserve
-    dplyr::select(dplyr::all_of(col_name)) %>%
+    sf::st_intersection(CAs_sf) %>% # intersect with reserves to get buffered stream for each reserve
+    dplyr::select(dplyr::all_of(CAs_id)) %>%
     sf::st_cast("MULTIPOLYGON", warn = FALSE) %>% # this is needed to avoid geometries being lost in the POLYGON cast
     sf::st_cast("POLYGON", warn = FALSE) %>% # explode into individual stream segments
     dplyr::mutate(stream_length = as.numeric(sf::st_area(geometry)) / buffer_width) %>% # divide area by buffer to get length of each stream segment
     sf::st_drop_geometry() %>% # drop the geometry for speed
-    dplyr::group_by(!!sym(col_name)) %>% # for each network...
+    dplyr::group_by(!!sym(CAs_id)) %>% # for each network...
     dplyr::summarise(L = sum(stream_length), dci = sum((stream_length*stream_length) / (L*L)))  # calculate L2 then use to calculate dci
   
   # reserves that do not intersect the stream network get dropped during st_intersection.
   # join dci back to original reserves and set missing reserves to have dci of 0
-  dci <- dplyr::left_join(sf::st_drop_geometry(conservation_area_sf), reserve_dci, by = col_name) %>%
+  dci <- dplyr::left_join(sf::st_drop_geometry(CAs_sf), reserve_dci, by = CAs_id) %>%
     tidyr::replace_na(list(dci=0)) %>%
     dplyr::pull(dci) %>%
     round(3)
@@ -542,9 +542,9 @@ calc_dci <- function(conservation_area_sf, stream_sf, col_name = "network", buff
 #' within the conservation area, then a weighted average is calculated where the weights are the lengths 
 #' of streams in each BASIN.
 #'
-#' @param conservation_area_sf sf object of conservation areas in which to calculate DCI.
+#' @param CAs_sf sf object of conservation areas in which to calculate DCI.
 #' @param stream_sf sf object of river network. Must have streams grouped in a BASIN attribute.
-#' @param col_name character specify unique identifier. Default is network.
+#' @param CAs_id character specify unique identifier. Default is network.
 #' @param buffer_width Width of buffer to apply to stream segments. Defaults to 0.1. Used to
 #' ensure adjacent stream segments are connected during analysis.
 #'
@@ -562,16 +562,16 @@ calc_dci <- function(conservation_area_sf, stream_sf, col_name = "network", buff
 #' calc_lwdci(conservation_areas, streams_sample)
 #' 
 
-calc_lwdci <- function(conservation_area_sf, stream_sf, col_name = "network", buffer_width = 0.1){
+calc_lwdci <- function(CAs_sf, stream_sf, CAs_id = "network", buffer_width = 0.1){
   
-  stopifnot(sf::st_crs(conservation_area_sf) == sf::st_crs(stream_sf))
+  stopifnot(sf::st_crs(CAs_sf) == sf::st_crs(stream_sf))
   # set stream and reserve attributes to be constant throughout each polygon to avoid warnings in st_intersection
   sf::st_agr(stream_sf) = "constant"
-  sf::st_agr(conservation_area_sf) = "constant"
+  sf::st_agr(CAs_sf) = "constant"
   
   # clip streams to full area of all reserves
   stream_prepped <- 
-    sf::st_intersection(stream_sf, sf::st_union(conservation_area_sf$geometry)) %>%
+    sf::st_intersection(stream_sf, sf::st_union(CAs_sf$geometry)) %>%
     dplyr::filter(BASIN != -1) %>% # remove isolated stream segments
     sf::st_buffer(dist = buffer_width, endCapStyle = "ROUND") %>% # buffer to make sure streams are connected
     dplyr::group_by(BASIN) %>%
@@ -579,21 +579,21 @@ calc_lwdci <- function(conservation_area_sf, stream_sf, col_name = "network", bu
   
   sf::st_agr(stream_prepped) = "constant"
   
-  reserve_lwdci <- sf::st_intersection(conservation_area_sf, stream_prepped) %>% # intersect with reserves to get buffered stream for each reserve
-    dplyr::select(dplyr::all_of(col_name), BASIN) %>%
+  reserve_lwdci <- sf::st_intersection(CAs_sf, stream_prepped) %>% # intersect with reserves to get buffered stream for each reserve
+    dplyr::select(dplyr::all_of(CAs_id), BASIN) %>%
     sf::st_cast("MULTIPOLYGON", warn = FALSE) %>% # this is needed to avoid geometries being lost in the POLYGON cast
     sf::st_cast("POLYGON", warn = FALSE) %>% # explode into individual stream segments
     dplyr::mutate(stream_length = as.numeric(sf::st_area(geometry)) / buffer_width) %>% # divide area by buffer to get length of each stream segment
     sf::st_drop_geometry() %>% # drop the geometry for speed
-    dplyr::group_by(!!sym(col_name), BASIN) %>% # for each network and basin...
+    dplyr::group_by(!!sym(CAs_id), BASIN) %>% # for each network and basin...
     dplyr::summarise(L_basin = sum(stream_length), 
                      dci_basin = sum((stream_length*stream_length) / (L_basin*L_basin)), .groups = "drop") %>% # calculate L2 then use to calculate dci
-    dplyr::group_by(!!sym(col_name)) %>%
+    dplyr::group_by(!!sym(CAs_id)) %>%
     dplyr::summarise(lwdci = sum((L_basin / sum(L_basin)) * dci_basin), .groups = "drop") # calc lwdci. Weight is proportion of reserve streams in each basin
   
   # reserves that do not intersect the stream network get dropped during st_intersection.
   # join dci back to original reserves and set missing reserves to have dci of 0
-  lwdci <- dplyr::left_join(sf::st_drop_geometry(conservation_area_sf), reserve_lwdci, by = col_name) %>%
+  lwdci <- dplyr::left_join(sf::st_drop_geometry(CAs_sf), reserve_lwdci, by = CAs_id) %>%
     tidyr::replace_na(list(lwdci=0)) %>%
     dplyr::pull(lwdci) %>%
     round(3)

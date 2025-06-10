@@ -192,7 +192,7 @@ catchments <- st_read("./data/catchments_sample.shp")
 conservation_areas <- st_read("./data/reserves_sample.shp")
 
 nghbrs <- neighbours(catchments)
-reserve_seed <- reserve_seeds(catchments, CAs_sf=conservation_areas, CAs_name = "reserve", areatarget_value = 10000, joinType = "INTERSECT")
+reserve_seed <- reserve_seeds(catchments, CAs_sf=conservation_areas, CAs_id = "reserve", areatarget_value = 10000, joinType = "INTERSECT")
 builder(catchments_sf = catchments, data_source = "Reserve", seeds = reserve_seed, reserve_name = "reserve", neighbours = nghbrs, out_dir = file.path(dest_folder, "Builder_output"), builder_local_path = builder_path, catchment_level_intactness = 0.8, conservation_area_intactness = 0.8)
 ```
 

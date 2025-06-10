@@ -123,7 +123,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../index_main.html"> 
 <span class="menu-text">Welcome</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -132,15 +132,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-functions-categories">    
         <li>
-    <a class="dropdown-item" href="../tools/Builder_index.html">
+    <a class="dropdown-item" href="../tools/index_Builder.html">
  <span class="dropdown-text">Builder</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../tools/Hydrology_index.html">
+    <a class="dropdown-item" href="../tools/index_Hydrology.html">
  <span class="dropdown-text">Hydrology</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../tools/Spatial_index.html">
+    <a class="dropdown-item" href="../tools/index_Representation.html">
+ <span class="dropdown-text">Representation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tools/index_Spatial.html">
  <span class="dropdown-text">Spatial</span></a>
   </li>  
     </ul>
@@ -236,7 +240,7 @@ This function provides methods for filtering the catchments dataset and assignin
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">reserve_seeds</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  catchments_sf,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  CAs_sf,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">CAs_name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">CAs_id =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">areatarget_value =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">joinType =</span> <span class="cn">NULL</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -246,7 +250,7 @@ This function provides methods for filtering the catchments dataset and assignin
 <ul>
 <li><p>catchments_sf: sf object of the catchments dataset with a unique identifier column: CATCHNUM.</p></li>
 <li><p>CAs_sf: A character string. Name of the column holding conservation area unique identifiers.</p></li>
-<li><p>CAs_name: A character string. Name of the column holding conservation area unique identifiers.</p></li>
+<li><p>CAs_id: A character string. Name of the column holding conservation area unique identifiers.</p></li>
 <li><p>areatarget_value: (Optional) A single numeric value specifying the area target to apply to all seeds.</p></li>
 <li><p>joinType: A character string. Type of spatial join to identify catchments within conservation areas. Options are <code>"INTERSECT"</code> or <code>"CENTROID"</code>. Default is <code>"CENTROID"</code>.</p></li>
 </ul>
@@ -287,10 +291,10 @@ This function provides methods for filtering the catchments dataset and assignin
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Use all catchments as seeds with a single area target</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>catchments_sample <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/catchments_sample.rds"</span>)</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>reserves_sample <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/reserves_sample.rds"</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">reserve_seeds</span>(<span class="at">catchments_sf =</span> catchments_sample, <span class="at">CAs_sf =</span> reserves_sample, <span class="at">CAs_name =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">1000000000</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">reserve_seeds</span>(<span class="at">catchments_sf =</span> catchments_sample, <span class="at">CAs_sf =</span> reserves_sample, <span class="at">CAs_id =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">1000000000</span>)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># save seeds as csv</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>reserve_seed <span class="ot">&lt;-</span> <span class="fu">reserve_seeds</span>(<span class="at">catchments_sf =</span> catchments_sample, <span class="at">CAs_sf =</span> reserves_sample, <span class="at">CAs_name =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">1000000000</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>reserve_seed <span class="ot">&lt;-</span> <span class="fu">reserve_seeds</span>(<span class="at">catchments_sf =</span> catchments_sample, <span class="at">CAs_sf =</span> reserves_sample, <span class="at">CAs_id =</span> <span class="st">"reserve"</span>, <span class="at">areatarget_value =</span> <span class="dv">1000000000</span>)</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(reserve_seed, <span class="at">file=</span><span class="fu">file.path</span>(dirpath,<span class="st">"Builder_input/reserve_seeds.csv"</span>), <span class="at">na =</span> <span class="st">""</span>, <span class="at">row.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
