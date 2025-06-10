@@ -1,6 +1,6 @@
 ## BEACONs Hydrology R Functions
 
-# `calc_dci()` and`calc_lwdci()`
+# `calc_dci()` and `calc_lwdci()`
 
 Dendritic connectivity index (DCI) describes the hydrologic connectedness of the stream network within an area. The Length-Weighted Dendritic Connectivity Index (lwDCI) builds on this concept by placing greater importance on the connectivity of the stream segments that are part of the same basin. While DCI treats all stream segments equally, lwDCI offers a more nuanced view by accounting for the relative importance of different parts of the network.  
 

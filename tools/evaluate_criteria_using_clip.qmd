@@ -1,4 +1,4 @@
-## BUILDER R Functions
+## BEACONs Representation R Functions
 
 # `evaluate_criteria_using_clip()`
 

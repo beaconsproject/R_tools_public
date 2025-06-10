@@ -175,72 +175,37 @@
     "text": "Citation\nHoule M, Vernier P, Lisgo K, Edwards M, Schmiegelow F (2025). BEACONs R_Tools_Public: Building conservation areas in R. Available at https://beaconsproject.github.io/R_tools_public/."
   },
   {
-    "objectID": "tools/get_downstream_catchments.html#usage",
-    "href": "tools/get_downstream_catchments.html#usage",
-    "title": "get_downstream_catchments()",
-    "section": "Usage",
-    "text": "Usage\nget_downstream_catchments(\n)"
-  },
-  {
-    "objectID": "tools/get_downstream_catchments.html#arguments",
-    "href": "tools/get_downstream_catchments.html#arguments",
-    "title": "get_downstream_catchments()",
-    "section": "Arguments",
-    "text": "Arguments"
-  },
-  {
-    "objectID": "tools/get_downstream_catchments.html#output",
-    "href": "tools/get_downstream_catchments.html#output",
-    "title": "get_downstream_catchments()",
-    "section": "📤 Output",
-    "text": "📤 Output"
-  },
-  {
-    "objectID": "tools/get_downstream_catchments.html#details",
-    "href": "tools/get_downstream_catchments.html#details",
-    "title": "get_downstream_catchments()",
-    "section": "Details",
-    "text": "Details"
-  },
-  {
-    "objectID": "tools/get_downstream_catchments.html#examples",
-    "href": "tools/get_downstream_catchments.html#examples",
-    "title": "get_downstream_catchments()",
-    "section": "Examples",
-    "text": "Examples\n\nRunning the examples\n\nDownload and unzip BEACONs R Tools\nRun the examples below."
-  },
-  {
     "objectID": "tools/dci.html#usage",
     "href": "tools/dci.html#usage",
-    "title": "calc_dci() andcalc_lwdci()",
+    "title": "calc_dci() and calc_lwdci()",
     "section": "Usage",
     "text": "Usage\ncalc_dci(\n  conservation_area_sf,\n  stream_sf = NULL,\n  col_name = \"network\",\n  buffer_width = 0.1\n)\n\ncalc_lwdci(\n  conservation_area_sf,\n  stream_sf = NULL,\n  col_name = \"network\",\n  buffer_width = 0.1\n)"
   },
   {
     "objectID": "tools/dci.html#arguments",
     "href": "tools/dci.html#arguments",
-    "title": "calc_dci() andcalc_lwdci()",
+    "title": "calc_dci() and calc_lwdci()",
     "section": "Arguments",
     "text": "Arguments\nBoth functions need the following:\n\nCAs_sf: sf object of conservation areas in which to calculate DCI.\nstream_sf: sf object of river network. Must have streams grouped in a BASIN attribute.\nCAs_id: Column in CAs_sf specify unique identifier. Default is network.\nbuffer_width: (Optional) Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis."
   },
   {
     "objectID": "tools/dci.html#output",
     "href": "tools/dci.html#output",
-    "title": "calc_dci() andcalc_lwdci()",
+    "title": "calc_dci() and calc_lwdci()",
     "section": "📤 Output",
     "text": "📤 Output\nA vector of numeric DCI or lwDCI values matching the input features."
   },
   {
     "objectID": "tools/dci.html#details",
     "href": "tools/dci.html#details",
-    "title": "calc_dci() andcalc_lwdci()",
+    "title": "calc_dci() and calc_lwdci()",
     "section": "Details",
     "text": "Details\nDeveloped by Cote et al. (2009), the Dendritic Connectivity Index quantifies “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network.” Longitudinal connectivity refers to connections between upstream and downstream sections of the network. The index is calculated as\n\n\n\nwhere li is the length of a stream (or river) section and L is the total length of the stream network within the benchmark. The index ranges from 0 (low longitudinal connectivity) to 1 (high longitudinal connectivity).\nIf the conservation areas overlap two ocean drainage, the use of calc_lwdci() is more suitable."
   },
   {
     "objectID": "tools/dci.html#examples",
     "href": "tools/dci.html#examples",
-    "title": "calc_dci() andcalc_lwdci()",
+    "title": "calc_dci() and calc_lwdci()",
     "section": "Examples",
     "text": "Examples\n\nRunning the examples\nThe example below allow to estimate dci and lwdci for a set of conservation areas. Because the two functions returns a vector of index, the script calculate the respective indexes and integrate the results in the reserves object prior to save it as a new shapefile.\n\nDownload and unzip BEACONs R Tools\nRun the examples below.\n\n# Load libraries\nlibrary(sf)\nlibrary(dplyr)\n\n# Set working directory\nsetwd(\"your/path/to/downloads/folder\")\n\nsource(\"./R/hydrology.R\")\n\n# --------------------------------------\n# SET PARAMS  --------------------\n# --------------------------------------\ndirpath &lt;- getwd()\n\n#Set access path \nreserves &lt;- file.path(dirpath, \"data/reserves_sample.shp\")\nstreams &lt;- file.path(dirpath, \"data/streams_sample.shp\")\n\ncolName &lt;- \"reserve\"\n\n#Create output folder\nout_dir &lt;- file.path(dirpath, \"shp_output\")\nif(!dir.exists(out_dir)){\n  dir.create(out_dir)\n}\n\n# Set if DCI and LWDCI should be added\naddDCI &lt;- TRUE\naddLWDCI &lt;- TRUE\n\n\n\n# --------------------------------------\n#--RUN\n# --------------------------------------\n# Initialize sf objects\nreserves_sf &lt;- st_read(reserves)\nstreams_sf &lt;- st_read(streams)\n\nif(addDCI){\n  reserves_sf &lt;- reserves_sf %&gt;%\n  mutate(dci = sapply(1:nrow(reserves_sf), function(i) {\n    i &lt;- reserves_sf[i, ]\n    calc_dci(i, streams_sf, CAs_id = colName) \n  }))\n}\nif(addLWDCI){\n  reserves_sf &lt;- reserves_sf %&gt;%\n  mutate(lwdci = sapply(1:nrow(reserves_sf), function(j) {\n    j &lt;- reserves_sf[j, ]\n    calc_lwdci(j, streams_sf, CAs_id = colName) \n  }))\n}\n\n#Save results\nwrite_sf(reserves_sf, dsn=file.path(out_dir, \"reserves_dci.shp\"), append = FALSE)"
   },
@@ -385,41 +350,6 @@
     "text": "Examples\n\nRunning the examples\n\nDownload and unzip BEACONs R Tools\nRun the examples below.\n\n# Load libraries\nlibrary(sf)\nlibrary(dplyr)\n\n# Set working directory\nsetwd(\"your/path/to/downloads/folder\")\n\nsource(\"./R/representation.R\")\n\n# --------------------------------------\n# SET PARAMS  --------------------\n# --------------------------------------\ndirpath &lt;- getwd()\n\n#Set access path \nreserves &lt;- file.path(dirpath, \"data/reserves_sample.shp\")\nnalc &lt;- file.path(dirpath, \"data/nalc_sample.tiff\")\n\n\n#Create output folder\nout_dir &lt;- file.path(dirpath, \"shp_output\")\nif(!dir.exists(out_dir)){\n  dir.create(out_dir)\n}\n\nresult &lt;- evaluate_criteria_using_clip(reserves, nalc_sample, CAs_id = \"reserve\")"
   },
   {
-    "objectID": "tools/get_upstream_catchments.html#usage",
-    "href": "tools/get_upstream_catchments.html#usage",
-    "title": "get_upstream_catchments()",
-    "section": "Usage",
-    "text": "Usage\nget_upstream_catchments(\n)"
-  },
-  {
-    "objectID": "tools/get_upstream_catchments.html#arguments",
-    "href": "tools/get_upstream_catchments.html#arguments",
-    "title": "get_upstream_catchments()",
-    "section": "Arguments",
-    "text": "Arguments"
-  },
-  {
-    "objectID": "tools/get_upstream_catchments.html#output",
-    "href": "tools/get_upstream_catchments.html#output",
-    "title": "get_upstream_catchments()",
-    "section": "📤 Output",
-    "text": "📤 Output"
-  },
-  {
-    "objectID": "tools/get_upstream_catchments.html#details",
-    "href": "tools/get_upstream_catchments.html#details",
-    "title": "get_upstream_catchments()",
-    "section": "Details",
-    "text": "Details"
-  },
-  {
-    "objectID": "tools/get_upstream_catchments.html#examples",
-    "href": "tools/get_upstream_catchments.html#examples",
-    "title": "get_upstream_catchments()",
-    "section": "Examples",
-    "text": "Examples\n\nRunning the examples\n\nDownload and unzip BEACONs R Tools\nRun the examples below."
-  },
-  {
     "objectID": "tools/index_Hydrology.html",
     "href": "tools/index_Hydrology.html",
     "title": "BEACONs R Tools",
@@ -487,7 +417,7 @@
     "href": "tools/upstream_downstream.html#usage",
     "title": "get_upstream_catchments() andget_downstream_catchemnts()",
     "section": "Usage",
-    "text": "Usage\nget_upstream_catchments(\n  conservation_area_sf,\n  stream_sf = NULL,\n  col_name = \"network\",\n  buffer_width = 0.1\n)\n\ncalc_lwdci(\n  conservation_area_sf,\n  stream_sf = NULL,\n  col_name = \"network\",\n  buffer_width = 0.1\n)"
+    "text": "Usage\nget_upstream_catchments(\n  conservation_area_sf,\n  stream_sf = NULL,\n  col_name = \"network\",\n  buffer_width = 0.1\n)\n\nget_downstream_catchments(\n  conservation_area_sf,\n  stream_sf = NULL,\n  col_name = \"network\",\n  buffer_width = 0.1\n)"
   },
   {
     "objectID": "tools/upstream_downstream.html#arguments",

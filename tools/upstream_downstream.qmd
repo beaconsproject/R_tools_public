@@ -13,7 +13,7 @@ get_upstream_catchments(
   buffer_width = 0.1
 )
 
-calc_lwdci(
+get_downstream_catchments(
   conservation_area_sf,
   stream_sf = NULL,
   col_name = "network",
