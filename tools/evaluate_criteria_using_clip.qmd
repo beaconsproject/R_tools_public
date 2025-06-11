@@ -43,7 +43,7 @@ A tibble with columns:
 
 2. Run the examples below.
 
-```{r landcover-piechart, fig.width=10, fig.height=6, fig.cap="Pie charts of landcover class proportions by conservation area",  message=FALSE, warning=FALSE}
+```{r landcover-piechart, fig.width=10, fig.height=6, fig.cap="<div style='text-align:center; font-weight:bold;'>Pie charts of landcover class proportions by conservation area</div>",  message=FALSE, warning=FALSE}
 # Load libraries
 library(sf)
 library(terra)
