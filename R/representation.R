@@ -36,7 +36,7 @@ evaluate_criteria_using_clip <- function(CAs_sf, criteria_raster, CAs_id = NULL,
       dplyr::summarise(geometry = sf::st_union(geometry), .groups = "drop")
   } else if (nrow(CAs_sf) > 1L) {
     CAs_sf <- CAs_sf |>
-      dplyr::summarise(geometry = sf::st_union(geometry))
+      dplyr::summarise(geometry = sf::st_union(geometry), .groups = "drop")
   }
   
   cellsize <- raster::res(criteria_raster)[1] / 1000
@@ -60,7 +60,7 @@ evaluate_criteria_using_clip <- function(CAs_sf, criteria_raster, CAs_id = NULL,
     dplyr::mutate(area = coverage_fraction * cellarea) %>%
     dplyr::group_by_at(group_vars) %>%
     #dplyr::group_by(!!rlang::sym(CAs_id), value) %>%
-    dplyr::summarize(area_km2 = sum(area))
+    dplyr::summarize(area_km2 = sum(area), .groups = "drop")
   
   names(df) <- c(CAs_id, "class_value", "area_km2")
   

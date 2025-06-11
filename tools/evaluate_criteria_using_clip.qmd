@@ -43,7 +43,7 @@ A tibble with columns:
 
 2. Run the examples below.
 
-```{r landcover-piechart, fig.width=10, fig.height=6, fig.cap="Pie charts of landcover class proportions by conservation area"}
+```{r landcover-piechart, fig.width=10, fig.height=6, fig.cap="Pie charts of landcover class proportions by conservation area",  message=FALSE, warning=FALSE}
 # Load libraries
 library(sf)
 library(terra)
@@ -62,7 +62,7 @@ source("./R/representation.R")
 
 
 #Set access path 
-reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"))
+reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)
 nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
 
 result <- evaluate_criteria_using_clip(reserves_sf, nalc, CAs_id = "reserve")
