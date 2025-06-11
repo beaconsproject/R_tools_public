@@ -17,9 +17,9 @@
   color: white !important;
 }
 
-.figure-caption,
-.quarto-figure-caption {
-  text-align: center;
-  font-weight: bold;
+p.figure-caption {
+  text-align: center !important;
+  font-weight: bold !important;
+  font-size: 1em;
   margin-top: 0.5em;
 }
