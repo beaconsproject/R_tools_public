@@ -4,6 +4,8 @@
 
 Evaluate criteria by clipping with a conservation areas or a network.
 
+Clips the criteria raster to the conservation area and calculates the proportion of each class within it. If a unique identifer (CAs_id) is provided, proportions are computed separately for each corresponding polygon. 
+
 ## Usage
 ```r
 evaluate_criteria_using_clip(
@@ -32,9 +34,6 @@ A tibble with columns:
  - target_size (if provided)
  - target_km2 (if set_target = TRUE)
 
-## Details
-
-Clips the criteria raster to the conservation area and calculates the proportion of each class within it. If a unique identifer (CAs_id) is provided, proportions are computed separately for each corresponding polygon. 
 
 ## Examples
 ### Running the examples
@@ -44,31 +43,57 @@ Clips the criteria raster to the conservation area and calculates the proportion
 
 2. Run the examples below.
 
-```r
+```{r landcover-piechart, fig.width=10, fig.height=6, fig.cap="Pie charts of landcover class proportions by conservation area"}
 # Load libraries
 library(sf)
+library(terra)
 library(dplyr)
 
-# Set working directory
-setwd("your/path/to/downloads/folder")
 
+# Set working directory
+#setwd(".")
+setwd("../")
+dirpath <- getwd()
 source("./R/representation.R")
 
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
-dirpath <- getwd()
+
 
 #Set access path 
-reserves <- file.path(dirpath, "data/reserves_sample.shp")
-nalc <- file.path(dirpath, "data/nalc_sample.tiff")
+reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"))
+nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+
+result <- evaluate_criteria_using_clip(reserves_sf, nalc, CAs_id = "reserve")
 
 
-#Create output folder
-out_dir <- file.path(dirpath, "shp_output")
-if(!dir.exists(out_dir)){
-  dir.create(out_dir)
-}
+# ── To display landcover classes proportion per conservation areas ------------
+library(readr)
+library(ggplot2)
 
-result <- evaluate_criteria_using_clip(reserves, nalc_sample, CAs_id = "reserve")
+# Read landcover color palette from files
+landcover_colors <- read_csv(file.path(dirpath, "data/lc_cols.csv"))
+
+# Join hex code to results
+results <- result %>%
+  mutate(class_value = as.integer(class_value)) %>%
+  left_join(landcover_colors, by = "class_value")
+
+# set number of piechart based on number of conservation areas.
+n_chart <- length(unique(reserves_sf$reserve))
+
+# Plot proportion
+ggplot(results,
+       aes(x = "", y = class_proportion, fill = label)) +  # use label for legend
+  geom_col(width = 1, colour = "white") +
+  coord_polar(theta = "y") +
+  facet_wrap(~ reserve) +
+  scale_fill_manual(values = setNames(results$hex, results$label)) +
+  labs(title = "Class composition by conservation area") +
+  theme_void() +
+  theme(strip.text = element_text(size = 12, face = "bold"),
+        plot.title = element_text(hjust = 0.5))
+        
+        
 ```

@@ -28,7 +28,7 @@
 evaluate_criteria_using_clip <- function(CAs_sf, criteria_raster, CAs_id = NULL, class_values = c(), set_target = FALSE, target_size = NULL){
   
   stopifnot(sf::st_crs(CAs_sf) == sf::st_crs(criteria_raster))
-  
+
   ## Dissolve geometry
   if (!is.null(CAs_id) && CAs_id %in% names(CAs_sf)) {
     CAs_sf <- CAs_sf |>

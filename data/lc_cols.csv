@@ -1,0 +1,12 @@
+﻿class_value,label,red,green,blue,hex
+1,Closed coniferous,0,61,0,#003D00
+2,Open coniferous,148,156,112,#949C70
+3,Mixedwood,92,117,43,#5C752B
+4,Deciduous,20,140,61,#148C3D
+5,Shrub,179,138,51,#B38A33
+6,Herbaceous,225,207,138,#E1CF8A
+7,Burned,255,250,255,#FFFAFF
+8,Wetland,107,163,138,#6BA38A
+9,Water,76,112,163,#4C70A3
+10,Cropland,230,174,102,#E6AE66
+11,Other,168,171,174,#A8ABAE

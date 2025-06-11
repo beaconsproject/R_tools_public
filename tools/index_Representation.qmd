@@ -3,11 +3,9 @@ BEACONs developped a variety of functions for two types of representation analys
 
 The `calc_dissimilarity()` function compares the distributions of a raster layer between a conservation area and a broader study region that we are trying to represent. The closer the distributions of raster values, the lower the dissimilarity score. Values of 0.2 or less are considered 'good' representation. 
 
-Another approach focus on the second type of representation analysis, a target-based approach using proportional representation. The latter ensure specific target areas of different representation classes are met in one or multiple conservation areas.  
+Another approach focus on reaching target-based target using proportional representation. The latter ensure specific target areas of different representation classes are met in one or multiple conservation areas.  
 
 Representation analyses typically include multiple layers assumed to represent a range of ecological processes. They often include climate layers, productivity, riparian zones etc. The goal of the representation analysis is to identify conservation areas that adequately capture the target amounts of representation classes (in our case NALC classes) deemed to be proportionally representative of the study region. Usually the target amounts should be met in full in a conservation area, rather than being split between multiple conservation areas. The idea being that the conservation area should provide a sufficient area for the ecological processes associated with specific target classes to operate. In a network of multiple conservation areas, different target classes and different ecological processes may therefore be represented by different conservation areas.
-
-Note that the tools can accommodate different objectives. For example, meeting a set of targets across a network rather than meeting each target in full in a single conservation area. We give an example of this below.
 
 
 **The xx main hydrology functions are:**
