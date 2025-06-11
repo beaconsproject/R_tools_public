@@ -49,6 +49,7 @@ format:
     css: styles.css
     toc: true
     allow-html: true
+    fig-cap-location: bottom 
 
 resources:
   - downloads/*
