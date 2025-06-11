@@ -17,6 +17,8 @@
   color: white !important;
 }
 
-.figure-caption {
+.quarto-figure-caption {
   text-align: center;
+  font-weight: bold;
+  margin-top: 0.5em;
 }
