@@ -90,7 +90,6 @@ ggplot(results,
   coord_polar(theta = "y") +
   facet_wrap(~ reserve) +
   scale_fill_manual(values = setNames(results$hex, results$label)) +
-  labs(title = "Class composition by conservation area") +
   theme_void() +
   theme(strip.text = element_text(size = 12, face = "bold"),
         plot.title = element_text(hjust = 0.5))
