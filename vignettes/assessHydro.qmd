@@ -26,6 +26,7 @@ library(dplyr)
 # Set working directory
 dirpath <- file.path("your/path/to/BEACONs_R_tools")
 
+set(dirpath)
 source("./R/hydrology.R")
 
 #Set access path 

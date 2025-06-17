@@ -26,16 +26,17 @@ All functions are input to [`builder()`](../tools/builder.html) and need the cat
 library(sf)
 library(utils)
 
-source("./R/builder.R")
-source("./R/utils.R")
 
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
 # Set working directory
-setwd("your/path/to/downloads")
+dirpath <- "your/path/to/downloads"
 
-dirpath <- getwd()
+setwd(dirpath)
+
+source("./R/builder.R")
+source("./R/utils.R")
 
 # Create the folder structure
 input_dir <- "Builder_input"

@@ -4,6 +4,13 @@
 
 The `builder()` function call the BUILDER software from R. It prepares and passes all input tables and variables to the BUIDLER executable and returns the builder table to R.
 
+The functions neighbours(), seeds(), and catchments(), which generate the input tables required by BUILDER, must be executed before running BUILDER. To access the complete set of output tables, users need to specify a valid output directory using the out_dir parameter. When provided, all input and output tables will be saved to that directory. The main output table — listing conservation area names and their associated catchments — is named "*_COLUMN_All_Unique_BAs.csv" and is also returned to the R session.
+
+Specifying an output directory is especially useful when looping through multiple BUILDER runs, allowing easy comparison of outputs across scenarios. If no output directory is provided, a temporary folder will be used and automatically deleted upon function completion.
+
+While BUILDER generates some hydrology and summary information, we recommend using dedicated functions from the Hydrology category to compute detailed hydrology metrics (see Articles/Assess Hydrology on Reserves for an example). Specifying an output directory also ensures access to the full set of BUILDER output tables.
+
+
 ## Usage
 
 ```r
@@ -88,23 +95,7 @@ builder(
 
 ## 📤 Output
 
-A tibble with column names representing conservation areas, and rows of catchments making up the conservation areas. If `output_dir` is provided, additional BUILDER output tables (e.g., hydrology, summary metrics) are saved.
-
-## Details
-
-This function prepares the input tables (neighbours, seeds, catchments) required by BUILDER in a temp file, then creates
-a string of parameters that is passed to the BUILDER executable using **system()**. The BUILDER output tables are saved to the
-temp file, and the output table listing conservation area names and catchment lists is returned to the R session.
-
-This function only returns the BUILDER output table describing the lists of catchments making up each conservation area. We typically recommend
-using the **beaconstools** package to calculate hydrology metrics, but hydrology information as well as other summary information is
-produced by BUILDER.
-If users want access to the complete set of BUILDER output tables (e.g. hydrology and summary information), a valid output directory
-can be provided in which case all input and output tables will be saved to that directory. If no output directory is provided a temp
-folder will be used and deleted after the function completes. As well as providing access to the full list of BUILDER output tables,
-an output directory is useful in a looped workflow with multiple calls to BUILDER producing multiple sets of output files. In this
-workflow a different output directory can be used to save each set of output files which can later be processed using the **beaconstools** package.
-The main output file listing conservation area names and their catchments is named "*_COLUMN_All_Unique_BAs.csv".
+A tibble with column names representing conservation areas, and rows of catchments making up the conservation areas. If `output_dir` is provided, additional BUILDER output tables (e.g., hydrology, summary metrics) are saved. If an out_dir is specified, the returned tibble corresponds to the output file named *_COLUMN_All_Unique_BAs.csv generated for the specific run. 
 
 
 ## Examples

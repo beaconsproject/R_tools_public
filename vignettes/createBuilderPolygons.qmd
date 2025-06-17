@@ -26,17 +26,15 @@ library(sf)
 library(dplyr)
 library(utils)
 
-source("./R/createBuilderPolygons_dependencies.R")
-
 
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
-
 # Set working directory
-setwd("your/path/to/downloads")
+dirpath <- "path/to/BEACONs_R_tools"
 
-dirpath <- getwd()
+setwd(dirpath)
+source("./R/spatial.R")
 
 # Create the folder structure
 builder_dir <- file.path(dirpath, "Builder_output")
@@ -54,7 +52,6 @@ catchments_sf <- st_read(catchments)
 
 # Name given to identify unique benchmark
 colName <- "PB"
-
 
 
 # --------------------------------------
