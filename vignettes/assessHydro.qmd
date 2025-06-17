@@ -20,16 +20,13 @@ To estimate DCI index within a reserve (e.g., potential benchmarks, protected ar
 library(sf)
 library(dplyr)
 
-source("./R/calcDCI_dependencies.R")
-
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
-
 # Set working directory
-setwd("your/path/to/downloads")
+dirpath <- file.path("your/path/to/BEACONs_R_tools")
 
-dirpath <- getwd()
+source("./R/hydrology.R")
 
 #Set access path 
 reserves <- file.path(dirpath, "data/reserves.shp")
@@ -46,7 +43,6 @@ if(!dir.exists(out_dir)){
 # Set if DCI and LWDCI should be added
 addDCI <- TRUE
 addLWDCI <- TRUE
-
 
 
 # --------------------------------------

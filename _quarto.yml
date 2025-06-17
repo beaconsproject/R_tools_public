@@ -39,7 +39,7 @@ website:
             text: Create Builder Input    
           - href: vignettes/createBuilderPolygons.qmd
             text: Create Builder Polygons
-          - href: vignettes/hydro.qmd
+          - href: vignettes/assessHydro.qmd
             text: Assessing hydrology on reserves
 format:
   html:

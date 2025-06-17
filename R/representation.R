@@ -34,7 +34,8 @@ evaluate_criteria_using_clip <- function(CAs_sf, criteria_raster, CAs_id = NULL,
     CAs_sf <- CAs_sf |>
       dplyr::group_by(.data[[CAs_id]]) |>
       dplyr::summarise(geometry = sf::st_union(geometry), .groups = "drop")
-  } else if (nrow(CAs_sf) > 1L) {
+  #} else if (nrow(CAs_sf) > 1L) {
+  } else {
     CAs_sf <- CAs_sf |>
       dplyr::summarise(geometry = sf::st_union(geometry), .groups = "drop")
   }
