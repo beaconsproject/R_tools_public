@@ -119,17 +119,19 @@ conservation areas).
 
 ```r
 library(sf)
+library(dplyr)
+library(tidyr)
 
 ########################
 ##    PARAMS   
 ########################
-# Folder path to the benchmarkbuilder executable
-builder_path <- "path/to/builder/folder"
-
 # Folder path to unzipped BEACONs_R_Tools folder
-dest_folder <- "path/to/extract/folder"
+dirpath <- "path/to/BEACONs_R_tools"
 
-setwd(dest_folder)
+# Folder path to the benchmarkbuilder executable
+builder_path <- "path/to/builderexecutable/folder"
+
+setwd(dirpath)
 
 ########################
 ##    RUN   
@@ -138,8 +140,8 @@ source("./R/builder.R")
 source("./R/utils")
 
 # Create the folder structure
-if (!dir.exists(file.path(dest_folder, "Builder_output"))) {
-  dir.create(file.path(dest_folder, "Builder_output"))
+if (!dir.exists(file.path(dirpath, "Builder_output"))) {
+  dir.create(file.path(dirpath, "Builder_output"))
 }
 
 # Use all catchments as seeds with a single area target
@@ -155,17 +157,19 @@ builder(catchments_sf = catchments, seeds = seed, neighbours = nghbrs, out_dir =
 
 ```r
 library(sf)
+library(dplyr)
+library(tidyr)
 
 ########################
 ##    PARAMS   
 ########################
 # Folder path to the benchmarkbuilder executable
-builder_path <- "path/to/builder/folder"
+builder_path <- "path/to/builderexecutable/folder"
 
 # Folder path to unzipped BEACONs_R_Tools folder
-dest_folder <- "path/to/extract/folder"
+dirpath <- "path/to/BEACONs_R_tools"
 
-setwd(dest_folder)
+setwd(dirpath)
 
 ########################
 ##    RUN   

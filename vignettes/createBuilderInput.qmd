@@ -31,7 +31,7 @@ library(utils)
 # SET PARAMS  --------------------
 # --------------------------------------
 # Set working directory
-dirpath <- "your/path/to/downloads"
+dirpath <- "path/to/BEACONs_R_tools"
 
 setwd(dirpath)
 
