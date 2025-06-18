@@ -21,10 +21,12 @@ Function `fetch_builder_output` allow to read Builder output tables that uses co
 
 
 ```r
-# Load libraries
+# Load required libraries
 library(sf)
 library(dplyr)
 library(utils)
+library(ggplot2)
+library(RColorBrewer)
 
 
 # --------------------------------------
@@ -34,19 +36,23 @@ library(utils)
 dirpath <- "path/to/BEACONs_R_tools"
 
 setwd(dirpath)
+
+# Source BEACONs functions
 source("./R/spatial.R")
+source("./R/builder.R")
+source("./R/utils")
 
-# Set Builder output path
+# Set Builder output path (create the folder structure if missing)
 builder_dir <- file.path(dirpath, "Builder_output")
+if (!dir.exists(builder_dir)) {
+  dir.create(builder_dir)
+}
 
-# Create the folder structure
+# Create the folder structure to receive output polygons
 out_dir <- file.path(dirpath, "shp_output")
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
 }
-
-# Set catchments layer access path and initialize
-catchments_sf <- st_read(file.path(dirpath, "data/catchments.shp"))
 
 # Prefix given to identify unique conservation areas
 colName <- "PB"
@@ -55,15 +61,28 @@ colName <- "PB"
 # --------------------------------------
 #--RUN
 # --------------------------------------
+
+# Use conservation areas as reserve seeds
+catchments <- st_read("./data/catchments_sample.shp")
+conservation_areas <- st_read("./data/reserves_sample.shp")
+
+# Run BUILDER
+nghbrs <- neighbours(catchments)
+seed <- seeds(catchments, areatarget_value = 100000000)
+builder(catchments_sf = catchments, data_source = "catchment", seeds = seed, neighbours = nghbrs, out_dir = builder_dir, builder_local_path = builder_path, catchment_level_intactness = 0.8, conservation_area_intactness = 1, output_upstream = TRUE, output_downstream = TRUE)
+
+
+#############################################
+#  Generate potential conservation areas polygons
+#############################################
 type <- "BENCHMARKS"
 out_tab <- fetch_builder_output(builder_dir, type = type)
 
 # Convert builder output tables to polygons
-poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
+PBx_sf <- dissolve_catchments_from_table(catchments_sf = catchments, 
                                              input_table = out_tab, 
                                              out_feature_id = colName)
 
-write_sf(poly_sf, dsn =file.path(out_dir, "benchmarks_poly.shp"), append = FALSE)
 
 #############################################
 #  Generate upstream polygons
@@ -72,11 +91,10 @@ type <- "UPSTREAM"
 out_tab <- fetch_builder_output(builder_dir, type = type)
 
 # Convert builder output tables to polygons
-poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
+upPBx_sf <- dissolve_catchments_from_table(catchments_sf = catchments, 
                                              input_table = out_tab, 
                                              out_feature_id = colName)
 
-write_sf(poly_sf, dsn =file.path(out_dir, "upstream_poly.shp"), append = FALSE)
 
 #############################################
 #  Generate downstream polygons
@@ -85,10 +103,47 @@ type <- "DOWNSTREAM"
 out_tab <- fetch_builder_output(builder_dir, type = type)
 
 # Convert builder output tables to polygons
-poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
+downPBx_sf <- dissolve_catchments_from_table(catchments_sf = catchments, 
                                              input_table = out_tab, 
                                              out_feature_id = colName)
 
-write_sf(poly_sf, dsn =file.path(out_dir, "downstream_poly.shp"), append = FALSE)
+
+# Map example
+# Get the first conservation area ID
+first_pb_id <- PBx_sf$PB[13]
+
+# Filter all layers for this conservation area
+pb1      <- pb1      |> dplyr::mutate(type = "Conservation Area")
+up_pb1   <- up_pb1   |> dplyr::mutate(type = "Upstream")
+down_pb1 <- down_pb1 |> dplyr::mutate(type = "Downstream")
+
+# Combine layers 
+overlay_data <- rbind(pb1, up_pb1, down_pb1)
+
+# Plot all layers together
+ggplot() +
+  geom_sf(data = catchments, fill = NA, color = "black", size = 0.2) +
+  geom_sf(data = overlay_data, aes(fill = type), color = "black", alpha = 0.6) +
+  scale_fill_manual(
+    name = "Type",
+    values = c(
+      "Conservation Area" = "tan",
+      "Upstream" = "green4",
+      "Downstream" = "steelblue1"
+    )
+  ) +
+  labs(
+    title = paste("Conservation Area and Related Units:", first_pb_id),
+    subtitle = "Mapped with upstream and downstream polygons",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right")
+  
+  
+# Save 
+write_sf(PBx_sf, dsn =file.path(out_dir, "CAs_poly.shp"), append = FALSE)
+write_sf(upPBx_sf, dsn =file.path(out_dir, "upstream_poly.shp"), append = FALSE)
+write_sf(downPBx_sf, dsn =file.path(out_dir, "downstream_poly.shp"), append = FALSE)
 ```
 

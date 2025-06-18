@@ -156,6 +156,7 @@ builder(catchments_sf = catchments, seeds = seed, neighbours = nghbrs, out_dir =
 - Running 'builder()' using reserves seed type.
 
 ```r
+# Load required libraries
 library(sf)
 library(dplyr)
 library(tidyr)

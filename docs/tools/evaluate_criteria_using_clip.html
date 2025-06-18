@@ -231,8 +231,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="evaluate_criteria_using_clip" class="level1">
 <h1><code>evaluate_criteria_using_clip()</code></h1>
-<p>Evaluate criteria by clipping with a conservation areas or a network.</p>
-<p>Clips the criteria raster to the conservation area and calculates the proportion of each class within it. If a unique identifer (CAs_id) is provided, proportions are computed separately for each corresponding polygon.</p>
+<p>The <code>evaluate_criteria_using_clip()</code> function evaluates the specified criteria by clipping them to either individual conservation areas or a conservation network. The evaluation calculates the proportion of each class within the area. If a unique identifier (CAs_id) is provided, proportions are computed separately for each corresponding polygon.</p>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">evaluate_criteria_using_clip</span>(</span>
@@ -240,9 +239,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  criteria_raster, </span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">CAs_id =</span> <span class="cn">NULL</span>, </span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">class_values =</span> <span class="fu">c</span>(), </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_target =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">target_size =</span> <span class="cn">NULL</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">target_size =</span> <span class="cn">NULL</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
@@ -251,13 +249,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>criteria_raster: Raster object of the representation layer classified into categorical classes</li>
 <li>CAs_id: Column in CAs_sf specify unique identifier.</li>
 <li>class_values: A vector of classes in representation_raster to generate targets for. Defaults to all classes in the representation_raster.</li>
-<li>set_target: Logical. Should the tibble return target size? Default is FALSE</li>
-<li>target_size: The area in km2 that targets will sum to. <strong>set target</strong> must be set to TRUE.</li>
+<li>target_size: The area in km2 that targets will sum to. Default is NULL</li>
 </ul>
 </section>
 <section id="output" class="level2">
 <h2 class="anchored" data-anchor-id="output">📤 Output</h2>
-<p>A tibble with columns: - CAs_id (if provided) - class_value: the list of class_values} - area_km2: the area of each class_value in the CAs_sf} - class_proportion: area_km2/sum(area_km2)} - target_size (if provided) - target_km2 (if set_target = TRUE)</p>
+<p>A tibble with columns: - CAs_id (if provided) - class_value: the list of class_values} - area_km2: the area of each class_value in the CAs_sf} - class_proportion: area_km2/sum(area_km2)} - target_km2</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
