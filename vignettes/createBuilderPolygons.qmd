@@ -20,36 +20,39 @@ Function `fetch_builder_output` allow to read Builder output tables that uses co
 - **type**: Indicate which file to read. Type can be 'BENCHMARKS', 'UPSTREAM' or 'DOWNSTREAM'. Default is 'BENCHMARKS'.
 
 
-```r
+```{r Builder_polygons, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
 # Load required libraries
 library(sf)
 library(dplyr)
+library(tidyr)
 library(utils)
 library(ggplot2)
 library(RColorBrewer)
-
+library(here)
 
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
 # Set working directory
-dirpath <- "path/to/BEACONs_R_tools"
-
-setwd(dirpath)
+dirpath <- here(".")
 
 # Source BEACONs functions
-source("./R/spatial.R")
-source("./R/builder.R")
-source("./R/utils")
+source(file.path(dirpath,"R/spatial.R"))
+source(file.path(dirpath,"R/builder.R"))
+source(file.path(dirpath,"R/utils.R"))
+source(file.path(dirpath,"R/utils.R"))
+
+# Folder path to the benchmarkbuilder executable
+builder_path <- here("builder")
 
 # Set Builder output path (create the folder structure if missing)
-builder_dir <- file.path(dirpath, "Builder_output")
+builder_dir <- file.path(dirpath, "output/Builder_output")
 if (!dir.exists(builder_dir)) {
   dir.create(builder_dir)
 }
 
 # Create the folder structure to receive output polygons
-out_dir <- file.path(dirpath, "shp_output")
+out_dir <- file.path(dirpath, "output/shp_output")
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
 }
@@ -63,8 +66,8 @@ colName <- "PB"
 # --------------------------------------
 
 # Use conservation areas as reserve seeds
-catchments <- st_read("./data/catchments_sample.shp")
-conservation_areas <- st_read("./data/reserves_sample.shp")
+catchments <- st_read(file.path(dirpath,"data/catchments_sample.shp"))
+conservation_areas <- st_read(file.path(dirpath,"data/reserves_sample.shp"))
 
 # Run BUILDER
 nghbrs <- neighbours(catchments)
@@ -113,9 +116,9 @@ downPBx_sf <- dissolve_catchments_from_table(catchments_sf = catchments,
 first_pb_id <- PBx_sf$PB[13]
 
 # Filter all layers for this conservation area
-pb1      <- pb1      |> dplyr::mutate(type = "Conservation Area")
-up_pb1   <- up_pb1   |> dplyr::mutate(type = "Upstream")
-down_pb1 <- down_pb1 |> dplyr::mutate(type = "Downstream")
+pb1      <- PBx_sf[PBx_sf$PB == first_pb_id, ] %>% mutate(type = "Conservation Area")
+up_pb1   <- upPBx_sf[upPBx_sf$PB == first_pb_id, ] %>% mutate(type = "Upstream")
+down_pb1 <- downPBx_sf[downPBx_sf$PB == first_pb_id, ] %>% mutate(type = "Downstream")
 
 # Combine layers 
 overlay_data <- rbind(pb1, up_pb1, down_pb1)
