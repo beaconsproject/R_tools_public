@@ -9,7 +9,6 @@
 #' @param CAs_id Unique id column in conservation_areas_sf containing conservation area names as strings. Can be a unique identifier representing a network. 
 #' @param criteria_raster Raster object of the representation layer classified into categorical classes
 #' @param class_values A vector of classes in representation_raster to generate targets for. Defaults to all classes in the representation_raster.
-#' @param set_target Logical. Should the tibble return target size? Default is FALSE
 #' @param target_size The area in km2 that targets will sum to. Generally the approximate target size of reference area being evaluated. set target Must be set to TRUE
 
 #' @return A tibble with columns: 
@@ -25,7 +24,7 @@
 #'
 #' @examples
 #' evaluate_criteria_using_clip(ref_poly, led_sample)
-evaluate_criteria_using_clip <- function(CAs_sf, criteria_raster, CAs_id = NULL, class_values = c(), set_target = FALSE, target_size = NULL){
+evaluate_criteria_using_clip <- function(CAs_sf, criteria_raster, CAs_id = NULL, class_values = c(), target_size = NULL){
   
   stopifnot(sf::st_crs(CAs_sf) == sf::st_crs(criteria_raster))
 
@@ -85,7 +84,7 @@ evaluate_criteria_using_clip <- function(CAs_sf, criteria_raster, CAs_id = NULL,
       dplyr::mutate(class_proportion = area_km2 / sum(area_km2))
   }
   
-  if(set_target){
+  if(!is.null(target_size)){
     df$target_size <- target_size
     df$target_km2 <- round(df$class_proportion * df$target_size, 2)
   }

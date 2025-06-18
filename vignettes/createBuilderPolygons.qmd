@@ -14,7 +14,7 @@ These polygons are then used to [assess dendritic connectivity](calcDCI.html) by
 
 ### Generate potential benchmarks, upstream and downstream polygons from catchments using **BUILDER** output files
 
-Function `prep_input_column` allow to read Builder output tables that uses column format. The output can then be passed to dissolve_catchment_from_table to generate polygons using enumerated 'CATCHNUM'. `prep_input_column` needs the following:
+Function `fetch_builder_output` allow to read Builder output tables that uses column format. The output can then be passed to dissolve_catchment_from_table to generate polygons using enumerated 'CATCHNUM'. `fetch_builder_output` needs the following:
 
 - **out_dir**: Point to a directory that contains Builder output
 - **type**: Indicate which file to read. Type can be 'BENCHMARKS', 'UPSTREAM' or 'DOWNSTREAM'. Default is 'BENCHMARKS'.
@@ -36,21 +36,19 @@ dirpath <- "path/to/BEACONs_R_tools"
 setwd(dirpath)
 source("./R/spatial.R")
 
-# Create the folder structure
+# Set Builder output path
 builder_dir <- file.path(dirpath, "Builder_output")
 
+# Create the folder structure
 out_dir <- file.path(dirpath, "shp_output")
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
 }
 
-#Set access path 
-catchments <- file.path(dirpath, "data/catchments.shp")
+# Set catchments layer access path and initialize
+catchments_sf <- st_read(file.path(dirpath, "data/catchments.shp"))
 
-#Set access path catchments layer and initialize
-catchments_sf <- st_read(catchments)
-
-# Name given to identify unique benchmark
+# Prefix given to identify unique conservation areas
 colName <- "PB"
 
 
@@ -58,7 +56,7 @@ colName <- "PB"
 #--RUN
 # --------------------------------------
 type <- "BENCHMARKS"
-out_tab <- prep_input_column(builder_dir, type = type)
+out_tab <- fetch_builder_output(builder_dir, type = type)
 
 # Convert builder output tables to polygons
 poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
@@ -71,7 +69,7 @@ write_sf(poly_sf, dsn =file.path(out_dir, "benchmarks_poly.shp"), append = FALSE
 #  Generate upstream polygons
 #############################################
 type <- "UPSTREAM"
-out_tab <- prep_input_column(builder_dir, type = type)
+out_tab <- fetch_builder_output(builder_dir, type = type)
 
 # Convert builder output tables to polygons
 poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
@@ -84,7 +82,7 @@ write_sf(poly_sf, dsn =file.path(out_dir, "upstream_poly.shp"), append = FALSE)
 #  Generate downstream polygons
 #############################################
 type <- "DOWNSTREAM"
-out_tab <- prep_input_column(builder_dir, type = type)
+out_tab <- fetch_builder_output(builder_dir, type = type)
 
 # Convert builder output tables to polygons
 poly_sf <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 

@@ -2,9 +2,7 @@
 
 # `evaluate_criteria_using_clip()`
 
-Evaluate criteria by clipping with a conservation areas or a network.
-
-Clips the criteria raster to the conservation area and calculates the proportion of each class within it. If a unique identifer (CAs_id) is provided, proportions are computed separately for each corresponding polygon. 
+The `evaluate_criteria_using_clip()` function evaluates the specified criteria by clipping them to either individual conservation areas or a conservation network. The evaluation calculates the proportion of each class within the area. If a unique identifier (CAs_id) is provided, proportions are computed separately for each corresponding polygon. 
 
 ## Usage
 ```r
@@ -13,7 +11,6 @@ evaluate_criteria_using_clip(
   criteria_raster, 
   CAs_id = NULL, 
   class_values = c(), 
-  set_target = FALSE, 
   target_size = NULL
 )
 ```
@@ -22,8 +19,7 @@ evaluate_criteria_using_clip(
 - criteria_raster: Raster object of the representation layer classified into categorical classes
 - CAs_id: Column in CAs_sf specify unique identifier. 
 - class_values: A vector of classes in representation_raster to generate targets for. Defaults to all classes in the representation_raster.
-- set_target: Logical. Should the tibble return target size? Default is FALSE
-- target_size: The area in km2 that targets will sum to. **set target** must be set to TRUE. 
+- target_size: The area in km2 that targets will sum to. Default is NULL
 
 ## 📤 Output
 A tibble with columns: 
@@ -31,8 +27,7 @@ A tibble with columns:
  - class_value: the list of class_values}
  - area_km2: the area of each class_value in the CAs_sf}
  - class_proportion: area_km2/sum(area_km2)}
- - target_size (if provided)
- - target_km2 (if set_target = TRUE)
+ - target_km2
 
 
 ## Examples

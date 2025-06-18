@@ -1,4 +1,4 @@
-catchnums_in_polygon <- function(pa_sf, pa_id, catchments_sf){
+catchnums_in_polygon <- function(CAs_sf, CAs_id, catchments_sf){
   
   # Convert catchments to centroids and intersects with PAs
   # Output is a df of catchments in each polygon, where column names are unique ids from pa_sf. 
@@ -9,32 +9,32 @@ catchnums_in_polygon <- function(pa_sf, pa_id, catchments_sf){
   # This is essential when PAs were constructed using catchments, should be an acceptable method when non-catchment PAs are used too.
   
   # pa_id cannot be "CATCHNUM". Change it to something else (#58).
-  if(pa_id == "CATCHNUM"){
-    pa_id <- "unique_id"
-    names(pa_sf)[names(pa_sf) == "CATCHNUM"] <- "unique_id"
+  if(CAs_id == "CATCHNUM"){
+    CAs_id <- "unique_id"
+    names(CAs_sf)[names(CAs_sf) == "CATCHNUM"] <- "unique_id"
   }
-  
+  browser()
   sf::st_agr(catchments_sf) = "constant"
   
   catch_within <- catchments_sf %>% 
     sf::st_point_on_surface() %>% # get catchment centroids. 
-    sf::st_within(pa_sf) %>% # test within for all centroids in all PAs, returns a row for each match. row.id is a catchnum index, col.id is a PA index.
+    sf::st_within(CAs_sf) %>% # test within for all centroids in all conservation areas, returns a row for each match. row.id is a catchnum index, col.id is a PA index.
     as.data.frame()
   
   catchments_sf$key <- 1:nrow(catchments_sf) # add a key column to sf table. Must be an index to match st_within output
   sf_catch_key <- sf::st_drop_geometry(catchments_sf[c("key","CATCHNUM")])
-  pa_sf$key <- 1:nrow(pa_sf) # add key to pa_sf
-  pa_key <- sf::st_drop_geometry(pa_sf[c("key",pa_id)])
+  CAs_sf$key <- 1:nrow(CAs_sf) # add key to pa_sf
+  CAs_key <- sf::st_drop_geometry(CAs_sf[c("key",CAs_id)])
   
   # convert indexes from st_within to catchnums using the keys to join
   tbl_long <- catch_within %>%
     dplyr::left_join(sf_catch_key, by = c("row.id" = "key")) %>%
-    dplyr::left_join(pa_key, by = c("col.id" = "key")) %>%
-    dplyr::select(.data$CATCHNUM, .data[[pa_id]]) %>%
-    dplyr::arrange(.data[[pa_id]])
+    dplyr::left_join(CAs_key, by = c("col.id" = "key")) %>%
+    dplyr::select(.data$CATCHNUM, .data[[CAs_id]]) %>%
+    dplyr::arrange(.data[[CAs_id]])
   
   # convert long table to wide table with missing values as NA
-  out_tab <- long_to_wide(tbl_long, pa_id, "CATCHNUM")
+  out_tab <- long_to_wide(tbl_long, CAs_id, "CATCHNUM")
   return(out_tab)
 }
 
