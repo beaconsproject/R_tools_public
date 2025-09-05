@@ -13,7 +13,7 @@ catchnums_in_polygon <- function(CAs_sf, CAs_id, catchments_sf){
     CAs_id <- "unique_id"
     names(CAs_sf)[names(CAs_sf) == "CATCHNUM"] <- "unique_id"
   }
-  browser()
+  
   sf::st_agr(catchments_sf) = "constant"
   
   catch_within <- catchments_sf %>% 

@@ -43,16 +43,16 @@ A tibble with columns:
 library(sf)
 library(terra)
 library(dplyr)
-
-
-# Set working directory
-setwd("..")
-dirpath <- getwd()
-source("./R/representation.R")
+library(here)
 
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/representation.R")
 
 #Set access path 
 reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)
