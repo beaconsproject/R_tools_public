@@ -8,31 +8,30 @@
 ```r
 get_upstream_catchments(
   conservation_area_sf,
-  stream_sf = NULL,
-  col_name = "network",
-  buffer_width = 0.1
+  conservation_area_id,
+  catchments_sf
 )
 
 get_downstream_catchments(
   conservation_area_sf,
-  stream_sf = NULL,
-  col_name = "network",
-  buffer_width = 0.1
+  conservation_area_id,
+  catchments_sf
 )
 ```
 ## Arguments
 Both functions need the following:
 
-- CAs_sf: sf object of protected area polygons.
+- conservation_area_sf: sf object of protected area polygons.
 
-- CAs_id: String matching the unique identifier column in \code{CAs_sf}.
+- conservation_area_id: String matching the unique identifier column in \code{conservation_area_sf}.
 
 - catchments_sf: sf object of the catchments dataset with unique identifier column: CATCHNUM .
 
 
 
 ## 📤 Output
-A tibble where each column name is a unique polygon id, and each row is a catchment making up the upstream area for the polygon. Blank rows are filled with NA. CATCHNUMs are returned as integers. 
+A tibble where each column name is a unique polygon id, and each row is a catchment making up the upstream or downstream area for the polygon. Blank rows are filled with NA. CATCHNUMs are returned as integers. 
+
 
 ## Details
 The upstream and downstream regions of a targeted polygons (i.e. conservation  area) can inform on potential sources of external vulnerability due to water-mediated influences. For instance, assessing a conservation area’s vulnerability may involve examining upstream human disturbances—such as pollutant inputs or water diversions (e.g., dams)—while looking at downstream areas of a disturbed regions (i.e. mine) can provide insight into the potential spread of ecological impacts originating from the region.
@@ -84,11 +83,12 @@ catchments_sf <- st_read(catchments)
 
 upstream_tbl <- get_upstream_catchments(reserves_sf, colName, catchments_sf)
 
+# Turn the tibble into sf object
+upstream_sf <- dissolve_catchments_from_table(catchments_sf, upstream_tbl, colName)
 
-upstream_sf <- dissolve_catchments_from_table(catchments_sf, upstream_tbl, "reserve")
-
-
-#Save results
-write_sf(reserves_sf, dsn=file.path(out_dir, "reserves_dci.shp"), append = FALSE)
+#Plot results
+plot(st_geometry(catchments_sf), col = "lightblue", main = "Upstream Catchments Example")
+plot(st_geometry(upstream_sf), col = "green", add = TRUE)
+plot(st_geometry(reserves_sf), col = "red", add = TRUE)
 ```
 

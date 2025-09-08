@@ -174,6 +174,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a>
   <ul class="collapse">
+  <li><a href="#calc_dissimilarity" id="toc-calc_dissimilarity" class="nav-link" data-scroll-target="#calc_dissimilarity">calc_dissimilarity</a></li>
   <li><a href="#evaluate_criteria_using_clip" id="toc-evaluate_criteria_using_clip" class="nav-link" data-scroll-target="#evaluate_criteria_using_clip">evaluate_criteria_using_clip</a></li>
   </ul></li>
   <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation">Citation</a></li>
@@ -192,13 +193,18 @@ ul.task-list li input[type="checkbox"] {
 <p>The <code>calc_dissimilarity()</code> function compares the distributions of a raster layer between a conservation area and a broader study region that we are trying to represent. The closer the distributions of raster values, the lower the dissimilarity score. Values of 0.2 or less are considered ‘good’ representation.</p>
 <p>Another approach focus on reaching target-based target using proportional representation. The latter ensure specific target areas of different representation classes are met in one or multiple conservation areas.</p>
 <p>Representation analyses typically include multiple layers assumed to represent a range of ecological processes. They often include climate layers, productivity, riparian zones etc. The goal of the representation analysis is to identify conservation areas that adequately capture the target amounts of representation classes (in our case NALC classes) deemed to be proportionally representative of the study region. Usually the target amounts should be met in full in a conservation area, rather than being split between multiple conservation areas. The idea being that the conservation area should provide a sufficient area for the ecological processes associated with specific target classes to operate. In a network of multiple conservation areas, different target classes and different ecological processes may therefore be represented by different conservation areas.</p>
-<p><strong>The xx main hydrology functions are:</strong></p>
+<p><strong>The xx main representation functions are:</strong></p>
 <ul>
+<li><a href="../tools/calc_dissimilarity.html">calc_dissimilarity</a></li>
 <li><a href="../tools/evaluate_criteria_using_clip.html">evaluate_criteria_using_clip</a></li>
 </ul>
+<section id="calc_dissimilarity" class="level3">
+<h3 class="anchored" data-anchor-id="calc_dissimilarity">calc_dissimilarity</h3>
+<p>The function <a href="../tools/calc_dissimilarity.html">calc_dissimilarity()</a> calculate dissimilarity values between a set of polygons and a reference area..</p>
+</section>
 <section id="evaluate_criteria_using_clip" class="level3">
 <h3 class="anchored" data-anchor-id="evaluate_criteria_using_clip">evaluate_criteria_using_clip</h3>
-<p>The function <a href="../tools/evaluate_criteria_using_clip.html">evaluate_criteria_using_clip()</a> Clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
+<p>The function <a href="../tools/evaluate_criteria_using_clip.html">evaluate_criteria_using_clip()</a> clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
 <p><br> <br></p>
 </section>
 </section>

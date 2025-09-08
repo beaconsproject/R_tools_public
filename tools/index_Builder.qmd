@@ -28,12 +28,13 @@ If the latter occurs, and the area-weighted intactness of the benchmark exceeds 
 
 ## BUILDER R Functions
 
-**BEACONs BUILDER has 4 main functions:**
+**BEACONs BUILDER has 5 main functions:**
 
 - [seeds](seeds.qmd)
 - [reserve_seeds](reserve_seeds.qmd)
 - [neighbours](neighbours.qmd)
 - [builder](builder.qmd)
+- [fetch_builder_output](fetch_builder_output.qmd)
 
 ### seeds
 
@@ -51,13 +52,16 @@ The function [neighbours()](neighbours.qmd) creates a table listing pairwise cat
 ### builder
 The function [builder()](builder.qmd) prepares the input files and parameters and passes them to a command line version of BUILDER executable software. The function then fetches and returns the main BUILDER output table into the R environment.
 
+### fetch_builder_output
+The function [fetch_builder_output()](fetch_builder_output.qmd) loads pre-processed `builder()` output table into the R environment. It reads the appropriate table based on the specified type and makes it available for subsequent analyses (e.g., polygon creation).
 
 ## 🏗️ Process
 
 1. Prepares input tables: `neighbours`, either `seeds` or `reserve_seeds`, and `catchments`.
 2. Make sure default parameters are relevant and Set **BUILDER** parameters such as catchment_level_intactness, conservation_area_intactness.
-4. `builder()` returns the `*_COLUMN_All_Unique_BAs.csv` file listing conservation areas and their catchments.
-5. Subsequent processing, such as creating polygons of benchmarks using `builder()` output and assessing ecological attributes is done using others BEACONs functions (see examples in section Articles).
+4. `builder()` returns the `*_COLUMN_All_Unique_BAs.csv` file listing conservation areas and their catchments by default.
+5. To access output tables containing upstream or downstream attributes, use the `fetch_builder_output` function.
+6. Subsequent processing, such as creating polygons of benchmarks using `builder()` output and assessing ecological attributes is done using others BEACONs functions (see examples in section Articles).
 
 
 ## 🔧 Key Parameters

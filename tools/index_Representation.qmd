@@ -8,13 +8,20 @@ Another approach focus on reaching target-based target using proportional repres
 Representation analyses typically include multiple layers assumed to represent a range of ecological processes. They often include climate layers, productivity, riparian zones etc. The goal of the representation analysis is to identify conservation areas that adequately capture the target amounts of representation classes (in our case NALC classes) deemed to be proportionally representative of the study region. Usually the target amounts should be met in full in a conservation area, rather than being split between multiple conservation areas. The idea being that the conservation area should provide a sufficient area for the ecological processes associated with specific target classes to operate. In a network of multiple conservation areas, different target classes and different ecological processes may therefore be represented by different conservation areas.
 
 
-**The xx main hydrology functions are:**
+**The xx main representation functions are:**
 
+- [calc_dissimilarity](calc_dissimilarity.qmd)
 - [evaluate_criteria_using_clip](evaluate_criteria_using_clip.qmd)
+
+
+### calc_dissimilarity
+
+The function [calc_dissimilarity()](calc_dissimilarity.qmd) calculate dissimilarity values between a set of polygons and a reference area..
+
 
 ### evaluate_criteria_using_clip
 
-The function [evaluate_criteria_using_clip()](evaluate_criteria_using_clip.qmd) Clips the criteria raster to the conservation area and calculates the proportion of each class within it.
+The function [evaluate_criteria_using_clip()](evaluate_criteria_using_clip.qmd) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
 
 
 <br>

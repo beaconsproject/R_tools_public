@@ -7,13 +7,14 @@ The `evaluate_criteria_using_clip()` function evaluates the specified criteria b
 ## Usage
 ```r
 evaluate_criteria_using_clip(
-  CAs_sf, 
+  conservation_area_sf, 
   criteria_raster, 
-  CAs_id = NULL, 
+  conservation_area_id = NULL, 
   class_values = c(), 
   target_size = NULL
 )
 ```
+
 ## Arguments
 - CAs_sf: sf object of conservation areas.
 - criteria_raster: Raster object of the representation layer classified into categorical classes
@@ -23,7 +24,7 @@ evaluate_criteria_using_clip(
 
 ## 📤 Output
 A tibble with columns: 
- - CAs_id (if provided)
+ - conservation_area_id (if provided)
  - class_value: the list of class_values}
  - area_km2: the area of each class_value in the CAs_sf}
  - class_proportion: area_km2/sum(area_km2)}
@@ -58,7 +59,7 @@ source("./R/representation.R")
 reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)
 nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
 
-result <- evaluate_criteria_using_clip(reserves_sf, nalc, CAs_id = "reserve")
+result <- evaluate_criteria_using_clip(reserves_sf, nalc, conservation_area_id = "reserve")
 
 # ── To display landcover classes proportion per conservation areas ------------
 library(readr)

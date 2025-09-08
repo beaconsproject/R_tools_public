@@ -1,0 +1,67 @@
+## BEACONs Representation R Functions
+
+# `calc_dissimilarity()`
+
+The `calc_dissimilarity()` function evaluates the specified criteria by clipping them to either individual conservation areas or a conservation network. The evaluation calculates the proportion of each class within the area. If a unique identifier (CAs_id) is provided, proportions are computed separately for each corresponding polygon. 
+
+## Usage
+```r
+calc_dissimilarity(
+  reserves_sf, 
+  reserves_id,
+  reference_sf, 
+  raster_layer, 
+  raster_type, 
+  categorical_class_values=c(),
+  plot_out_dir=NULL
+  categorical_class_labels=data.frame()
+)
+```
+## Arguments
+- reserves_sf: sf object with unique id column named network.
+- reserves_id: String matching the unique identifier column in \code{reserves_sf}.
+- reference_sf: sf object of the reference area to compare against.
+- raster_layer: Raster object that will be clipped to the reference and reserve areas, with crs matching reserves_sf. 
+- raster_type: 'categorical' will use Bray-Curtis, 'continuous' will use KS-statistic.
+- categorical_class_values: Vector of raster values in raster_layer of type 'categorical' to include in the calculation. Allows unwanted values to be dropped. Defaults to include all non-NA values.
+- plot_out_dir: Path to folder in which to save plots. Default is not to create plots. Only creates plots if valid file path is provided. Dir will be created if it doesn't exist.
+- categorical_class_labels: Optional data.frame object with columns values and labels indicating the label to use in Bray-Curtis graphs for each raster value. Defaults to using the raster values. Labels can be provided for all or a subset of values. See examples.
+
+## 📤 Output
+A vector of dissimilarity values matching the order of the input reserves_sf. Optionally a dissimilarity plot saved in the plot_out_dir for each computed value.
+
+
+## Examples
+### Running the examples
+
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```r 
+# Load libraries
+library(sf)
+library(terra)
+library(dplyr)
+library(here)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/representation.R")
+
+#Set access path 
+reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)
+reference_sf <- st_read(file.path(dirpath, "data/reference_area_sample.shp"), quiet = TRUE)
+nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+
+colName <- "reserve"
+
+result <- calc_dissimilarity(reserves_sf, colName, reference_sf, nalc, 'categorical')
+
+```

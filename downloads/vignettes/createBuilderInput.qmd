@@ -1,0 +1,194 @@
+---
+title: "Create Builder input"
+format: html
+---
+
+## Intro
+
+This script creates the three required input to run BUILDER (neighbour, seeds and catchments tables).  
+
+The first step is to locate the catchments layer and point on an output directory where the derived files will be saved. The script uses three BUILDER functions: `neighbour`, `seeds` and `reserve_seeds`. 
+
+The [`neighbours()`](../tools/neighbours.html) function calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
+
+The [`seeds()`](../tools/seeds.html) function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.  
+
+The [`reserve_seeds()`](../tools/reserve_seeds.html) function creates a **seeds table** based on conservation areas.  
+It identifies **seed catchments inside a conservation area** and assigns them an **area target**.
+
+All functions are input to [`builder()`](../tools/builder.html) and need the catchments dataset with unique identifier column 'CATCHNUM'.
+
+
+### Generate neighbour table
+
+```r
+# Load required libraries
+library(sf)
+library(utils)
+
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+source("./R/builder.R")
+source("./R/utils.R")
+
+# Create the folder structure
+input_dir <- file.path(dirpath, "Builder_input")
+if (!dir.exists(input_dir)) {
+  dir.create(input_dir, recursive = TRUE)
+}
+
+#Set access path catchment layer and initialize
+catchments_sf <- st_read(file.path(dirpath, "data", "catchments_sample.shp"))
+
+
+# --------------------------------------
+#--RUN
+# --------------------------------------
+# Generate neighbour table
+nghbrs <- neighbours(catchments_sf)
+
+write.csv(nghbrs, file=file.path(dirpath, input_dir, "nghbrs.csv"), row.names=FALSE) 
+```
+
+
+### Generate seeds table
+
+```r
+# Load required libraries
+library(sf)
+library(utils)
+library(dplyr)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+source("./R/builder.R")
+source("./R/utils.R")
+
+# Create the folder structure
+input_dir <- file.path(dirpath, "Builder_input")
+if (!dir.exists(input_dir)) {
+  dir.create(input_dir, recursive = TRUE)
+}
+
+#Set access path catchment layer and initialize
+catchments <- st_read(file.path(dirpath, "data", "catchments.shp"))
+
+##OPTION: Filter potential seeds according to catchments intactness and STHRALER index
+intactColname <- "intactKBA" # set catchment intactness column
+intact_threshold <- 0.9      # set catchment intactness threshold
+STRAHLER_ref <- NULL         # set STRAHLER index
+
+##OPTION: Set area target value by choosing one of the following options. Leave argument to NULL  if not chosen
+## Option 1:
+areatarget <- 100000000 #ex : areatarget <- 10000
+## Option 2:
+areatarget_col <- NULL #ex : areatarget_col <- "area_thres" 
+## Option 3:
+areatarget_poly <- NULL # ex: areatarget_poly <- st_read(file.path(dirpath, "data", "poly_areatarget.shp"))
+areatarget_poly_col <- NULL # ex: areatarget_poly_col <-"area_thres"
+
+
+# --------------------------------------
+#--RUN
+# --------------------------------------
+# Filter catchments based on intactness and STRAHLER index, create seeds and convert to csv
+seed_sf <- catchments_sf %>%
+  dplyr::filter(.data[[intactColname]] >= intact_threshold, 
+         if (!is.null(STRAHLER_ref)) STRAHLER == as.numeric(STRAHLER_ref) else TRUE)
+
+if (!is.null(areatarget)) {
+  seed <- seeds(catchments_sf = seed_sf, areatarget_value = as.numeric(areatarget))
+} else if (!is.null(areatarget_col)) {
+  # If areatarget is found in a column
+  seed <- seeds(catchments_sf = seed_sf, areatarget_col = areatarget_col)
+} else if (!is.null(areatarget_poly)) {
+  # If area target is found in a polygon that intersect the catchments_sf
+  seed <- seeds(catchments_sf = seed_sf, areatarget_polygon = areatarget_poly, areatarget_polygon_col = areatarget_poly_col)
+} else {
+  stop("You need to set at least one option") # Handle case where neither exists
+}
+
+write.csv(seed, file=file.path(dirpath, input_dir, "seeds.csv"), row.names=FALSE) 
+```
+
+
+### Generate reserve seeds table
+
+```r 
+# Load required libraries
+library(sf)
+library(dplyr)
+library(utils)
+
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+source("./R/builder.R")
+source("./R/utils.R")
+
+# Create the folder structure
+input_dir <- file.path(dirpath, "Builder_input")
+if (!dir.exists(input_dir)) {
+  dir.create(input_dir, recursive = TRUE)
+}
+
+#Set access path catchment layer and initialize
+catchments_sf <- st_read(file.path(dirpath, "data", "catchments_sample.shp"))
+pas_sf <- st_read(file.path(dirpath, "data", "reserves_sample.shp"))
+
+# --------------------------------------
+#--RUN
+# --------------------------------------
+
+reserve_seed <- reserve_seeds(catchments_sf, CAs_sf=pas_sf, CAs_name = "PARENT_ID", areatarget_value = 10000, joinType = "INTERSECT")
+
+# Save
+write.csv(reserve_seed, file=file.path(dirpath, input_dir, "reserve_seeds.csv"), row.names=FALSE) 
+```
+
+
+### Generate catchments table
+
+```r
+# Load required libraries
+library(sf)
+library(utils)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+# Create the folder structure
+input_dir <- file.path(dirpath, "Builder_input")
+if (!dir.exists(input_dir)) {
+  dir.create(input_dir, recursive = TRUE)
+}
+
+#Set access path and initialize 
+catchments_sf <- st_read(file.path(dirpath, "data", "catchments.shp"))
+
+# --------------------------------------
+#--RUN
+# --------------------------------------
+catchment <- catchments_sf %>%
+  st_drop_geometry()
+write.csv(catchment, file=file.path(dirpath, input_dir, "catchments.csv"), row.names=FALSE)
+
+```
+
+

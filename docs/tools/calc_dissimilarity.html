@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index_builder – BEACONs R Tools</title>
+<title>calc_dissimilarity – BEACONs R Tools</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -172,21 +206,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#beacons-builder" id="toc-beacons-builder" class="nav-link active" data-scroll-target="#beacons-builder">BEACONs BUILDER</a></li>
-  <li><a href="#catchments" id="toc-catchments" class="nav-link" data-scroll-target="#catchments">Catchments</a></li>
-  <li><a href="#aggregation-algorithm" id="toc-aggregation-algorithm" class="nav-link" data-scroll-target="#aggregation-algorithm">Aggregation algorithm</a></li>
-  <li><a href="#builder-r-functions" id="toc-builder-r-functions" class="nav-link" data-scroll-target="#builder-r-functions">BUILDER R Functions</a>
+  <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a></li>
+  <li><a href="#calc_dissimilarity" id="toc-calc_dissimilarity" class="nav-link" data-scroll-target="#calc_dissimilarity"><code>calc_dissimilarity()</code></a>
   <ul class="collapse">
-  <li><a href="#seeds" id="toc-seeds" class="nav-link" data-scroll-target="#seeds">seeds</a></li>
-  <li><a href="#reserve_seeds" id="toc-reserve_seeds" class="nav-link" data-scroll-target="#reserve_seeds">reserve_seeds</a></li>
-  <li><a href="#neighbours" id="toc-neighbours" class="nav-link" data-scroll-target="#neighbours">neighbours</a></li>
-  <li><a href="#builder" id="toc-builder" class="nav-link" data-scroll-target="#builder">builder</a></li>
-  <li><a href="#fetch_builder_output" id="toc-fetch_builder_output" class="nav-link" data-scroll-target="#fetch_builder_output">fetch_builder_output</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">📤 Output</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul class="collapse">
+  <li><a href="#running-the-examples" id="toc-running-the-examples" class="nav-link" data-scroll-target="#running-the-examples">Running the examples</a></li>
   </ul></li>
-  <li><a href="#process" id="toc-process" class="nav-link" data-scroll-target="#process">🏗️ Process</a></li>
-  <li><a href="#key-parameters" id="toc-key-parameters" class="nav-link" data-scroll-target="#key-parameters">🔧 Key Parameters</a></li>
-  <li><a href="#tip" id="toc-tip" class="nav-link" data-scroll-target="#tip">💡 Tip</a></li>
-  <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation">Citation</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -196,118 +226,77 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="beacons-builder" class="level2">
-<h2 class="anchored" data-anchor-id="beacons-builder">BEACONs BUILDER</h2>
-<p>BUILDER is a user friendly software application, developed in C# .NET framework, to assist conservation planners with the design of ecological benchmarks. This package provides a set of R functions to call BUILDER and fetch the main output table. The partner package <code>beaconstools</code> provides functions to process and analyse output tables from BUILDER in R.</p>
-<p>BUILDER explicitly incorporates hydrologic connectivity for the integration of aquatic and terrestrial conservation planning in protected areas design. BUILDER constructs ecological benchmarks using a deterministic construction algorithm that aggregates catchments to a user defined size and intactness. For the purpose of this demo, we will refer to the conservation areas created by BUILDER as benchmarks, however BUILDER can also be used to design conservation areas not intended to serve as benchmarks.</p>
-<p>BUILDER constructs ecological benchmarks based on three principal criteria:</p>
+<section id="beacons-representation-r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="beacons-representation-r-functions">BEACONs Representation R Functions</h2>
+</section>
+<section id="calc_dissimilarity" class="level1">
+<h1><code>calc_dissimilarity()</code></h1>
+<p>The <code>calc_dissimilarity()</code> function evaluates the specified criteria by clipping them to either individual conservation areas or a conservation network. The evaluation calculates the proportion of each class within the area. If a unique identifier (CAs_id) is provided, proportions are computed separately for each corresponding polygon.</p>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">calc_dissimilarity</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  reserves_sf, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  reserves_id,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  reference_sf, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  raster_layer, </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  raster_type, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">categorical_class_values=</span><span class="fu">c</span>(),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_out_dir=</span><span class="cn">NULL</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">categorical_class_labels=</span><span class="fu">data.frame</span>()</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="arguments" class="level2">
+<h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li>Intactness, a measure of the absence of human industrial activity and a proxy for the intactness of biological and physical processes</li>
-<li>Hydrologic connectivity of intact water catchments, as a measure of the integrity of aquatic systems</li>
-<li>Size, as a measure of the resilience of the system to disturbance</li>
+<li>reserves_sf: sf object with unique id column named network.</li>
+<li>reserves_id: String matching the unique identifier column in .</li>
+<li>reference_sf: sf object of the reference area to compare against.</li>
+<li>raster_layer: Raster object that will be clipped to the reference and reserve areas, with crs matching reserves_sf.</li>
+<li>raster_type: ‘categorical’ will use Bray-Curtis, ‘continuous’ will use KS-statistic.</li>
+<li>categorical_class_values: Vector of raster values in raster_layer of type ‘categorical’ to include in the calculation. Allows unwanted values to be dropped. Defaults to include all non-NA values.</li>
+<li>plot_out_dir: Path to folder in which to save plots. Default is not to create plots. Only creates plots if valid file path is provided. Dir will be created if it doesn’t exist.</li>
+<li>categorical_class_labels: Optional data.frame object with columns values and labels indicating the label to use in Bray-Curtis graphs for each raster value. Defaults to using the raster values. Labels can be provided for all or a subset of values. See examples.</li>
 </ul>
 </section>
-<section id="catchments" class="level2">
-<h2 class="anchored" data-anchor-id="catchments">Catchments</h2>
-<p>The building blocks for BUILDER is a set of catchments with associated flow directions for the underlying stream network. This allows BUILDER to identify upstream and downstream catchments for any given location. <font color="red">Should we provide a brief description of the catchments dataset and how to download them?</font></p>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">📤 Output</h2>
+<p>A vector of dissimilarity values matching the order of the input reserves_sf. Optionally a dissimilarity plot saved in the plot_out_dir for each computed value.</p>
 </section>
-<section id="aggregation-algorithm" class="level2">
-<h2 class="anchored" data-anchor-id="aggregation-algorithm">Aggregation algorithm</h2>
-<p>BUILDER ‘grows’ ecological benchmarks using a deterministic construction algorithm that aggregates catchments. This process enables intactness, size and hydrologic criteria to be incorporated into benchmark design.</p>
-<p>The starting catchments for building benchmarks are called seeds. <font color="red">These can be selected using size and intactness criteria e.g., all catchments that are 100% intact and greater than 500km2.</font> Starting from a seed, BUILDER grows a benchmark by aggregating neighbouring catchments that exceed the user defined catchment-level intactness threshold. As catchments are added, growth is prioritized in the upstream direction. This emphasizes inclusion of headwaters within benchmarks, and encourages the formation of benchmarks along stream networks. Further, by adding all eligible upstream catchments before re-querying for more, benchmarks are grown with a more compact shape. If re-querying were to occur after adding each upstream catchment, benchmarks would tend to grow along single streams, resulting in linear configurations. To further compact the shape of the benchmark, BUILDER prioritizes the addition of catchments within hydrological zones (i.e.&nbsp;Fundamental Drainage Areas, FDAs) associated with the benchmark before adding catchments in a neighbouring FDA.</p>
-<p>Once all available upstream catchments are added, BUILDER grows downstream. Downstream growth adds all neighbouring catchments downstream of the catchment aggregation then re-queries for upstream catchments. Benchmarks are grown until:</p>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<section id="running-the-examples" class="level3">
+<h3 class="anchored" data-anchor-id="running-the-examples">Running the examples</h3>
 <ol type="1">
-<li>There are no more neighbouring, intact catchments to add, or</li>
-<li>The benchmarks area exceeds the user-specified Area Target.</li>
+<li><p>Download and unzip BEACONs R Tools</p></li>
+<li><p>Run the examples below.</p></li>
 </ol>
-<p>If the latter occurs, and the area-weighted intactness of the benchmark exceeds the benchmark-level intactness threshold, then the benchmark is included in the output.</p>
-</section>
-<section id="builder-r-functions" class="level2">
-<h2 class="anchored" data-anchor-id="builder-r-functions">BUILDER R Functions</h2>
-<p><strong>BEACONs BUILDER has 5 main functions:</strong></p>
-<ul>
-<li><a href="../tools/seeds.html">seeds</a></li>
-<li><a href="../tools/reserve_seeds.html">reserve_seeds</a></li>
-<li><a href="../tools/neighbours.html">neighbours</a></li>
-<li><a href="../tools/builder.html">builder</a></li>
-<li><a href="../tools/fetch_builder_output.html">fetch_builder_output</a></li>
-</ul>
-<section id="seeds" class="level3">
-<h3 class="anchored" data-anchor-id="seeds">seeds</h3>
-<p>The function <a href="../tools/seeds.html">seeds()</a> creates a <strong>seeds table</strong>, which is an input to <code>builder()</code>.<br>
-It identifies <strong>seed catchments</strong> and assigns them an <strong>area target</strong>.</p>
-</section>
-<section id="reserve_seeds" class="level3">
-<h3 class="anchored" data-anchor-id="reserve_seeds">reserve_seeds</h3>
-<p>The function <a href="../tools/reserve_seeds.html">reserve_seeds()</a> creates a <strong>seeds table</strong> based on conservation areas, which is an input to <code>builder()</code>.<br>
-It identifies <strong>seed catchments inside a conservation area</strong> and assigns them an <strong>area target</strong>.</p>
-</section>
-<section id="neighbours" class="level3">
-<h3 class="anchored" data-anchor-id="neighbours">neighbours</h3>
-<p>The function <a href="../tools/neighbours.html">neighbours()</a> creates a table listing pairwise catchment neighbours. Used as an input to <code>builder()</code>.</p>
-</section>
-<section id="builder" class="level3">
-<h3 class="anchored" data-anchor-id="builder">builder</h3>
-<p>The function <a href="../tools/builder.html">builder()</a> prepares the input files and parameters and passes them to a command line version of BUILDER executable software. The function then fetches and returns the main BUILDER output table into the R environment.</p>
-</section>
-<section id="fetch_builder_output" class="level3">
-<h3 class="anchored" data-anchor-id="fetch_builder_output">fetch_builder_output</h3>
-<p>The function <a href="../tools/fetch_builder_output.html">fetch_builder_output()</a> loads pre-processed <code>builder()</code> output table into the R environment. It reads the appropriate table based on the specified type and makes it available for subsequent analyses (e.g., polygon creation).</p>
-</section>
-</section>
-<section id="process" class="level2">
-<h2 class="anchored" data-anchor-id="process">🏗️ Process</h2>
-<ol type="1">
-<li>Prepares input tables: <code>neighbours</code>, either <code>seeds</code> or <code>reserve_seeds</code>, and <code>catchments</code>.</li>
-<li>Make sure default parameters are relevant and Set <strong>BUILDER</strong> parameters such as catchment_level_intactness, conservation_area_intactness.</li>
-<li><code>builder()</code> returns the <code>*_COLUMN_All_Unique_BAs.csv</code> file listing conservation areas and their catchments by default.</li>
-<li>To access output tables containing upstream or downstream attributes, use the <code>fetch_builder_output</code> function.</li>
-<li>Subsequent processing, such as creating polygons of benchmarks using <code>builder()</code> output and assessing ecological attributes is done using others BEACONs functions (see examples in section Articles).</li>
-</ol>
-</section>
-<section id="key-parameters" class="level2">
-<h2 class="anchored" data-anchor-id="key-parameters">🔧 Key Parameters</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 27%">
-<col style="width: 72%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Area target</strong></td>
-<td>Set in the <code>seeds</code> table; minimum size (m²) for each conservation area.</td>
-</tr>
-<tr class="even">
-<td><strong>Catchment intactness</strong></td>
-<td>Minimum intactness required for catchments to be included.</td>
-</tr>
-<tr class="odd">
-<td><strong>Conservation area intactness</strong></td>
-<td>Minimum area-weighted intactness for a conservation area to be returned.</td>
-</tr>
-<tr class="even">
-<td><strong>Area target proportion</strong></td>
-<td>Allows output of smaller areas (e.g., 0.9 returns areas &gt;= 90% of the area target).</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="tip" class="level2">
-<h2 class="anchored" data-anchor-id="tip">💡 Tip</h2>
-<p>Use <code>output_dir</code> to preserve BUILDER’s complete outputs when running multiple builds. These files can be further analyzed using others BEACONs functions.</p>
-<p><br> <br></p>
-</section>
-<section id="citation" class="level2">
-<h2 class="anchored" data-anchor-id="citation">Citation</h2>
-<p>Houle M, Vernier P, Lisgo K, Edwards M, Schmiegelow F (2025). BEACONs R_Tools_Public: Building conservation areas in R. Available at https://beaconsproject.github.io/R_tools_public/.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"."</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dirpath)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/representation.R"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>reserves_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/reserves_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>reference_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/reference_area_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>nalc <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/nalc_sample.tif"</span>))</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>colName <span class="ot">&lt;-</span> <span class="st">"reserve"</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">calc_dissimilarity</span>(reserves_sf, colName, reference_sf, nalc, <span class="st">'categorical'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
