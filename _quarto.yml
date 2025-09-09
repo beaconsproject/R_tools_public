@@ -22,7 +22,7 @@ website:
             href: report-issues.qmd
     left:
       - text: Welcome
-        href: index_main.html
+        href: index.html
       - text: "Functions categories"
         menu:
           - href: tools/index_Builder.html
