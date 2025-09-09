@@ -11,7 +11,7 @@ The most recent matching file is selected if multiple are found. The file is ret
 
 ```r
 fetch_builder_output(builder_dir,
-  type = "CATCHMNENTS"
+  type = "BENCHMARKS"
 )
 ```
 ## Arguments
