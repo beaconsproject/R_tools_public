@@ -11,12 +11,12 @@ The first step is to locate the catchments layer and point on an output director
 
 The [`neighbours()`](/tools/neighbours.html) function calculates a list of neighbouring CATCHNUM pairs and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
 
-The [`seeds()`](../tools/seeds.html) function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.  
+The [`seeds()`](/tools/seeds.html) function creates a list of seed catchments and area targets. Prior to run the function, the user can apply a filter on the catchments dataset by specifying the level of intactness or the STHRALER index the seeds should have.  
 
-The [`reserve_seeds()`](../tools/reserve_seeds.html) function creates a **seeds table** based on conservation areas.  
+The [`reserve_seeds()`](/tools/reserve_seeds.html) function creates a **seeds table** based on conservation areas.  
 It identifies **seed catchments inside a conservation area** and assigns them an **area target**.
 
-All functions are input to [`builder()`](../tools/builder.html) and need the catchments dataset with unique identifier column 'CATCHNUM'.
+All functions are input to [`builder()`](/tools/builder.html) and need the catchments dataset with unique identifier column 'CATCHNUM'.
 
 
 ### Generate neighbour table
