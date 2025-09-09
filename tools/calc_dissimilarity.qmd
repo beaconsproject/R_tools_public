@@ -44,6 +44,7 @@ A vector of dissimilarity values matching the order of the input reserves_sf. Op
 library(sf)
 library(terra)
 library(dplyr)
+library(exactextractr)
 library(here)
 
 # --------------------------------------
@@ -54,6 +55,7 @@ dirpath <- here(".")
 
 setwd(dirpath)
 source("./R/representation.R")
+source("./R/utils.R")
 
 #Set access path 
 reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)

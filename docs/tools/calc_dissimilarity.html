@@ -155,15 +155,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-articles">    
         <li>
-    <a class="dropdown-item" href="../vignettes/createBuilderInput.html">
+    <a class="dropdown-item" href="../downloads/vignettes/createBuilderInput.html">
  <span class="dropdown-text">Create Builder Input</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../vignettes/createBuilderPolygons.html">
+    <a class="dropdown-item" href="../downloads/vignettes/createBuilderPolygons.html">
  <span class="dropdown-text">Create Builder Polygons</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../vignettes/assessHydro.html">
+    <a class="dropdown-item" href="../downloads/vignettes/assessHydro.html">
  <span class="dropdown-text">Assessing hydrology on reserves</span></a>
   </li>  
     </ul>
@@ -274,25 +274,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"."</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dirpath)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/representation.R"</span>)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>reserves_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/reserves_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>reference_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/reference_area_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>nalc <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/nalc_sample.tif"</span>))</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>colName <span class="ot">&lt;-</span> <span class="st">"reserve"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(exactextractr)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"."</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dirpath)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/representation.R"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils.R"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>reserves_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/reserves_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>reference_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/reference_area_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>nalc <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/nalc_sample.tif"</span>))</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">calc_dissimilarity</span>(reserves_sf, colName, reference_sf, nalc, <span class="st">'categorical'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>colName <span class="ot">&lt;-</span> <span class="st">"reserve"</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">calc_dissimilarity</span>(reserves_sf, colName, reference_sf, nalc, <span class="st">'categorical'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>

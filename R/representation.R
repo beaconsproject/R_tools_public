@@ -191,7 +191,8 @@ calc_dissimilarity <- function(reserves_sf, reserves_id, reference_sf, raster_la
     message(paste0("processing ", counter*10-9, " of ", length(net_list)))
     counter <- counter + 1
     
-    reserves_sf_g <- dplyr::filter(reserves_sf, !!reserves_id %in% net_list_g) # subset dissolved networks by the block of networks
+    reserves_sf_g <- reserves_sf %>%
+      dplyr::filter(!!rlang::sym(reserves_id) %in% net_list_g) # subset dissolved networks by the block of networks
     x <- exactextractr::exact_extract(raster_layer, reserves_sf_g, progress = FALSE) # extract
     
     names(x) <- net_list_g # name the list elements by their associated netname
