@@ -22,24 +22,24 @@ website:
             href: report-issues.qmd
     left:
       - text: Welcome
-        href: index_main.qmd
+        href: index_main.html
       - text: "Functions categories"
         menu:
-          - href: tools/index_Builder.qmd
+          - href: tools/index_Builder.html
             text: Builder    
-          - href: tools/index_Hydrology.qmd
+          - href: tools/index_Hydrology.html
             text: Hydrology
-          - href: tools/index_Representation.qmd
+          - href: tools/index_Representation.html
             text: Representation
-          - href: tools/index_Spatial.qmd
+          - href: tools/index_Spatial.html
             text: Spatial
       - text: "Articles"
         menu:
-          - href: downloads/vignettes/createBuilderInput.qmd
+          - href: downloads/vignettes/createBuilderInput.html
             text: Create Builder Input    
-          - href: downloads/vignettes/createBuilderPolygons.qmd
+          - href: downloads/vignettes/createBuilderPolygons.html
             text: Create Builder Polygons
-          - href: downloads/vignettes/assessHydro.qmd
+          - href: downloads/vignettes/assessHydro.html
             text: Assessing hydrology on reserves
 format:
   html:
