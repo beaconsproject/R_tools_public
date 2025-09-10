@@ -10,7 +10,7 @@ The `dissolve_catchments_from_table()` function takes lists of catchments from a
 dissolve_catchments_from_table(
   catchments_sf,
   input_table,
-  out_feature_id=NULL,
+  out_feature_id = NULL,
   calc_area = FALSE,
   intactness_id = NULL,
   dissolve_list = c(), 
@@ -68,6 +68,7 @@ setwd("your/path/to/downloads/folder")
 
 source("./R/hydrology.R")
 source("./R/spatial.R")
+source("./R/utils.R")
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
@@ -96,7 +97,7 @@ catchments_sf <- st_read(catchments)
 upstream_tbl <- get_upstream_catchments(reserves_sf, colName, catchments_sf)
 
 # Turn the tibble into sf object
-upstream_sf <- dissolve_catchments_from_table(catchments_sf, upstream_tbl, colName)
+upstream_sf <- dissolve_catchments_from_table(catchments_sf, upstream_tbl)
 
 #Plot results
 plot(st_geometry(catchments_sf), col = "lightblue", main = "Upstream Catchments Example")
