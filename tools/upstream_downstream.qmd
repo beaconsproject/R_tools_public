@@ -2,6 +2,7 @@
 
 # `get_upstream_catchments()` and`get_downstream_catchemnts()`
 
+The `get_upstream_catchments()` and `get_downstream_catchemnts()` functions return upstream or downstream catchments for a set of input polygons as a table, with conservation_area_id as the unique id.
 
 ## Usage
 

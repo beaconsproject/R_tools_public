@@ -1,5 +1,15 @@
 **Spatial**
 
+BEACONs developed a collection of spatial functions that provide essential utilities for spatial analysis within the workflow. These functions are designed to work in combination with representation, hydrology, and builder functions, supporting tasks such as data preparation, spatial overlay, geometric processing, and summarization of spatial attributes.
+
+**The xx main spatial functions are:**
+
+- [dissolve_catchments_from_table](dissolve_catchments_from_table.qmd) 
+
+
+### dissolve_catchments_from_table
+
+The function [dissolve_catchments_from_table()](dissolve_catchments_from_table.qmd) get lists of catchments from a table and dissolve the catchments into a single polygon feature.
 
 
 

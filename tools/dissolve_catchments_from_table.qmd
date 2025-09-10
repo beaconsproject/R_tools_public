@@ -1,0 +1,106 @@
+## BEACONs Spatial R Functions
+
+# `dissolve_catchments_from_table()` 
+
+The `dissolve_catchments_from_table()` function takes lists of catchments from a table where each column represents a polygon to be created, and dissolves the catchments into a single polygon feature. Optionally the function can adds area in km2, and area-weighted intactness.
+
+## Usage
+
+```r
+dissolve_catchments_from_table(
+  catchments_sf,
+  input_table,
+  out_feature_id=NULL,
+  calc_area = FALSE,
+  intactness_id = NULL,
+  dissolve_list = c(), 
+  drop_table = NULL
+)
+
+```
+## Arguments
+the function need the following:
+
+- catchments_sf: sf object of the catchments dataset with unique identifier column: CATCHNUM.
+
+- input_table: Data frame where column names are polygon names and rows are catchments making up each polygon. e.g. output from `get_upstream_catchments()`(upstream_downstream.qmd).
+
+- out_feature_id: String representing the output column name holding the polygon unique identifiers.
+
+- calc_area: If TRUE, an area_km2 column is added to the output containing the polygon area.
+
+- intactness_id: Optional string identifying an intactness column (values between 0 and 1) in catchments_sf. If provided,  used to calculate the area weighted intactness (AWI) of the dissolved polygons. 
+
+- dissolve_list: Vector of columns in \code{input_table} to include in the output. Defaults to colnames(input_table). Can also dissolve multiple columns from \code{input_table} together by combining column names with \code{__} (e.g. PB_0001__PB_0002).
+
+- drop_table: A table in the same format \code{input_table} listing catchments to be dropped from the dissolve area.
+
+
+## 📤 Output
+A sf object of polygons with unique identifier column \code{out_feature_id}.
+
+
+## Details
+The \code{input_table} is in the form exported from the beaconsbuilder package, where each column lists catchment ids,  and each column name represents the unique identifier of the output polygon.
+ 
+This function is used to create conservation area polygons using tables created by the beaconsbuilder package, and upstream polygons using tables created by [get_upstream_catchments()].
+ 
+The optional \code{dissolve_list} parameter can be used to filter the column names in \code{input_table} that will be dissolved. The \code{dissolve_list} can also contain combinations of column name separated by \code{__}, in this case the output polygon will dissolve the combined area of catchments from all columns in the string. For example, the string "PA1__PA2" in the \code{dissolve_list} will output a polygon representing the dissolved area of all catchments listed in the PA1 and PA2 columns of \code{input_table}.
+
+The main application of \code{drop_table} is to remove conservation area catchments from the dissolved area when dissolving upstream catchments tables. See vignette('overview') for an example.
+
+## Examples
+### Running the examples
+
+The example below allow to identify upstream and downstream areas and save them as layers. 
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```r
+# Load libraries
+library(sf)
+library(dplyr)
+
+# Set working directory
+setwd("your/path/to/downloads/folder")
+
+source("./R/hydrology.R")
+source("./R/spatial.R")
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+dirpath <- getwd()
+
+#Set access path 
+reserves <- file.path(dirpath, "data/reserves_sample.shp")
+catchments <- file.path(dirpath, "data/catchments_sample.shp")
+
+colName <- "reserve"
+
+#Create output folder
+out_dir <- file.path(dirpath, "shp_output")
+if(!dir.exists(out_dir)){
+  dir.create(out_dir)
+}
+
+
+# --------------------------------------
+#--RUN
+# --------------------------------------
+# Initialize sf objects
+reserves_sf <- st_read(reserves)
+catchments_sf <- st_read(catchments)
+
+upstream_tbl <- get_upstream_catchments(reserves_sf, colName, catchments_sf)
+
+# Turn the tibble into sf object
+upstream_sf <- dissolve_catchments_from_table(catchments_sf, upstream_tbl, colName)
+
+#Plot results
+plot(st_geometry(catchments_sf), col = "lightblue", main = "Upstream Catchments Example")
+plot(st_geometry(upstream_sf), col = "green", add = TRUE)
+plot(st_geometry(reserves_sf), col = "red", add = TRUE)
+```
+
