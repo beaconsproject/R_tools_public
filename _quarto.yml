@@ -21,7 +21,7 @@ website:
           - text: "Report an Issue"
             href: report-issues.qmd
     left:
-      - text: Welcome
+      - text: "Welcome"
         href: index.html
       - text: "Functions categories"
         menu:

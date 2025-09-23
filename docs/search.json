@@ -530,5 +530,12 @@
     "title": "seeds()",
     "section": "Examples",
     "text": "Examples\n\nRunning the examples\n\nDownload and unzip BEACONs R Tools\nCreate the folder structure\n\n# Set working directory\nsetwd(\"your/path/to/downloads\")\n\ndirpath &lt;- getwd()\n\n# Create the folder structure\ntreedir &lt;- c(\"R\",\"data\",\"Builder_input\")\nfor(d in treedir){\n  if (!dir.exists(file.path(dirpath, d))) {\n    dir.create(file.path(dirpath, d), recursive = TRUE)\n  }\n}\n\nRun the examples below.\n\nlibrary(dplyr)\nlibrary(sf)\nlibrary(utils)\n\nsource(\"./R/builder.R\")\n\n# Use all catchments as seeds with a single area target\ncatchments_sample &lt;- readRDS(\"data/catchments_sample.rds\")\nseeds(catchments_sf = catchments_sample, areatarget_value = 1000000000)\n\n# Use column-based area targets\ncatchments_sample$area_target &lt;- 1000000000\nseeds(catchments_sf = catchments_sample, areatarget_col = \"area_target\")\n\n# Filter based on a column value\ncatchments_sample %&gt;%\n  filter(intact == 1) %&gt;%\n  seeds(catchments_sf = ., areatarget_value = 1000000000)\n\n# Filter using a spatial polygon\nref_poly &lt;- data.frame(\n  lon = c(-138.4, -138.1, -138.1, -138.4, -138.1, -138.1, -138, -138),\n  lat = c(64.3, 64.3, 64.1, 64.1, 64.3, 64.1, 64.1, 64.3),\n  Areatarget = c(rep(1000000000, 4), rep(2000000000, 4))\n) %&gt;%\n  st_as_sf(coords = c(\"lon\", \"lat\"), crs = 4326) %&gt;%\n  group_by(Areatarget) %&gt;%\n  summarise(geometry = st_combine(geometry)) %&gt;%\n  st_cast(\"POLYGON\") %&gt;%\n  st_transform(st_crs(catchments_sample))\n\nseeds(\n  catchments_sf = catchments_sample,\n  filter_polygon = ref_poly,\n  areatarget_polygon = ref_poly,\n  areatarget_polygon_col = \"Areatarget\"\n)\n\n# save seeds as csv\nseed &lt;- seeds(catchments_sf = catchments_sample, areatarget_value = 1000000000)\nwrite.csv(seed, file=file.path(dirpath,\"Builder_input/seeds.csv\"), row.names=FALSE)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "BEACONs R Tools",
+    "section": "",
+    "text": "Welcome to the BEACONs R tools pages!\nOver the years, BEACONs develops a series of function to ease conservation planning across the landscape. Those functions ranges from constructing ecological benchmarks and creating conservation area networks to assessing ecological representation. The functions are organized into different categories. This pages aims to document each function and demonstrate their use through example. The functions are intended for advanced users working with large-scale environmental data."
   }
 ]
