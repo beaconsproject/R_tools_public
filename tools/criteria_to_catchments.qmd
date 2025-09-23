@@ -1,0 +1,114 @@
+## BEACONs Representation R Functions
+
+# `criteria_to_catchments()`
+
+The `criteria_to_catchments()` function sums the area of all unique values for a given raster layer and adds summed area's as columns in the catchments dataset. 
+
+
+## Usage
+```r
+criteria_to_catchments(
+  catchments_sf, 
+  criteria_raster,
+  criteria_name, 
+  class_vals = c()
+)
+```
+## Arguments
+- catchments_sf: sf object of the catchments dataset with unique identifier column: CATCHNUM.
+- criteria_raster: Raster object of the criteria layer that will be summed, with crs matching catchments.
+- criteria_name: String representing the criteria name that will provide the suffix in the new column names.
+- class_vals: Vector of the class values to sum. Defaults to including all unique values of the raster intersecting the catchments. 
+
+## 📤 Output
+A sf object matching catchments_sf, with the additional columns added representing unique raster value and areas reported in km2
+
+
+## Examples
+### Running the examples
+
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```{r table_criteria_to_catchments, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+# Load libraries
+library(sf)
+library(terra)
+library(dplyr)
+library(here)
+library(RColorBrewer)
+library(tidyr)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/representation.R")
+source("./R/utils.R")
+
+#Set access path 
+catchments_sf <- st_read(file.path(dirpath, "data/catchments_sample.shp"), quiet = TRUE)
+nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+
+# Sum NALC values in each catchments
+catchments_nalc <- criteria_to_catchments(
+  catchments_sf = catchments_sf, 
+  criteria_raster = nalc, 
+  criteria_name = "nalc", 
+  class_vals = unique(nalc))
+
+# subset one catchment
+one_catch <- catchments_nalc[catchments_nalc$CATCHNUM == 97646, ]
+
+# Select CATCHNUM and columns starting with "nalc"
+one_catch_nalc <- one_catch %>%
+  st_drop_geometry() %>%           # remove geometry
+  select(CATCHNUM, starts_with("nalc")) %>%  
+  as_tibble()
+
+one_catch_nalc
+
+# Visualize the result
+# Define a color palette for NALC classes (assuming 0–11)
+raster_vals <- sort(unique(values(nalc)))
+classes <- paste0("nalc_", raster_vals)  # unique raster values
+cols <- brewer.pal(length(classes), "Paired")  # or any palette you like
+
+#set extent
+catch_ext <- st_bbox(one_catch)  # xmin, ymin, xmax, ymax
+xlim <- c(catch_ext["xmin"], catch_ext["xmax"])
+ylim <- c(catch_ext["ymin"], catch_ext["ymax"])
+
+# extract raster value and names
+nalc_vals <- st_drop_geometry(one_catch[, grepl("^nalc", names(one_catch))])
+nalc_ids <- names(nalc_vals)
+
+#set layout
+layout(matrix(c(1,2,
+                3,0), nrow = 2, byrow = TRUE),
+       widths = c(3, 4),
+       heights = c(4, 1))
+
+# --- Left: plot NALC ---
+par(mar = c(4,4,2,2))  # wide right margin for legend
+plot(nalc, col = cols,
+     breaks = c(raster_vals - 0.5, max(raster_vals) + 0.5),
+     legend = FALSE, main = "NALC raster", xlim = xlim, ylim = ylim)
+plot(one_catch$geometry, border = "black", col = NA, lwd = 2, add = TRUE)
+
+# --- Right: barplot ---
+par(mar = c(5,4,4,2))  # reset margins for barplot
+barplot(as.numeric(nalc_vals[1, ]),
+        names.arg = names(nalc_vals),
+        las = 2,
+        col = cols[match(names(nalc_vals), classes)],
+        main = "NALC distribution",
+        ylab = "Value")
+
+```
+

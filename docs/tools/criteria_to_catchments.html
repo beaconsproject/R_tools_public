@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>dci – BEACONs R Tools</title>
+<title>criteria_to_catchments – BEACONs R Tools</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -206,13 +206,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#beacons-hydrology-r-functions" id="toc-beacons-hydrology-r-functions" class="nav-link active" data-scroll-target="#beacons-hydrology-r-functions">BEACONs Hydrology R Functions</a></li>
-  <li><a href="#calc_dci-and-calc_lwdci" id="toc-calc_dci-and-calc_lwdci" class="nav-link" data-scroll-target="#calc_dci-and-calc_lwdci"><code>calc_dci()</code> and <code>calc_lwdci()</code></a>
+  <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a></li>
+  <li><a href="#criteria_to_catchments" id="toc-criteria_to_catchments" class="nav-link" data-scroll-target="#criteria_to_catchments"><code>criteria_to_catchments()</code></a>
   <ul class="collapse">
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">📤 Output</a></li>
-  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
   <ul class="collapse">
   <li><a href="#running-the-examples" id="toc-running-the-examples" class="nav-link" data-scroll-target="#running-the-examples">Running the examples</a></li>
@@ -227,117 +226,133 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="beacons-hydrology-r-functions" class="level2">
-<h2 class="anchored" data-anchor-id="beacons-hydrology-r-functions">BEACONs Hydrology R Functions</h2>
+<section id="beacons-representation-r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="beacons-representation-r-functions">BEACONs Representation R Functions</h2>
 </section>
-<section id="calc_dci-and-calc_lwdci" class="level1">
-<h1><code>calc_dci()</code> and <code>calc_lwdci()</code></h1>
-<p>Dendritic connectivity index (DCI) describes the hydrologic connectedness of the stream network within an area. The length-weighted Dendritic Connectivity Index (lwDCI) builds on this concept by placing greater importance on the connectivity of the stream segments that are part of the same basin. While DCI treats all stream segments equally, lwDCI offers a more nuanced view by accounting for the relative importance of different parts of the network.</p>
-<p>Values range between 0 and 1, with 1 indicating a completely connected river network.</p>
+<section id="criteria_to_catchments" class="level1">
+<h1><code>criteria_to_catchments()</code></h1>
+<p>The <code>criteria_to_catchments()</code> function sums the area of all unique values for a given raster layer and adds summed area’s as columns in the catchments dataset.</p>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">calc_dci</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  conservation_area_sf,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">stream_sf =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">conservation_area_id =</span> <span class="st">"network"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">buffer_width =</span> <span class="fl">0.1</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">calc_lwdci</span>(</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  conservation_area_sf,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">stream_sf =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conservation_area_id =</span> <span class="st">"network"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">buffer_width =</span> <span class="fl">0.1</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">criteria_to_catchments</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  catchments_sf, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  criteria_raster,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  criteria_name, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">class_vals =</span> <span class="fu">c</span>()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
-<p>Both functions need the following:</p>
 <ul>
-<li><p>conservation_area_sf: sf object of conservation areas in which to calculate DCI.</p></li>
-<li><p>stream_sf: sf object of river network. Must have streams grouped in a BASIN attribute.</p></li>
-<li><p>conservation_area_id: Column in specify unique identifier. Default is network.</p></li>
-<li><p>buffer_width: (Optional) Width of buffer to apply to stream segments. Defaults to 0.1. Used to ensure adjacent stream segments are connected during analysis.</p></li>
+<li>catchments_sf: sf object of the catchments dataset with unique identifier column: CATCHNUM.</li>
+<li>criteria_raster: Raster object of the criteria layer that will be summed, with crs matching catchments.</li>
+<li>criteria_name: String representing the criteria name that will provide the suffix in the new column names.</li>
+<li>class_vals: Vector of the class values to sum. Defaults to including all unique values of the raster intersecting the catchments.</li>
 </ul>
 </section>
 <section id="output" class="level2">
 <h2 class="anchored" data-anchor-id="output">📤 Output</h2>
-<p>A vector of numeric DCI or lwDCI values matching the input features.</p>
-</section>
-<section id="details" class="level2">
-<h2 class="anchored" data-anchor-id="details">Details</h2>
-<p>Developed by Cote et al.&nbsp;(2009), the Dendritic Connectivity Index quantifies “longitudinal connectivity of river networks based on the expected probability of an organism being able to move freely between two random points of the network.” Longitudinal connectivity refers to connections between upstream and downstream sections of the network. The index is calculated as</p>
-<div style="text-align: center;">
-<p><img src="images/dci.png" alt="DCI formula" width="100"></p>
-</div>
-<p>where li is the length of a stream (or river) section and L is the total length of the stream network within the benchmark. The index ranges from 0 (low longitudinal connectivity) to 1 (high longitudinal connectivity).</p>
-<p>If the conservation areas overlap two ocean drainage, the use of calc_lwdci() is more suitable.</p>
+<p>A sf object matching catchments_sf, with the additional columns added representing unique raster value and areas reported in km2</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <section id="running-the-examples" class="level3">
 <h3 class="anchored" data-anchor-id="running-the-examples">Running the examples</h3>
-<p>The example below allow to estimate dci and lwdci for a set of conservation areas. Because the two functions returns a vector of index, the script calculate the respective indexes and integrate the results in the reserves object prior to save it as a new shapefile.</p>
 <ol type="1">
 <li><p>Download and unzip BEACONs R Tools</p></li>
 <li><p>Run the examples below.</p></li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"your/path/to/downloads/folder"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/hydrology.R"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">getwd</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"."</span>)</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>reserves <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"data/reserves_sample.shp"</span>)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>streams <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"data/streams_sample.shp"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dirpath)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/representation.R"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils.R"</span>)</span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>colName <span class="ot">&lt;-</span> <span class="st">"reserve"</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#Create output folder</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"shp_output"</span>)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(out_dir)){</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(out_dir)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Set if DCI and LWDCI should be added</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>addDCI <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>addLWDCI <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>catchments_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/catchments_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>nalc <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/nalc_sample.tif"</span>))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Sum NALC values in each catchments</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>catchments_nalc <span class="ot">&lt;-</span> <span class="fu">criteria_to_catchments</span>(</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">catchments_sf =</span> catchments_sf, </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">criteria_raster =</span> nalc, </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">criteria_name =</span> <span class="st">"nalc"</span>, </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">class_vals =</span> <span class="fu">unique</span>(nalc))</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># subset one catchment</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>one_catch <span class="ot">&lt;-</span> catchments_nalc[catchments_nalc<span class="sc">$</span>CATCHNUM <span class="sc">==</span> <span class="dv">97646</span>, ]</span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#--RUN</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize sf objects</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>reserves_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(reserves)</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>streams_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(streams)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(addDCI){</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  reserves_sf <span class="ot">&lt;-</span> reserves_sf <span class="sc">%&gt;%</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dci =</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(reserves_sf), <span class="cf">function</span>(i) {</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    i <span class="ot">&lt;-</span> reserves_sf[i, ]</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calc_dci</span>(i, streams_sf, <span class="at">conservation_area_id =</span> colName) </span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  }))</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(addLWDCI){</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  reserves_sf <span class="ot">&lt;-</span> reserves_sf <span class="sc">%&gt;%</span></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lwdci =</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(reserves_sf), <span class="cf">function</span>(j) {</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    j <span class="ot">&lt;-</span> reserves_sf[j, ]</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calc_lwdci</span>(j, streams_sf, <span class="at">conservation_area_id =</span> colName) </span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  }))</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co">#Save results</span></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(reserves_sf, <span class="at">dsn=</span><span class="fu">file.path</span>(out_dir, <span class="st">"reserves_dci.shp"</span>), <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Select CATCHNUM and columns starting with "nalc"</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>one_catch_nalc <span class="ot">&lt;-</span> one_catch <span class="sc">%&gt;%</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span>           <span class="co"># remove geometry</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CATCHNUM, <span class="fu">starts_with</span>(<span class="st">"nalc"</span>)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>one_catch_nalc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 x 11
+  CATCHNUM nalc_0 nalc_1 nalc_11 nalc_2 nalc_3 nalc_4 nalc_5 nalc_6 nalc_8
+     &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1    97646      0   26.5       0   3.25   30.7   6.35   61.0   71.5 0.0684
+# i 1 more variable: nalc_9 &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the result</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a color palette for NALC classes (assuming 0–11)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>raster_vals <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">values</span>(nalc)))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>classes <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"nalc_"</span>, raster_vals)  <span class="co"># unique raster values</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="fu">length</span>(classes), <span class="st">"Paired"</span>)  <span class="co"># or any palette you like</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#set extent</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>catch_ext <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(one_catch)  <span class="co"># xmin, ymin, xmax, ymax</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(catch_ext[<span class="st">"xmin"</span>], catch_ext[<span class="st">"xmax"</span>])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(catch_ext[<span class="st">"ymin"</span>], catch_ext[<span class="st">"ymax"</span>])</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># extract raster value and names</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>nalc_vals <span class="ot">&lt;-</span> <span class="fu">st_drop_geometry</span>(one_catch[, <span class="fu">grepl</span>(<span class="st">"^nalc"</span>, <span class="fu">names</span>(one_catch))])</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>nalc_ids <span class="ot">&lt;-</span> <span class="fu">names</span>(nalc_vals)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#set layout</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                <span class="dv">3</span>,<span class="dv">0</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>))</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Left: plot NALC ---</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>))  <span class="co"># wide right margin for legend</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nalc, <span class="at">col =</span> cols,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="fu">c</span>(raster_vals <span class="sc">-</span> <span class="fl">0.5</span>, <span class="fu">max</span>(raster_vals) <span class="sc">+</span> <span class="fl">0.5</span>),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>     <span class="at">legend =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">"NALC raster"</span>, <span class="at">xlim =</span> xlim, <span class="at">ylim =</span> ylim)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(one_catch<span class="sc">$</span>geometry, <span class="at">border =</span> <span class="st">"black"</span>, <span class="at">col =</span> <span class="cn">NA</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Right: barplot ---</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>))  <span class="co"># reset margins for barplot</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">as.numeric</span>(nalc_vals[<span class="dv">1</span>, ]),</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">names.arg =</span> <span class="fu">names</span>(nalc_vals),</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">las =</span> <span class="dv">2</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> cols[<span class="fu">match</span>(<span class="fu">names</span>(nalc_vals), classes)],</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"NALC distribution"</span>,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"Value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="criteria_to_catchments_files/figure-html/table_criteria_to_catchments-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>

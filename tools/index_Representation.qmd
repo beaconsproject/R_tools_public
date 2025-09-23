@@ -12,16 +12,32 @@ Representation analyses typically include multiple layers assumed to represent a
 
 - [calc_dissimilarity](calc_dissimilarity.qmd)
 - [evaluate_criteria_using_clip](evaluate_criteria_using_clip.qmd)
-
+- [criteria_to_catchments](criteria_to_catchments.qmd)
+- [gen_targets](gen_targets.qmd)
+- [evaluate_targets_using_catchments](evaluate_targets_using_catchments.qmd)
 
 ### calc_dissimilarity
 
-The function [calc_dissimilarity()](calc_dissimilarity.qmd) calculate dissimilarity values between a set of polygons and a reference area..
+The function [calc_dissimilarity()](calc_dissimilarity.html) calculate dissimilarity values between a set of polygons and a reference area..
 
 
 ### evaluate_criteria_using_clip
 
-The function [evaluate_criteria_using_clip()](evaluate_criteria_using_clip.qmd) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
+The function [evaluate_criteria_using_clip()](evaluate_criteria_using_clip.html) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
+
+### criteria_to_catchments
+
+The function [criteria_to_catchments()](criteria_to_catchments.html) sums the area of all unique values in the raster and adds summed area's as columns in the catchments dataset.
+
+
+### gen_targets
+
+The function [gen_targets()](gen_targets.html) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
+
+
+### evaluate_targets_using_catchments
+
+The function [evaluate_targets_using_catchments()](evaluate_targets_using_catchments.html) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
 
 
 <br>

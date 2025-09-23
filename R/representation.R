@@ -238,3 +238,190 @@ calc_dissimilarity <- function(reserves_sf, reserves_id, reference_sf, raster_la
   }
   return(result_vector)
 }
+
+# This should be written in RCPP
+ks_stat <- function(refVal, netVal) {
+  # calculate KS statistic (representation index)
+  ri <- suppressWarnings(round(ks.test(refVal, netVal)[[1]][[1]], 3))
+  return(ri)
+}
+
+# This should be written in RCPP
+bc_stat <- function(refVal, netVal) {
+  
+  x1 <- dplyr::as_tibble(refVal) %>%
+    dplyr::count(.data$value)
+  names(x1) <- c("cat","strata")
+  
+  x2 <- dplyr::as_tibble(netVal) %>%
+    dplyr::count(.data$value)
+  names(x2) <- c("cat","reserve")
+  
+  x <- merge(x1,x2,by="cat",all=T)
+  #x$cat <- as.character(x$cat)
+  x$strata <- as.numeric(x$strata)
+  x$reserve <- as.numeric(x$reserve)
+  x$reserve[is.na(x$reserve)] <- 0
+  x$reserve[is.na(x$strata)] <- 0 # this is needed in case there is one reserve pixel and no strata pixel
+  x$strata[is.na(x$strata)] <- 0
+  x$strata <- x$strata/sum(x$strata)
+  x$reserve <- x$reserve/sum(x$reserve)
+  
+  # calculate Bray-Curtis dissimilariy
+  ri <- round(sum(abs(x$strata-x$reserve))/(sum(x$strata)+sum(x$reserve)), 3)
+  return(ri)
+}
+
+ks_plot <- function(refVal, netVal, plotTitle="") {
+  
+  regLab <- "Reference area"
+  netLab <- "Network"
+  
+  z1 <- c(refVal, netVal)
+  z2 <- c(rep(regLab,length(refVal)), rep(netLab,length(netVal)))
+  zz <- data.frame(cbind(z1,z2),stringsAsFactors=FALSE)
+  names(zz) <- c("values","criteria")
+  zz$values <- round(as.numeric(zz$values),3)
+  
+  # create and save density plot
+  p <- ggplot2::ggplot(zz, ggplot2::aes(x=.data$values)) + ggplot2::geom_density(ggplot2::aes(group=.data$criteria, color=.data$criteria)) +
+    ggplot2::ggtitle(plotTitle) +
+    ggplot2::labs(x="Indicator value", y="Density")
+  
+  return(p)
+}
+
+bc_plot <- function(refVal, netVal, plotTitle="", labels=data.frame()) {
+  
+  x1 <- dplyr::as_tibble(refVal) %>%
+    dplyr::count(.data$value)
+  names(x1) <- c("cat","strata")
+  
+  x2 <- dplyr::as_tibble(netVal) %>%
+    dplyr::count(.data$value)
+  names(x2) <- c("cat","reserve")
+  
+  x <- merge(x1,x2,by="cat",all=T)
+  x <- x[order(as.integer(as.character(x$cat))),]
+  x$strata <- as.numeric(x$strata)
+  x$reserve <- as.numeric(x$reserve)
+  x$reserve[is.na(x$reserve)] <- 0
+  x$reserve[is.na(x$strata)] <- 0 # this is needed in case there is one reserve pixel and no strata pixel
+  x$strata[is.na(x$strata)] <- 0
+  x$strata <- x$strata/sum(x$strata) #as.integer(x$strata)
+  x$reserve <- x$reserve/sum(x$reserve) #as.integer(x$reserve)
+  
+  # prep labels if present
+  if(nrow(labels) > 0 & "values" %in% names(labels)){
+    for(i in labels$values){
+      if(i %in% x$cat){
+        x$cat[x$cat == i] <- labels$label[labels$values == i]
+      }
+    }
+  }
+  x$cat <- factor(x$cat, levels = x$cat)
+  
+  p <- ggplot2::ggplot(x, ggplot2::aes(x=.data$cat, y=.data$reserve)) + ggplot2::geom_bar(stat="identity", fill="white", colour="black") + ggplot2::coord_flip()
+  p <- p + ggplot2::geom_point(data=x, ggplot2::aes(x=.data$cat, y=.data$strata), colour="black", size=3) + ggplot2::theme(legend.position = "none")
+  p <- p + ggplot2::labs(x="", y="Proportional area (dots indicate regional proportions)")
+  p <- p + ggplot2::ggtitle(plotTitle)
+  
+  return(p)
+}
+
+#' Sum areas of criteria raster values inside catchment polygons.
+#'
+#' For a given raster layer, sums the area of all unique values in the raster and adds summed area's as columns in the catchments dataset.
+#' 
+#' Raster projection units are assumed to be in metres.
+#'
+#' @param catchments_sf sf object of catchments
+#' @param criteria_raster Raster object of the criteria layer that will be summed, with crs matching catchments
+#' @param criteria_name String representing the criteria name that will provide the suffix in the new column names
+#' @param class_vals Vector of the class values to sum. Defaults to including all unique values of the raster intersecting the catchments
+#'
+#' @return sf object matching catchments_sf, with the additional columns added and areas reported in km2
+#' @importFrom magrittr %>%
+#' @importFrom rlang .data
+#' @export
+#'
+#' @examples
+#' criteria_to_catchments(catchments_sample, led_sample, "led")
+
+criteria_to_catchments <- function(catchments_sf, criteria_raster, criteria_name, class_vals = c()){
+  
+  check_colnames(catchments_sf, cols = "CATCHNUM") # check for CATCHNUM
+  stopifnot(sf::st_crs(catchments_sf) == sf::st_crs(criteria_raster))
+  
+  cell_area <- prod(raster::res(criteria_raster)) / 1000000 # convert to area in km2, assumes raster res is in metres
+  
+  # split catchments into blocks of 50 for processing
+  #catch_list <- unique(as.character(catchments_sf$CATCHNUM))
+  catch_list <- unique(catchments_sf$CATCHNUM)
+  catch_list_grouped <- split(catch_list, ceiling(seq_along(catch_list)/50))
+  
+  block_counter <- 1
+  catch_counter <- 1
+  for(catch_list_i in catch_list_grouped){
+    
+    message(paste0("block ", block_counter, " of ", length(catch_list_grouped)))
+    block_counter <- block_counter + 1
+    
+    catchments_i <- catchments_sf[catchments_sf$CATCHNUM %in% catch_list_i,] # subset catchments
+    x <- exactextractr::exact_extract(criteria_raster, catchments_i, progress = FALSE) # extract
+    
+    names(x) <- catch_list_i # name the list elements by their associated CATCHNUM. Catchnum gets converted to character by names().
+    
+    # sum all values areas. Filter by class_vals later when we can calculate all unique values in all catchments
+    for(catch_i in catch_list_i){
+      i_sums <- x[[as.character(catch_i)]] %>%
+        dplyr::mutate(area = .data$coverage_fraction * cell_area) %>%
+        dplyr::group_by(.data$value) %>%
+        dplyr::summarise(area_km2 = sum(.data$area)) %>%
+        dplyr::mutate(CATCHNUM = catch_i)
+      
+      # append into long tibble
+      if(catch_counter == 1){
+        df_long <- i_sums
+        catch_counter <- catch_counter + 1
+      } else{
+        df_long <- rbind(df_long, i_sums)
+      }
+    }
+  }
+  
+  # set up class_vals
+  df_long_vals <- unique(df_long$value)
+  if(length(class_vals) == 0){
+    class_vals <- df_long_vals
+  }
+  
+  missing_class_vals <- class_vals[!class_vals %in% df_long_vals]
+  missing_values <- as.character(missing_class_vals[[1]])
+  
+  # pivot to wide table
+  df_wide <- df_long %>%
+    mutate(
+      CATCHNUM = CATCHNUM,
+      value = as.character(value),
+      area_km2 = as.numeric(area_km2)
+    ) %>%
+    complete(
+      CATCHNUM,
+      value = as.character(missing_values),
+      fill = list(area_km2 = 0)
+    ) %>%
+    pivot_wider(
+      id_cols = CATCHNUM,
+      names_from = value,
+      values_from = area_km2,
+      names_prefix = paste0(criteria_name, "_")
+    )
+
+  catchments_sf <- catchments_sf %>%
+    dplyr::select(-dplyr::matches(setdiff(names(df_wide), "CATCHNUM"))) %>% # remove any df_wide columns already in catchments_sf. Effectively overwrites the old with the new columns
+    dplyr::left_join(df_wide, by = "CATCHNUM") %>%
+    dplyr::select(!dplyr::ends_with("NA"))
+  
+  return(catchments_sf)
+}
