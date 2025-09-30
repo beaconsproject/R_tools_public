@@ -25,9 +25,9 @@ evaluate_criteria_using_clip(
 ## 📤 Output
 A tibble with columns: 
  - conservation_area_id (if provided)
- - class_value: the list of class_values}
- - area_km2: the area of each class_value in the CAs_sf}
- - class_proportion: area_km2/sum(area_km2)}
+ - class_value: the list of class_values
+ - area_km2: the area of each class_value in the CAs_sf
+ - class_proportion: area_km2/sum(area_km2)
  - target_km2
 
 

@@ -1,0 +1,148 @@
+## BEACONs Representation R Functions
+
+# `summarize_representation_results()`
+
+The `summarize_representation_results()` takes a table of network evaluation results from [evaluate_targets_using_catchments()] or [evaluate_targets_using_clip()] and summarizes either the number of classes passed, or the number of classes not passed (i.e. target gaps) by each network. Targets of zero are not counted. Rare targets are often difficult to meet, so \code{target_inclusion_proportion} can be used to drop targets that make up a small proportion of the total target area. For example \code{target_inclusion_proportion = 0.05} would only consider targets covering at least 5% of the total target area.
+
+
+## Usage
+```r
+summarize_representation_results(
+  network_evaluation_table, 
+  criteria_name, 
+  target_pass_proportion = 1, 
+  target_inclusion_proportion = 0, 
+  suffix = "", 
+  gaps = TRUE
+)
+
+ 
+```
+## Arguments
+- network_evaluation_table: Data frame output from [evaluate_targets_using_catchments()], [evaluate_targets_using_clip()] or [evaluate_targets_using_networks()].
+- criteria_name: String representing the representation raster. Used to label the summary columns. Usually matches \code{criteria_name}  when using [evaluate_targets_using_catchments()].
+- target_pass_proportion: Numeric between 0 and 1 that sets the proportion of the target that needs to be met in order for the target 
+to be considered 'passed'. Defaults to 1 (i.e. 100% of the target needs to be met in the network).
+- target_inclusion_proportion: Numeric between 0 and 1. Target classes with a \code{class_proportion} value less than \code{target_inclusion_proportion} are dropped. Defaults to 0 which includes all targets.
+- suffix: Optional suffix string to add to the end of the summary column name.
+- gaps: If TRUE, returns a summary column named e.g. \code{led_gaps} with the number of missed targets. Otherwise returns a summary column named e.g. \code{led_passed} with the number of passed targets. Defaults to TRUE.
+
+
+## 📤 Output
+A tibble with columns \code{network} and a summary column (e.g. \code{led_gaps}).
+
+
+## Examples
+### Running the examples
+
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```{r evaluate_targets_using_catchments, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+# Load libraries
+library(sf)
+library(terra)
+library(dplyr)
+library(here)
+library(RColorBrewer)
+library(tidyr)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/representation.R")
+source("./R/utils.R")
+
+#Set access path 
+catchments_sf <- st_read(file.path(dirpath, "data/catchments_sample.shp"), quiet = TRUE)
+nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+reserves_sample <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)
+refarea_sf <- st_read(file.path(dirpath, "data/reference_area_sample.shp"), quiet = TRUE)
+
+# Sum NALC values in each catchments
+catchments_nalc <- criteria_to_catchments(
+  catchments_sf = catchments_sf, 
+  criteria_raster = nalc, 
+  criteria_name = "nalc", 
+  class_vals = unique(nalc))
+
+# Setting target
+target_table <- gen_targets(
+  reference_sf = refarea_sf, 
+  representation_raster = nalc, 
+  reserve_size = 100)
+
+print(as.data.frame(target_table))
+```
+
+
+## Evaluating individual conservation areas created using **Builder** output
+The first step in the representation analysis is to evaluate each conservation area individually to see if any meet the targets. We do this with `evaluate_targets_using_catchments()` which sums the class areas in each conservation area using the catchments and returns the class sums compared to the target values in a long table.
+
+```{r}
+
+builder_tab <- utils::read.csv(file.path(dirpath, "data/builder_tbl_sample.csv"))
+builder_tab$OID <- NULL
+builder_tab <- dplyr::as_tibble(builder_tab)
+
+conservation_area_results <- evaluate_targets_using_catchments(
+  catchments_sf = catchments_nalc, 
+  criteria_name = "nalc", 
+  builder_table = builder_tab, 
+  target_table = target_table, 
+  network_list = colnames(builder_tab))
+
+# View the first conservation area
+print(conservation_area_results)
+```
+
+
+## Evaluating existing protected areas
+We will evaluate representation for some existing protected areas (clipped to our study region) using `evaluate_targets_using_clip()`. The output tables from `evaluate_targets_using_clip()` are the same format as from `evaluate_targets_using_catchments()`.
+
+```{r, fig.width=7, fig.height=5, fig.keep='last'}
+# Plot the 3 existing reserves inside study region
+plot(nalc, axes = FALSE)
+plot(reserves_sample$geometry, add=TRUE, lwd = 2, border = 'cyan')
+
+# Evaluate the 3 reserves using the targets
+reserves_results <- evaluate_targets_using_clip(
+  conservation_areas_sf = reserves_sample, 
+  conservation_areas_id = "reserve", 
+  representation_raster = nalc, 
+  target_table = target_table)
+
+print(pa_results)
+```
+
+## Summarizing individual conservation areas
+At this point we have representation results for all individual conservation areas, as well as 3 existing protected areas. We can use `summarize_representation_results()` to rank all of these options in terms of representation. We first append the existing protected area results to the `beaconsbuilder` results to get everything in one table. We then summarize the results, requiring 100% of the targets to be met, but only considering targets that cover >=1% of the total target area (rare targets are difficult to represent and are often addressed as a separate part of a conservation analysis).
+```{r, fig.width=7, fig.height=5, fig.keep = 'last'}
+# Add pa_results to conservation_area_results
+conservation_area_results <- rbind(conservation_area_results, reserves_results)
+
+# Summarize
+individual_summary <- summarize_representation_results(
+  network_evaluation_table = conservation_area_results,
+  criteria_name = "nalc", 
+  target_pass_proportion = 1, 
+  target_inclusion_proportion = 0.01, 
+  suffix = "", 
+  gaps = TRUE)
+
+print(individual_summary[order(individual_summary$nalc_gaps),])
+
+# Join the summary results to the polygons
+conservation_area_polygons_nalc <- conservation_area_polygons %>%
+  left_join(individual_summary, by = 'network')
+
+# Map the conservation areas with the least representation gaps (i.e. 2 gaps)
+plot(vignette_nalc, axes = FALSE)
+plot(conservation_area_polygons_nalc$geometry[conservation_area_polygons_nalc$nalc_gaps==2], add = TRUE, border = 'cyan', lwd = 2)
+```

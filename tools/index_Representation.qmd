@@ -15,6 +15,7 @@ Representation analyses typically include multiple layers assumed to represent a
 - [criteria_to_catchments](criteria_to_catchments.qmd)
 - [gen_targets](gen_targets.qmd)
 - [evaluate_targets_using_catchments](evaluate_targets_using_catchments.qmd)
+- [evaluate_targets_using_clip](evaluate_targets_using_clip.qmd)
 
 ### calc_dissimilarity
 
@@ -37,8 +38,11 @@ The function [gen_targets()](gen_targets.html) clips the criteria raster to the 
 
 ### evaluate_targets_using_catchments
 
-The function [evaluate_targets_using_catchments()](evaluate_targets_using_catchments.html) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
+The function [evaluate_targets_using_catchments()](evaluate_targets_using_catchments.html) evaluate targets using conservation areas created by **Builder** which are defined by lists of catchments. 
 
+### evaluate_targets_using_clip
+
+The function [evaluate_targets_using_clip()](evaluate_targets_using_clip.html) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
 
 <br>
 <br>

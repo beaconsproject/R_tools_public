@@ -1,0 +1,97 @@
+## BEACONs Representation R Functions
+
+# `evaluate_targets_using_clip()`
+
+Similar to `evaluate_targets_using_catchments()` but instead the pre-calculating the areas of the criteria raster in the catchments,
+the function `evaluate_targets_using_clip()` clips the criteria raster directly to each provided polygon. Generally used for evaluating conservation areas that did not come from the beaconsbuilder package and do not conform to catchment boundaries. Slower than [evaluate_targets_using_catchments()] for large numbers of polygons.
+
+
+## Usage
+```r
+evaluate_targets_using_clip(
+  conservation_areas_sf, 
+  conservation_areas_id, 
+  representation_raster, 
+  target_table, 
+  conservation_areas_list=c()
+)
+
+```
+## Arguments
+- conservation_areas_sf: sf object containing conservation areas to evaluate.
+- conservation_areas_id: Unique id column in conservation_areas_sf containing conservation area names as strings.
+- representation_raster: Raster object of the criteria layer that will be evaluated, with crs matching conservation_areas_sf.
+- target_table: Data frame containing columns "class_value", "class_proportion" and "target_km2". i.e. the output from [gen_targets()]. All classes in the target table are evaluated. All class_values must match the values in the representation_raster.
+- conservation_areas_list: The conservation_areas_id values to process. Defaults to all conservation_areas_id's in conservation_areas_sf.
+
+
+## 📤 Output
+A tibble with columns: 
+ - class_value:  the list of class_values from the target_table
+ - area_km2: area of the class value in the network
+ - network: name of the network copied from network_list
+ - class_proportion: copied from target_table
+ - target_km2: copied from target_table
+ - prop_target_met: area_km2/target_km2
+
+## Examples
+### Running the examples
+
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```{r evaluate_targets_using_catchments, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+# Load libraries
+library(sf)
+library(terra)
+library(dplyr)
+library(here)
+library(RColorBrewer)
+library(tidyr)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/representation.R")
+source("./R/utils.R")
+
+#Set access path 
+nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+reserves_sample <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)
+refarea_sf <- st_read(file.path(dirpath, "data/reference_area_sample.shp"), quiet = TRUE)
+
+# Setting target
+target_table <- gen_targets(
+  reference_sf = refarea_sf, 
+  representation_raster = nalc, 
+  reserve_size = 100)
+
+print(as.data.frame(target_table))
+```
+
+
+## Evaluating existing protected areas
+We will evaluate representation for some existing protected areas (clipped to our study region) using `evaluate_targets_using_clip()`. The output tables from `evaluate_targets_using_clip()` are the same format as from `evaluate_targets_using_catchments()`.
+
+```{r, fig.width=7, fig.height=5, fig.keep='last'}
+# Plot the 3 existing reserves inside study region
+plot(nalc, axes = FALSE)
+plot(reserves_sample$geometry, add=TRUE, lwd = 2, border = 'cyan')
+
+# Evaluate the 3 reserves using the targets
+reserves_results <- evaluate_targets_using_clip(
+  conservation_areas_sf = reserves_sample, 
+  conservation_areas_id = "reserve", 
+  representation_raster = nalc, 
+  target_table = target_table)
+
+print(reserves_results)
+```
+
+
