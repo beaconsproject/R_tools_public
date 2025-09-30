@@ -2,7 +2,7 @@
 
 # `criteria_to_catchments()`
 
-The `criteria_to_catchments()` function sums the area of all unique values for a given raster layer and adds summed area's as columns in the catchments dataset. 
+The `criteria_to_catchments()` function sums the area of all unique values for a given raster layer and adds summed area's as columns in the catchments dataset. The pre-computed areas are then utilized by `evaluate_targets_using_catchments()` to determine whether targets are met for each conservation area. This approach works only for conservation areas created with `builder`, since each conservation area is composed of catchment planning units. By summing the pre-computed areas of the catchments that make up a conservation area, one obtains the total area of each class within that conservation area. This method is especially efficient for large numbers of conservation areas, as it reduces the need for repeated raster geoprocessing.
 
 
 ## Usage
@@ -107,7 +107,7 @@ barplot(as.numeric(nalc_vals[1, ]),
         names.arg = names(nalc_vals),
         las = 2,
         col = cols[match(names(nalc_vals), classes)],
-        main = "NALC distribution",
+        main = "NALC distribution classes for CATCHNUM 97646",
         ylab = "Value")
 
 ```

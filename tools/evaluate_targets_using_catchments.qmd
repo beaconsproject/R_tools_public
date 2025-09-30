@@ -1,0 +1,116 @@
+## BEACONs Representation R Functions
+
+# `evaluate_targets_using_catchments()`
+
+The `evaluate_targets_using_catchments()` function evaluate targets using conservation areas defined by lists of catchments. For a given conservation area or list of conservation area, sums the areas of target values in each conservation area and evaluates against the targets from `gen_targets()`. Conservation areas are defined by a list of catchment CATCHNUMs, usually produced by the `builder`. It can be used for evaluating sets of individual conservation areas or  evaluating a network of multiple conservation areas for a set of targets. If evaluating a network of multiple overlapping conservation areas, the network is dissolved (i.e. no double counting of catchments). This can be useful for evaluating the combined area of a network against a set of targets.
+
+
+## Usage
+```r
+evaluate_targets_using_catchments(
+  catchments_sf, 
+  criteria_name,
+  builder_table, 
+  target_table,
+  network_list=c()
+)
+
+```
+## Arguments
+- catchments_sf: sf object of the catchments dataset with target values summed using [criteria_to_catchments()].
+- criteria_name: String representing the criteria name that will identify the target area columns (should match criteria name in [criteria_to_catchments()]).
+- builder_table: Data frame where columns are conservation area names and rows are catchments making up the conservation area. e.g. the "COLUMN_All_Unique_BAs" table output by the beaconsbuilder package.
+- target_table: Data frame containing columns "class_value", "class_proportion" and "target_km2". i.e. the output from [gen_targets()]. All classes in the target table are evaluated. All target classes must have a matching column in the catchments dataset (e.g. class_value 1 in the led target table must have column led_1 in catchments_sf). 
+- network_list: Vector of networks to evaluate - usually just the list of conservation areas in the builder_table (e.g. PB_0001), but can also be combinations of conservation areas (e.g. PB_0001__PB_0002) made using [gen_network_names()]. Usually combinations of conservation areas are multiple overlapping conservation areas that should have targets evaluated for their combined area. Combinations of conservation area names must be separated by '__' and the individual respective names must appear in builder_table. Defaults to all column names in \code{builder_table}.
+
+
+## 📤 Output
+A tibble with columns: 
+- `class_value`: the list of class_values from the target_table  
+- `area_km2`: area of the class value in the network  
+- `network`: name of the network copied from network_list  
+- `class_proportion`: copied from target_table  
+- `target_km2`: copied from target_table  
+- `prop_target_met`: `area_km2 / target_km2`
+
+
+## Examples
+### Running the examples
+
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```{r evaluate_targets_using_catchments, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+# Load libraries
+library(sf)
+library(terra)
+library(dplyr)
+library(here)
+library(RColorBrewer)
+library(tidyr)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/representation.R")
+source("./R/utils.R")
+
+#Set access path 
+catchments_sf <- st_read(file.path(dirpath, "data/catchments_sample.shp"), quiet = TRUE)
+nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+
+# Sum NALC values in each catchments
+catchments_nalc <- criteria_to_catchments(
+  catchments_sf = catchments_sf, 
+  criteria_raster = nalc, 
+  criteria_name = "nalc", 
+  class_vals = unique(nalc))
+
+```
+
+## Setting targets
+We will use a target area of 100km2 for this analysis to match the approximate size of the `beaconsbuilder` conservation areas. The `gen_targets()` function calculates targets and lists them in the column `target_km2`, calculated as the proportion of each class across the raster, multiplied by the user provided `reserve_size`.
+
+Target tables can be created manually as long as they contain the columns "class_value", "class_proportion" and "target_km2". If fixed instead of proportional targets are desired the "target_km2" values could be edited using for example `target_table$target_km2 <- 50`.
+
+```{r gen_targets_tbl, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+refarea_sf <- st_read(file.path(dirpath, "data/reference_area_sample.shp"), quiet = TRUE)
+
+
+# Generate target table using study area boundary and LED map
+# Use the reserve size matching the builder area target (100km2)
+target_table <- gen_targets(
+  reference_sf = refarea_sf, 
+  representation_raster = nalc, 
+  reserve_size = 100)
+
+print(as.data.frame(target_table))
+```
+
+## Evaluating individual conservation areas
+The first step in the representation analysis is to evaluate each conservation area individually to see if any meet the targets. We do this with `evaluate_targets_using_catchments()` which sums the class areas in each conservation area using the catchments and returns the class sums compared to the target values in a long table.
+
+```{r}
+
+builder_tab <- utils::read.csv(file.path(dirpath, "data/builder_tbl_sample.csv"))
+builder_tab$OID <- NULL
+builder_tab <- dplyr::as_tibble(builder_tab)
+
+conservation_area_results <- evaluate_targets_using_catchments(
+  catchments_sf = catchments_nalc, 
+  criteria_name = "nalc", 
+  builder_table = builder_tab, 
+  target_table = target_table, 
+  network_list = colnames(builder_tab))
+
+# View the first conservation area
+print(conservation_area_results)
+```
+
+```{r}

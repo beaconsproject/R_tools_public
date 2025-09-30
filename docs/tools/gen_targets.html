@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Target-Based Representation Analysis on Conservation Areas using Proportional Representation – BEACONs R Tools</title>
+<title>gen_targets – BEACONs R Tools</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,25 +20,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c4ea507d6887554a4277c71e4462e965.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-c4ea507d6887554a4277c71e4462e965.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,7 +102,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -78,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">BEACONs R Tools</span>
     </a>
   </div>
@@ -89,7 +123,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Welcome</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -98,19 +132,19 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-functions-categories">    
         <li>
-    <a class="dropdown-item" href="../../tools/index_Builder.html">
+    <a class="dropdown-item" href="../tools/index_Builder.html">
  <span class="dropdown-text">Builder</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../tools/index_Hydrology.html">
+    <a class="dropdown-item" href="../tools/index_Hydrology.html">
  <span class="dropdown-text">Hydrology</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../tools/index_Representation.html">
+    <a class="dropdown-item" href="../tools/index_Representation.html">
  <span class="dropdown-text">Representation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../tools/index_Spatial.html">
+    <a class="dropdown-item" href="../tools/index_Spatial.html">
  <span class="dropdown-text">Spatial</span></a>
   </li>  
     </ul>
@@ -121,15 +155,15 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-articles">    
         <li>
-    <a class="dropdown-item" href="../../downloads/vignettes/createBuilderInput.html">
+    <a class="dropdown-item" href="../downloads/vignettes/createBuilderInput.html">
  <span class="dropdown-text">Create Builder Input</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../downloads/vignettes/createBuilderPolygons.html">
+    <a class="dropdown-item" href="../downloads/vignettes/createBuilderPolygons.html">
  <span class="dropdown-text">Create Builder Polygons</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../downloads/vignettes/assessHydro.html">
+    <a class="dropdown-item" href="../downloads/vignettes/assessHydro.html">
  <span class="dropdown-text">Assessing hydrology on reserves</span></a>
   </li>  
     </ul>
@@ -137,7 +171,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../downloads/BEACONs_R_Tools.zip"> <i class="bi bi-download" role="img">
+    <a class="nav-link" href="../downloads/BEACONs_R_Tools.zip"> <i class="bi bi-download" role="img">
 </i> 
 <span class="menu-text"><span class="download-zip">Download BEACONs R Tools</span></span></a>
   </li>  
@@ -151,7 +185,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">BEACONs Website</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../report-issues.html">
+    <a class="dropdown-item" href="../report-issues.html">
  <span class="dropdown-text">Report an Issue</span></a>
   </li>  
     </ul>
@@ -172,39 +206,123 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a></li>
+  <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a></li>
+  <li><a href="#gen_targets" id="toc-gen_targets" class="nav-link" data-scroll-target="#gen_targets"><code>gen_targets()</code></a>
+  <ul class="collapse">
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">📤 Output</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul class="collapse">
+  <li><a href="#running-the-examples" id="toc-running-the-examples" class="nav-link" data-scroll-target="#running-the-examples">Running the examples</a></li>
+  </ul></li>
+  <li><a href="#setting-targets" id="toc-setting-targets" class="nav-link" data-scroll-target="#setting-targets">Setting targets</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Target-Based Representation Analysis on Conservation Areas using Proportional Representation</h1>
+
+
+
+<section id="beacons-representation-r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="beacons-representation-r-functions">BEACONs Representation R Functions</h2>
+</section>
+<section id="gen_targets" class="level1">
+<h1><code>gen_targets()</code></h1>
+<p>The <code>gen_targets()</code> takes a reference area polygon and a classified raster for which representation will be evaluated. The functiobn calculates the proportion of each class in the reference area and multiples by reserve size to get target in km2.</p>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gen_targets</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  reference_sf, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  representation_raster, </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  reserve_size, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">class_values =</span> <span class="fu">c</span>())</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="er">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="arguments" class="level2">
+<h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
+<ul>
+<li>reference_sf: sf object of the reference area we are aiming to represent.</li>
+<li>representation_raster: Raster object of the representation layer classified into categorical classes.</li>
+<li>reserve_size: A vector of classes in representation_raster to generate targets for. Defaults to all classes in the representation_raster.</li>
+<li>class_values: The area in km2 that targets will sum to. Generally the approximate reserve size of reserves being evaluated.</li>
+</ul>
+</section>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">📤 Output</h2>
+<p>A tibble with columns: - <code>class_value</code>: the list of class_values<br>
+- <code>area_km2</code>: area of the class value in the reference_sf<br>
+- <code>reserve_size</code>: the provided reserve_size<br>
+- <code>class_proportion</code>: area_km2/sum(area_km2) - <code>target_km2</code>: class_proportion * reserve_area</p>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<section id="running-the-examples" class="level3">
+<h3 class="anchored" data-anchor-id="running-the-examples">Running the examples</h3>
+<ol type="1">
+<li><p>Download and unzip BEACONs R Tools</p></li>
+<li><p>Run the examples below.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"."</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dirpath)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/representation.R"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils.R"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>catchments_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/catchments_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>nalc <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/nalc_sample.tif"</span>))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>refarea_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/reference_area_sample.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+</section>
+<section id="setting-targets" class="level2">
+<h2 class="anchored" data-anchor-id="setting-targets">Setting targets</h2>
+<p>We will use a target area of 100km2 for this analysis to match the approximate size of the <code>beaconsbuilder</code> conservation areas. The <code>gen_targets()</code> function calculates targets and lists them in the column <code>target_km2</code>, calculated as the proportion of each class across the raster, multiplied by the user provided <code>reserve_size</code>.</p>
+<p>Target tables can be created manually as long as they contain the columns “class_value”, “class_proportion” and “target_km2”. If fixed instead of proportional targets are desired the “target_km2” values could be edited using for example <code>target_table$target_km2 &lt;- 50</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate target table using study area boundary and LED map</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the reserve size matching the builder area target (100km2)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>target_table <span class="ot">&lt;-</span> <span class="fu">gen_targets</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">reference_sf =</span> refarea_sf, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">representation_raster =</span> nalc, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">reserve_size =</span> <span class="dv">100</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">as.data.frame</span>(target_table))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   class_value    area_km2 reserve_size class_proportion target_km2
+1            0   20.013405          100     0.0024920330       0.25
+2            1 1844.370204          100     0.2296576399      22.97
+3            2  273.198404          100     0.0340181708       3.40
+4            3 1423.094377          100     0.1772011363      17.72
+5            4  123.156656          100     0.0153352439       1.53
+6            5 2337.770195          100     0.2910949137      29.11
+7            6 1766.038466          100     0.2199039136      21.99
+8            8   54.829653          100     0.0068272891       0.68
+9            9    6.484951          100     0.0008074943       0.08
+10          11  181.998834          100     0.0226621654       2.27</code></pre>
+</div>
+</div>
+<p>```</p>
 
 
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<section id="intro" class="level2">
-<h2 class="anchored" data-anchor-id="intro">Intro</h2>
-<p>Representation analyses typically include multiple layers assumed to represent a range of ecological processes. They often include climate layers, productivity, riparian zones etc. a target-based approach using proportional representation. This is useful when you want to ensure specific target areas of different representation classes are met in one or multiple conservation areas.</p>
-<p>The goal of the representation analysis is to identify conservation areas that adequately capture the target amounts of representation classes (in our case NALC classes) deemed to be proportionally representative of the study region. Usually the target amounts should be met in full in a conservation area, rather than being split between multiple conservation areas. The idea being that the conservation area should provide a sufficient area for the ecological processes associated with specific target classes to operate. In a network of multiple conservation areas, different target classes and different ecological processes may therefore be represented by different conservation areas.</p>
-<p>For this example we will use a single layer (NALC) to assess representation of the 13 land cover classes that fall within our study area. The study area is a Fundamental Drainage Area in Yukon, Canada (FDA 09EA).</p>
-
-
+</section>
 </section>
 
 </main> <!-- /main -->

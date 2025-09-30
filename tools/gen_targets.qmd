@@ -1,0 +1,88 @@
+## BEACONs Representation R Functions
+
+# `gen_targets()`
+
+The `gen_targets()` takes a reference area polygon and a classified raster for which representation will be evaluated. The functiobn calculates the proportion of each class in the reference area and multiples by reserve size to get target in km2.
+
+
+## Usage
+```r
+gen_targets(
+  reference_sf, 
+  representation_raster, 
+  reserve_size, 
+  class_values = c())
+)
+
+```
+## Arguments
+- reference_sf: sf object of the reference area we are aiming to represent.
+- representation_raster: Raster object of the representation layer classified into categorical classes.
+- reserve_size: A vector of classes in representation_raster to generate targets for. Defaults to all classes in the representation_raster.
+- class_values: The area in km2 that targets will sum to. Generally the approximate reserve size of reserves being evaluated.
+
+
+
+## 📤 Output
+
+A tibble with columns: 
+- `class_value`: the list of class_values  
+- `area_km2`: area of the class value in the reference_sf  
+- `reserve_size`: the provided reserve_size  
+- `class_proportion`: area_km2/sum(area_km2) 
+- `target_km2`: class_proportion * reserve_area
+
+
+## Examples
+### Running the examples
+
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```{r evaluate_targets_using_catchments, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+# Load libraries
+library(sf)
+library(terra)
+library(dplyr)
+library(here)
+library(RColorBrewer)
+library(tidyr)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/representation.R")
+source("./R/utils.R")
+
+#Set access path 
+catchments_sf <- st_read(file.path(dirpath, "data/catchments_sample.shp"), quiet = TRUE)
+nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+refarea_sf <- st_read(file.path(dirpath, "data/reference_area_sample.shp"), quiet = TRUE)
+
+```
+
+## Setting targets
+We will use a target area of 100km2 for this analysis to match the approximate size of the `beaconsbuilder` conservation areas. The `gen_targets()` function calculates targets and lists them in the column `target_km2`, calculated as the proportion of each class across the raster, multiplied by the user provided `reserve_size`.
+
+Target tables can be created manually as long as they contain the columns "class_value", "class_proportion" and "target_km2". If fixed instead of proportional targets are desired the "target_km2" values could be edited using for example `target_table$target_km2 <- 50`.
+
+```{r gen_targets, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+
+
+# Generate target table using study area boundary and LED map
+# Use the reserve size matching the builder area target (100km2)
+target_table <- gen_targets(
+  reference_sf = refarea_sf, 
+  representation_raster = nalc, 
+  reserve_size = 100)
+
+print(as.data.frame(target_table))
+```
+
+```
