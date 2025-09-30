@@ -58,6 +58,7 @@ dirpath <- here(".")
 setwd(dirpath)
 source("./R/representation.R")
 source("./R/utils.R")
+source("./R/spatial.R")
 
 #Set access path 
 catchments_sf <- st_read(file.path(dirpath, "data/catchments_sample.shp"), quiet = TRUE)
@@ -100,6 +101,12 @@ conservation_area_results <- evaluate_targets_using_catchments(
 
 # View the first conservation area
 print(conservation_area_results)
+
+# Use the builder table to create polygons
+conservation_area_polygons <- dissolve_catchments_from_table(catchments_sf = catchments_sf, 
+                                             input_table = builder_tab, 
+                                             out_feature_id = "network")
+
 ```
 
 
@@ -118,9 +125,8 @@ reserves_results <- evaluate_targets_using_clip(
   representation_raster = nalc, 
   target_table = target_table)
 
-print(pa_results)
+print(reserves_results)
 ```
-
 ## Summarizing individual conservation areas
 At this point we have representation results for all individual conservation areas, as well as 3 existing protected areas. We can use `summarize_representation_results()` to rank all of these options in terms of representation. We first append the existing protected area results to the `beaconsbuilder` results to get everything in one table. We then summarize the results, requiring 100% of the targets to be met, but only considering targets that cover >=1% of the total target area (rare targets are difficult to represent and are often addressed as a separate part of a conservation analysis).
 ```{r, fig.width=7, fig.height=5, fig.keep = 'last'}
@@ -131,7 +137,7 @@ conservation_area_results <- rbind(conservation_area_results, reserves_results)
 individual_summary <- summarize_representation_results(
   network_evaluation_table = conservation_area_results,
   criteria_name = "nalc", 
-  target_pass_proportion = 1, 
+  target_pass_proportion = 0.1, 
   target_inclusion_proportion = 0.01, 
   suffix = "", 
   gaps = TRUE)
@@ -143,6 +149,7 @@ conservation_area_polygons_nalc <- conservation_area_polygons %>%
   left_join(individual_summary, by = 'network')
 
 # Map the conservation areas with the least representation gaps (i.e. 2 gaps)
-plot(vignette_nalc, axes = FALSE)
+plot(nalc, axes = FALSE)
 plot(conservation_area_polygons_nalc$geometry[conservation_area_polygons_nalc$nalc_gaps==2], add = TRUE, border = 'cyan', lwd = 2)
 ```
+

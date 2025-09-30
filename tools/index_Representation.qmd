@@ -16,6 +16,7 @@ Representation analyses typically include multiple layers assumed to represent a
 - [gen_targets](gen_targets.qmd)
 - [evaluate_targets_using_catchments](evaluate_targets_using_catchments.qmd)
 - [evaluate_targets_using_clip](evaluate_targets_using_clip.qmd)
+- [summarize_representation_results()](summarize_representation_results.qmd)
 
 ### calc_dissimilarity
 
@@ -43,6 +44,10 @@ The function [evaluate_targets_using_catchments()](evaluate_targets_using_catchm
 ### evaluate_targets_using_clip
 
 The function [evaluate_targets_using_clip()](evaluate_targets_using_clip.html) clips the criteria raster to the conservation area and calculates the proportion of each class within it.
+
+### summarize_representation_results
+
+The function [summarize_representation_results()](summarize_representation_results.html) Summarize representation results by network.
 
 <br>
 <br>

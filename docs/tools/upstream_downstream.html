@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index_representation – BEACONs R Tools</title>
+<title>upstream_downstream – BEACONs R Tools</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -172,17 +206,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a>
+  <li><a href="#beacons-hydrology-r-functions" id="toc-beacons-hydrology-r-functions" class="nav-link active" data-scroll-target="#beacons-hydrology-r-functions">BEACONs Hydrology R Functions</a></li>
+  <li><a href="#get_upstream_catchments-andget_downstream_catchemnts" id="toc-get_upstream_catchments-andget_downstream_catchemnts" class="nav-link" data-scroll-target="#get_upstream_catchments-andget_downstream_catchemnts"><code>get_upstream_catchments()</code> and<code>get_downstream_catchemnts()</code></a>
   <ul class="collapse">
-  <li><a href="#calc_dissimilarity" id="toc-calc_dissimilarity" class="nav-link" data-scroll-target="#calc_dissimilarity">calc_dissimilarity</a></li>
-  <li><a href="#evaluate_criteria_using_clip" id="toc-evaluate_criteria_using_clip" class="nav-link" data-scroll-target="#evaluate_criteria_using_clip">evaluate_criteria_using_clip</a></li>
-  <li><a href="#criteria_to_catchments" id="toc-criteria_to_catchments" class="nav-link" data-scroll-target="#criteria_to_catchments">criteria_to_catchments</a></li>
-  <li><a href="#gen_targets" id="toc-gen_targets" class="nav-link" data-scroll-target="#gen_targets">gen_targets</a></li>
-  <li><a href="#evaluate_targets_using_catchments" id="toc-evaluate_targets_using_catchments" class="nav-link" data-scroll-target="#evaluate_targets_using_catchments">evaluate_targets_using_catchments</a></li>
-  <li><a href="#evaluate_targets_using_clip" id="toc-evaluate_targets_using_clip" class="nav-link" data-scroll-target="#evaluate_targets_using_clip">evaluate_targets_using_clip</a></li>
-  <li><a href="#summarize_representation_results" id="toc-summarize_representation_results" class="nav-link" data-scroll-target="#summarize_representation_results">summarize_representation_results</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">📤 Output</a></li>
+  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul class="collapse">
+  <li><a href="#running-the-examples" id="toc-running-the-examples" class="nav-link" data-scroll-target="#running-the-examples">Running the examples</a></li>
   </ul></li>
-  <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation">Citation</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -192,57 +227,99 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="beacons-representation-r-functions" class="level2">
-<h2 class="anchored" data-anchor-id="beacons-representation-r-functions">BEACONs Representation R Functions</h2>
-<p>BEACONs developped a variety of functions for two types of representation analysis:</p>
-<p>The <code>calc_dissimilarity()</code> function compares the distributions of a raster layer between a conservation area and a broader study region that we are trying to represent. The closer the distributions of raster values, the lower the dissimilarity score. Values of 0.2 or less are considered ‘good’ representation.</p>
-<p>Another approach focus on reaching target-based target using proportional representation. The latter ensure specific target areas of different representation classes are met in one or multiple conservation areas.</p>
-<p>Representation analyses typically include multiple layers assumed to represent a range of ecological processes. They often include climate layers, productivity, riparian zones etc. The goal of the representation analysis is to identify conservation areas that adequately capture the target amounts of representation classes (in our case NALC classes) deemed to be proportionally representative of the study region. Usually the target amounts should be met in full in a conservation area, rather than being split between multiple conservation areas. The idea being that the conservation area should provide a sufficient area for the ecological processes associated with specific target classes to operate. In a network of multiple conservation areas, different target classes and different ecological processes may therefore be represented by different conservation areas.</p>
-<p><strong>The xx main representation functions are:</strong></p>
+<section id="beacons-hydrology-r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="beacons-hydrology-r-functions">BEACONs Hydrology R Functions</h2>
+</section>
+<section id="get_upstream_catchments-andget_downstream_catchemnts" class="level1">
+<h1><code>get_upstream_catchments()</code> and<code>get_downstream_catchemnts()</code></h1>
+<p>The <code>get_upstream_catchments()</code> and <code>get_downstream_catchemnts()</code> functions return upstream or downstream catchments for a set of input polygons as a table, with conservation_area_id as the unique id.</p>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_upstream_catchments</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  conservation_area_sf,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  conservation_area_id,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  catchments_sf</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">get_downstream_catchments</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  conservation_area_sf,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  conservation_area_id,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  catchments_sf</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="arguments" class="level2">
+<h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
+<p>Both functions need the following:</p>
 <ul>
-<li><a href="../tools/calc_dissimilarity.html">calc_dissimilarity</a></li>
-<li><a href="../tools/evaluate_criteria_using_clip.html">evaluate_criteria_using_clip</a></li>
-<li><a href="../tools/criteria_to_catchments.html">criteria_to_catchments</a></li>
-<li><a href="../tools/gen_targets.html">gen_targets</a></li>
-<li><a href="../tools/evaluate_targets_using_catchments.html">evaluate_targets_using_catchments</a></li>
-<li><a href="../tools/evaluate_targets_using_clip.html">evaluate_targets_using_clip</a></li>
-<li><a href="../tools/summarize_representation_results.html">summarize_representation_results()</a></li>
+<li><p>conservation_area_sf: sf object of protected area polygons.</p></li>
+<li><p>conservation_area_id: String matching the unique identifier column in .</p></li>
+<li><p>catchments_sf: sf object of the catchments dataset with unique identifier column: CATCHNUM .</p></li>
 </ul>
-<section id="calc_dissimilarity" class="level3">
-<h3 class="anchored" data-anchor-id="calc_dissimilarity">calc_dissimilarity</h3>
-<p>The function <a href="calc_dissimilarity.html">calc_dissimilarity()</a> calculate dissimilarity values between a set of polygons and a reference area..</p>
 </section>
-<section id="evaluate_criteria_using_clip" class="level3">
-<h3 class="anchored" data-anchor-id="evaluate_criteria_using_clip">evaluate_criteria_using_clip</h3>
-<p>The function <a href="evaluate_criteria_using_clip.html">evaluate_criteria_using_clip()</a> clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">📤 Output</h2>
+<p>A tibble where each column name is a unique polygon id, and each row is a catchment making up the upstream or downstream area for the polygon. Blank rows are filled with NA. CATCHNUMs are returned as integers.</p>
 </section>
-<section id="criteria_to_catchments" class="level3">
-<h3 class="anchored" data-anchor-id="criteria_to_catchments">criteria_to_catchments</h3>
-<p>The function <a href="criteria_to_catchments.html">criteria_to_catchments()</a> sums the area of all unique values in the raster and adds summed area’s as columns in the catchments dataset.</p>
+<section id="details" class="level2">
+<h2 class="anchored" data-anchor-id="details">Details</h2>
+<p>The upstream and downstream regions of a targeted polygons (i.e.&nbsp;conservation area) can inform on potential sources of external vulnerability due to water-mediated influences. For instance, assessing a conservation area’s vulnerability may involve examining upstream human disturbances—such as pollutant inputs or water diversions (e.g., dams)—while looking at downstream areas of a disturbed regions (i.e.&nbsp;mine) can provide insight into the potential spread of ecological impacts originating from the region.</p>
 </section>
-<section id="gen_targets" class="level3">
-<h3 class="anchored" data-anchor-id="gen_targets">gen_targets</h3>
-<p>The function <a href="gen_targets.html">gen_targets()</a> clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
-</section>
-<section id="evaluate_targets_using_catchments" class="level3">
-<h3 class="anchored" data-anchor-id="evaluate_targets_using_catchments">evaluate_targets_using_catchments</h3>
-<p>The function <a href="evaluate_targets_using_catchments.html">evaluate_targets_using_catchments()</a> evaluate targets using conservation areas created by <strong>Builder</strong> which are defined by lists of catchments.</p>
-</section>
-<section id="evaluate_targets_using_clip" class="level3">
-<h3 class="anchored" data-anchor-id="evaluate_targets_using_clip">evaluate_targets_using_clip</h3>
-<p>The function <a href="evaluate_targets_using_clip.html">evaluate_targets_using_clip()</a> clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
-</section>
-<section id="summarize_representation_results" class="level3">
-<h3 class="anchored" data-anchor-id="summarize_representation_results">summarize_representation_results</h3>
-<p>The function <a href="summarize_representation_results.html">summarize_representation_results()</a> Summarize representation results by network.</p>
-<p><br> <br></p>
-</section>
-</section>
-<section id="citation" class="level2">
-<h2 class="anchored" data-anchor-id="citation">Citation</h2>
-<p>Houle M, Vernier P, Lisgo K, Edwards M, Schmiegelow F (2025). BEACONs R_Tools_Public: Building conservation areas in R. Available at https://beaconsproject.github.io/R_tools_public/.</p>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<section id="running-the-examples" class="level3">
+<h3 class="anchored" data-anchor-id="running-the-examples">Running the examples</h3>
+<p>The example below allow to identify upstream and downstream areas and save them as layers.</p>
+<ol type="1">
+<li><p>Download and unzip BEACONs R Tools</p></li>
+<li><p>Run the examples below.</p></li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"your/path/to/downloads/folder"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/hydrology.R"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/spatial.R"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">getwd</span>()</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>reserves <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"data/reserves_sample.shp"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"data/catchments_sample.shp"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>colName <span class="ot">&lt;-</span> <span class="st">"reserve"</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#Create output folder</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dirpath, <span class="st">"shp_output"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(out_dir)){</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(out_dir)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#--RUN</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize sf objects</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>reserves_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(reserves)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>catchments_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(catchments)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>upstream_tbl <span class="ot">&lt;-</span> <span class="fu">get_upstream_catchments</span>(reserves_sf, colName, catchments_sf)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Turn the tibble into sf object</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>upstream_sf <span class="ot">&lt;-</span> <span class="fu">dissolve_catchments_from_table</span>(catchments_sf, upstream_tbl, colName)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot results</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(catchments_sf), <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">main =</span> <span class="st">"Upstream Catchments Example"</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(upstream_sf), <span class="at">col =</span> <span class="st">"green"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(reserves_sf), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
