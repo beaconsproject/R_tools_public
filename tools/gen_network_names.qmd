@@ -1,0 +1,70 @@
+## BEACONs Representation R Functions
+
+# `gen_network_names()`
+
+The `gen_network_names()` takes a vector of conservation area names and combines them into network names using the separator: \code{"__"}.
+Conservation area names should never include the separator: \code{"__"}, however \code{"_"} is acceptable. By default all combinations of conservation area names will be created based on the \code{k} parameter. The length of the output will therefore equal  \code{choose(length(in_names), k)}. Input names are ordered in the network name based using \code{sort()}. The output vector of names can be filtered using force_in to include specific names.
+
+## Usage
+```r
+gen_network_names(
+  in_names, 
+  k, 
+  force_in = c()
+)
+
+ 
+```
+## Arguments
+- in_names: Vector of input names. Usually the names of conservation areas from the beaconsbuilder package (e.g. PB_0001) and/or user provided reserves (e.g. PA_1).
+- k: Integer > 1 and <= \code{length(in_names)}. Count of names to appear in each output network name.
+- force_in: Vector of names to force in to the output vector (usually a subset of in_names but could be a substring of an output name, see examples). Only network names containing one of these vectors will be included in the output.
+
+
+## 📤 Output
+A vector of network names.
+
+
+## Examples
+### Running the examples
+
+
+1. Download and unzip BEACONs R Tools 
+
+2. Run the examples below.
+
+```{r evaluate_targets_using_catchments, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+# Load libraries
+library(sf)
+library(terra)
+library(dplyr)
+library(here)
+library(RColorBrewer)
+library(tidyr)
+
+# --------------------------------------
+# SET PARAMS  --------------------
+# --------------------------------------
+# Set working directory
+dirpath <- here(".")
+
+setwd(dirpath)
+source("./R/names.R")
+source("./R/utils.R")
+source("./R/spatial.R")
+
+
+ca_network <- gen_network_names(c("PB_1", "PB_2", "PB_3", "PB_11"), 2)
+print(ca_network)
+
+
+#Set access path 
+builder_tab <- utils::read.csv(file.path(dirpath, "data/builder_tbl_sample.csv"))
+
+network_names <- gen_network_names(
+  in_names = colnames(builder_tab), 
+  k = 3)
+print(network_names)
+
+```
+

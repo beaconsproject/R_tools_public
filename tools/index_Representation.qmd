@@ -17,6 +17,7 @@ Representation analyses typically include multiple layers assumed to represent a
 - [evaluate_targets_using_catchments](evaluate_targets_using_catchments.qmd)
 - [evaluate_targets_using_clip](evaluate_targets_using_clip.qmd)
 - [summarize_representation_results()](summarize_representation_results.qmd)
+- [gen_network_names()](gen_network_names.qmd)
 
 ### calc_dissimilarity
 
@@ -47,7 +48,13 @@ The function [evaluate_targets_using_clip()](evaluate_targets_using_clip.html) c
 
 ### summarize_representation_results
 
-The function [summarize_representation_results()](summarize_representation_results.html) Summarize representation results by network.
+The function [summarize_representation_results()](summarize_representation_results.html) summarize representation results by network.
+
+
+### gen_network_names
+
+The function [gen_network_names()](gen_network_names.html) create a vector of network names.
+
 
 <br>
 <br>

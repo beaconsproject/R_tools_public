@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index_representation – BEACONs R Tools</title>
+<title>gen_network_names – BEACONs R Tools</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -172,18 +206,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a>
+  <li><a href="#beacons-representation-r-functions" id="toc-beacons-representation-r-functions" class="nav-link active" data-scroll-target="#beacons-representation-r-functions">BEACONs Representation R Functions</a></li>
+  <li><a href="#gen_network_names" id="toc-gen_network_names" class="nav-link" data-scroll-target="#gen_network_names"><code>gen_network_names()</code></a>
   <ul class="collapse">
-  <li><a href="#calc_dissimilarity" id="toc-calc_dissimilarity" class="nav-link" data-scroll-target="#calc_dissimilarity">calc_dissimilarity</a></li>
-  <li><a href="#evaluate_criteria_using_clip" id="toc-evaluate_criteria_using_clip" class="nav-link" data-scroll-target="#evaluate_criteria_using_clip">evaluate_criteria_using_clip</a></li>
-  <li><a href="#criteria_to_catchments" id="toc-criteria_to_catchments" class="nav-link" data-scroll-target="#criteria_to_catchments">criteria_to_catchments</a></li>
-  <li><a href="#gen_targets" id="toc-gen_targets" class="nav-link" data-scroll-target="#gen_targets">gen_targets</a></li>
-  <li><a href="#evaluate_targets_using_catchments" id="toc-evaluate_targets_using_catchments" class="nav-link" data-scroll-target="#evaluate_targets_using_catchments">evaluate_targets_using_catchments</a></li>
-  <li><a href="#evaluate_targets_using_clip" id="toc-evaluate_targets_using_clip" class="nav-link" data-scroll-target="#evaluate_targets_using_clip">evaluate_targets_using_clip</a></li>
-  <li><a href="#summarize_representation_results" id="toc-summarize_representation_results" class="nav-link" data-scroll-target="#summarize_representation_results">summarize_representation_results</a></li>
-  <li><a href="#gen_network_names" id="toc-gen_network_names" class="nav-link" data-scroll-target="#gen_network_names">gen_network_names</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">📤 Output</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul class="collapse">
+  <li><a href="#running-the-examples" id="toc-running-the-examples" class="nav-link" data-scroll-target="#running-the-examples">Running the examples</a></li>
   </ul></li>
-  <li><a href="#citation" id="toc-citation" class="nav-link" data-scroll-target="#citation">Citation</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -195,60 +228,141 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="beacons-representation-r-functions" class="level2">
 <h2 class="anchored" data-anchor-id="beacons-representation-r-functions">BEACONs Representation R Functions</h2>
-<p>BEACONs developped a variety of functions for two types of representation analysis:</p>
-<p>The <code>calc_dissimilarity()</code> function compares the distributions of a raster layer between a conservation area and a broader study region that we are trying to represent. The closer the distributions of raster values, the lower the dissimilarity score. Values of 0.2 or less are considered ‘good’ representation.</p>
-<p>Another approach focus on reaching target-based target using proportional representation. The latter ensure specific target areas of different representation classes are met in one or multiple conservation areas.</p>
-<p>Representation analyses typically include multiple layers assumed to represent a range of ecological processes. They often include climate layers, productivity, riparian zones etc. The goal of the representation analysis is to identify conservation areas that adequately capture the target amounts of representation classes (in our case NALC classes) deemed to be proportionally representative of the study region. Usually the target amounts should be met in full in a conservation area, rather than being split between multiple conservation areas. The idea being that the conservation area should provide a sufficient area for the ecological processes associated with specific target classes to operate. In a network of multiple conservation areas, different target classes and different ecological processes may therefore be represented by different conservation areas.</p>
-<p><strong>The xx main representation functions are:</strong></p>
+</section>
+<section id="gen_network_names" class="level1">
+<h1><code>gen_network_names()</code></h1>
+<p>The <code>gen_network_names()</code> takes a vector of conservation area names and combines them into network names using the separator: . Conservation area names should never include the separator: , however is acceptable. By default all combinations of conservation area names will be created based on the parameter. The length of the output will therefore equal . Input names are ordered in the network name based using . The output vector of names can be filtered using force_in to include specific names.</p>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gen_network_names</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  in_names, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  k, </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">force_in =</span> <span class="fu">c</span>()</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="arguments" class="level2">
+<h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><a href="../tools/calc_dissimilarity.html">calc_dissimilarity</a></li>
-<li><a href="../tools/evaluate_criteria_using_clip.html">evaluate_criteria_using_clip</a></li>
-<li><a href="../tools/criteria_to_catchments.html">criteria_to_catchments</a></li>
-<li><a href="../tools/gen_targets.html">gen_targets</a></li>
-<li><a href="../tools/evaluate_targets_using_catchments.html">evaluate_targets_using_catchments</a></li>
-<li><a href="../tools/evaluate_targets_using_clip.html">evaluate_targets_using_clip</a></li>
-<li><a href="../tools/summarize_representation_results.html">summarize_representation_results()</a></li>
-<li><a href="../tools/gen_network_names.html">gen_network_names()</a></li>
+<li>in_names: Vector of input names. Usually the names of conservation areas from the beaconsbuilder package (e.g.&nbsp;PB_0001) and/or user provided reserves (e.g.&nbsp;PA_1).</li>
+<li>k: Integer &gt; 1 and &lt;= . Count of names to appear in each output network name.</li>
+<li>force_in: Vector of names to force in to the output vector (usually a subset of in_names but could be a substring of an output name, see examples). Only network names containing one of these vectors will be included in the output.</li>
 </ul>
-<section id="calc_dissimilarity" class="level3">
-<h3 class="anchored" data-anchor-id="calc_dissimilarity">calc_dissimilarity</h3>
-<p>The function <a href="calc_dissimilarity.html">calc_dissimilarity()</a> calculate dissimilarity values between a set of polygons and a reference area..</p>
 </section>
-<section id="evaluate_criteria_using_clip" class="level3">
-<h3 class="anchored" data-anchor-id="evaluate_criteria_using_clip">evaluate_criteria_using_clip</h3>
-<p>The function <a href="evaluate_criteria_using_clip.html">evaluate_criteria_using_clip()</a> clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">📤 Output</h2>
+<p>A vector of network names.</p>
 </section>
-<section id="criteria_to_catchments" class="level3">
-<h3 class="anchored" data-anchor-id="criteria_to_catchments">criteria_to_catchments</h3>
-<p>The function <a href="criteria_to_catchments.html">criteria_to_catchments()</a> sums the area of all unique values in the raster and adds summed area’s as columns in the catchments dataset.</p>
-</section>
-<section id="gen_targets" class="level3">
-<h3 class="anchored" data-anchor-id="gen_targets">gen_targets</h3>
-<p>The function <a href="gen_targets.html">gen_targets()</a> clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
-</section>
-<section id="evaluate_targets_using_catchments" class="level3">
-<h3 class="anchored" data-anchor-id="evaluate_targets_using_catchments">evaluate_targets_using_catchments</h3>
-<p>The function <a href="evaluate_targets_using_catchments.html">evaluate_targets_using_catchments()</a> evaluate targets using conservation areas created by <strong>Builder</strong> which are defined by lists of catchments.</p>
-</section>
-<section id="evaluate_targets_using_clip" class="level3">
-<h3 class="anchored" data-anchor-id="evaluate_targets_using_clip">evaluate_targets_using_clip</h3>
-<p>The function <a href="evaluate_targets_using_clip.html">evaluate_targets_using_clip()</a> clips the criteria raster to the conservation area and calculates the proportion of each class within it.</p>
-</section>
-<section id="summarize_representation_results" class="level3">
-<h3 class="anchored" data-anchor-id="summarize_representation_results">summarize_representation_results</h3>
-<p>The function <a href="summarize_representation_results.html">summarize_representation_results()</a> summarize representation results by network.</p>
-</section>
-<section id="gen_network_names" class="level3">
-<h3 class="anchored" data-anchor-id="gen_network_names">gen_network_names</h3>
-<p>The function <a href="gen_network_names.html">gen_network_names()</a> create a vector of network names.</p>
-<p><br> <br></p>
-</section>
-</section>
-<section id="citation" class="level2">
-<h2 class="anchored" data-anchor-id="citation">Citation</h2>
-<p>Houle M, Vernier P, Lisgo K, Edwards M, Schmiegelow F (2025). BEACONs R_Tools_Public: Building conservation areas in R. Available at https://beaconsproject.github.io/R_tools_public/.</p>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<section id="running-the-examples" class="level3">
+<h3 class="anchored" data-anchor-id="running-the-examples">Running the examples</h3>
+<ol type="1">
+<li><p>Download and unzip BEACONs R Tools</p></li>
+<li><p>Run the examples below.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SET PARAMS  --------------------</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>dirpath <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"."</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(dirpath)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/names.R"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/utils.R"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"./R/spatial.R"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>ca_network <span class="ot">&lt;-</span> <span class="fu">gen_network_names</span>(<span class="fu">c</span>(<span class="st">"PB_1"</span>, <span class="st">"PB_2"</span>, <span class="st">"PB_3"</span>, <span class="st">"PB_11"</span>), <span class="dv">2</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ca_network)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "PB_1__PB_11" "PB_1__PB_2"  "PB_1__PB_3"  "PB_11__PB_2" "PB_11__PB_3"
+[6] "PB_2__PB_3" </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Set access path </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>builder_tab <span class="ot">&lt;-</span> utils<span class="sc">::</span><span class="fu">read.csv</span>(<span class="fu">file.path</span>(dirpath, <span class="st">"data/builder_tbl_sample.csv"</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>network_names <span class="ot">&lt;-</span> <span class="fu">gen_network_names</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">in_names =</span> <span class="fu">colnames</span>(builder_tab), </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(network_names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] "OID__PB_94784__PB_95575"      "OID__PB_94784__PB_95583"     
+  [3] "OID__PB_94784__PB_95840"      "OID__PB_94784__PB_95876"     
+  [5] "OID__PB_94784__PB_95898"      "OID__PB_94784__PB_95949"     
+  [7] "OID__PB_94784__PB_96020"      "OID__PB_94784__PB_96075"     
+  [9] "OID__PB_95575__PB_95583"      "OID__PB_95575__PB_95840"     
+ [11] "OID__PB_95575__PB_95876"      "OID__PB_95575__PB_95898"     
+ [13] "OID__PB_95575__PB_95949"      "OID__PB_95575__PB_96020"     
+ [15] "OID__PB_95575__PB_96075"      "OID__PB_95583__PB_95840"     
+ [17] "OID__PB_95583__PB_95876"      "OID__PB_95583__PB_95898"     
+ [19] "OID__PB_95583__PB_95949"      "OID__PB_95583__PB_96020"     
+ [21] "OID__PB_95583__PB_96075"      "OID__PB_95840__PB_95876"     
+ [23] "OID__PB_95840__PB_95898"      "OID__PB_95840__PB_95949"     
+ [25] "OID__PB_95840__PB_96020"      "OID__PB_95840__PB_96075"     
+ [27] "OID__PB_95876__PB_95898"      "OID__PB_95876__PB_95949"     
+ [29] "OID__PB_95876__PB_96020"      "OID__PB_95876__PB_96075"     
+ [31] "OID__PB_95898__PB_95949"      "OID__PB_95898__PB_96020"     
+ [33] "OID__PB_95898__PB_96075"      "OID__PB_95949__PB_96020"     
+ [35] "OID__PB_95949__PB_96075"      "OID__PB_96020__PB_96075"     
+ [37] "PB_94784__PB_95575__PB_95583" "PB_94784__PB_95575__PB_95840"
+ [39] "PB_94784__PB_95575__PB_95876" "PB_94784__PB_95575__PB_95898"
+ [41] "PB_94784__PB_95575__PB_95949" "PB_94784__PB_95575__PB_96020"
+ [43] "PB_94784__PB_95575__PB_96075" "PB_94784__PB_95583__PB_95840"
+ [45] "PB_94784__PB_95583__PB_95876" "PB_94784__PB_95583__PB_95898"
+ [47] "PB_94784__PB_95583__PB_95949" "PB_94784__PB_95583__PB_96020"
+ [49] "PB_94784__PB_95583__PB_96075" "PB_94784__PB_95840__PB_95876"
+ [51] "PB_94784__PB_95840__PB_95898" "PB_94784__PB_95840__PB_95949"
+ [53] "PB_94784__PB_95840__PB_96020" "PB_94784__PB_95840__PB_96075"
+ [55] "PB_94784__PB_95876__PB_95898" "PB_94784__PB_95876__PB_95949"
+ [57] "PB_94784__PB_95876__PB_96020" "PB_94784__PB_95876__PB_96075"
+ [59] "PB_94784__PB_95898__PB_95949" "PB_94784__PB_95898__PB_96020"
+ [61] "PB_94784__PB_95898__PB_96075" "PB_94784__PB_95949__PB_96020"
+ [63] "PB_94784__PB_95949__PB_96075" "PB_94784__PB_96020__PB_96075"
+ [65] "PB_95575__PB_95583__PB_95840" "PB_95575__PB_95583__PB_95876"
+ [67] "PB_95575__PB_95583__PB_95898" "PB_95575__PB_95583__PB_95949"
+ [69] "PB_95575__PB_95583__PB_96020" "PB_95575__PB_95583__PB_96075"
+ [71] "PB_95575__PB_95840__PB_95876" "PB_95575__PB_95840__PB_95898"
+ [73] "PB_95575__PB_95840__PB_95949" "PB_95575__PB_95840__PB_96020"
+ [75] "PB_95575__PB_95840__PB_96075" "PB_95575__PB_95876__PB_95898"
+ [77] "PB_95575__PB_95876__PB_95949" "PB_95575__PB_95876__PB_96020"
+ [79] "PB_95575__PB_95876__PB_96075" "PB_95575__PB_95898__PB_95949"
+ [81] "PB_95575__PB_95898__PB_96020" "PB_95575__PB_95898__PB_96075"
+ [83] "PB_95575__PB_95949__PB_96020" "PB_95575__PB_95949__PB_96075"
+ [85] "PB_95575__PB_96020__PB_96075" "PB_95583__PB_95840__PB_95876"
+ [87] "PB_95583__PB_95840__PB_95898" "PB_95583__PB_95840__PB_95949"
+ [89] "PB_95583__PB_95840__PB_96020" "PB_95583__PB_95840__PB_96075"
+ [91] "PB_95583__PB_95876__PB_95898" "PB_95583__PB_95876__PB_95949"
+ [93] "PB_95583__PB_95876__PB_96020" "PB_95583__PB_95876__PB_96075"
+ [95] "PB_95583__PB_95898__PB_95949" "PB_95583__PB_95898__PB_96020"
+ [97] "PB_95583__PB_95898__PB_96075" "PB_95583__PB_95949__PB_96020"
+ [99] "PB_95583__PB_95949__PB_96075" "PB_95583__PB_96020__PB_96075"
+[101] "PB_95840__PB_95876__PB_95898" "PB_95840__PB_95876__PB_95949"
+[103] "PB_95840__PB_95876__PB_96020" "PB_95840__PB_95876__PB_96075"
+[105] "PB_95840__PB_95898__PB_95949" "PB_95840__PB_95898__PB_96020"
+[107] "PB_95840__PB_95898__PB_96075" "PB_95840__PB_95949__PB_96020"
+[109] "PB_95840__PB_95949__PB_96075" "PB_95840__PB_96020__PB_96075"
+[111] "PB_95876__PB_95898__PB_95949" "PB_95876__PB_95898__PB_96020"
+[113] "PB_95876__PB_95898__PB_96075" "PB_95876__PB_95949__PB_96020"
+[115] "PB_95876__PB_95949__PB_96075" "PB_95876__PB_96020__PB_96075"
+[117] "PB_95898__PB_95949__PB_96020" "PB_95898__PB_95949__PB_96075"
+[119] "PB_95898__PB_96020__PB_96075" "PB_95949__PB_96020__PB_96075"</code></pre>
+</div>
+</div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
