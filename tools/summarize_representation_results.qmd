@@ -56,9 +56,10 @@ library(tidyr)
 dirpath <- here(".")
 
 setwd(dirpath)
-source("./R/representation.R")
-source("./R/utils.R")
-source("./R/spatial.R")
+
+source(file.path(dirpath,"R/representation.R"))
+source(file.path(dirpath,"R/utils.R"))
+source(file.path(dirpath,"R/spatial.R"))
 
 #Set access path 
 catchments_sf <- st_read(file.path(dirpath, "data/catchments_sample.shp"), quiet = TRUE)

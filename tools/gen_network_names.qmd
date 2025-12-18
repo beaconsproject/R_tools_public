@@ -33,38 +33,35 @@ A vector of network names.
 
 2. Run the examples below.
 
-```{r evaluate_targets_using_catchments, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
+```{r read builder tables, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
 # Load libraries
-library(sf)
-library(terra)
-library(dplyr)
 library(here)
-library(RColorBrewer)
-library(tidyr)
 
 # --------------------------------------
 # SET PARAMS  --------------------
 # --------------------------------------
 # Set working directory
 dirpath <- here(".")
-
 setwd(dirpath)
-source("./R/names.R")
-source("./R/utils.R")
-source("./R/spatial.R")
 
+source(file.path(dirpath,"R/names.R"))
 
+# Generate network names
 ca_network <- gen_network_names(c("PB_1", "PB_2", "PB_3", "PB_11"), 2)
 print(ca_network)
 
 
-#Set access path 
-builder_tab <- utils::read.csv(file.path(dirpath, "data/builder_tbl_sample.csv"))
+#Read Builder table and set OID as row names
+builder_tab <- utils::read.csv(file.path(dirpath, "data/builder_tbl_sample.csv"), row.names = 1)
+print(head(builder_tab))
+```
 
+write here what builder_tab is about
+```{r generate network name, fig.width=10, fig.height=6,  message=FALSE, warning=FALSE}
 network_names <- gen_network_names(
   in_names = colnames(builder_tab), 
   k = 3)
-print(network_names)
+print(head(network_names))
 
 ```
 
