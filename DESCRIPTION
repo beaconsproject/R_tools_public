@@ -1,4 +1,4 @@
-Package: bpRfunctions
+Package: beaconsRtools
 Title: BEACONs R Tools for Conservation Planning
 Version: 0.1.0
 Authors@R: c(
