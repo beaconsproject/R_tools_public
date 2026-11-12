@@ -1,0 +1,10 @@
+# Every function in R/ is exported (names starting with "." stay internal)
+exportPattern("^[^\\.]")
+
+# Functions called without pkg:: in R/
+importFrom(magrittr, "%>%")
+importFrom(rlang, sym, ":=")
+importFrom(dplyr, mutate)
+importFrom(sf, st_centroid, st_intersects)
+importFrom(tidyr, complete, pivot_wider, separate_rows)
+importFrom(tidyselect, all_of, any_of)

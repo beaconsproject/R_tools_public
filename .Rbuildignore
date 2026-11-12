@@ -1,0 +1,36 @@
+# Everything below is the website or release tooling, not part of the R package.
+# The package is only DESCRIPTION, NAMESPACE and the function files in R/.
+
+# Quarto website
+^_quarto\.yml$
+^_config\.yml$
+^_includes$
+^\.quarto$
+^index\.qmd$
+^methods\.qmd$
+^report-issues\.qmd$
+^styles\.css$
+^theme\.scss$
+^docs$
+^tools$
+^pics$
+^downloads$
+
+# Sample data used by the website and vignettes (not .rda, so not package data)
+^data$
+
+# Outputs and scratch folders
+^builder$
+^output$
+^shp_output$
+
+# Category bundles and the script that builds them
+^release$
+^build_release\.R$
+^functions_list\.csv$
+^R/families$
+
+# RStudio / Positron
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.positron$

@@ -61,9 +61,10 @@ source("./R/utils.R")
 reserves_sf <- st_read(file.path(dirpath, "data/reserves_sample.shp"), quiet = TRUE)
 reference_sf <- st_read(file.path(dirpath, "data/reference_area_sample.shp"), quiet = TRUE)
 nalc <- rast(file.path(dirpath, "data/nalc_sample.tif"))
+df_label <- lcc_class_labels(nalc)
 
 colName <- "reserve"
 
-result <- calc_dissimilarity(reserves_sf, colName, reference_sf, nalc, 'categorical')
+result <- calc_dissimilarity(reserves_sf, colName, reference_sf, nalc, 'categorical', categorical_class_values= df_label$value, categorical_class_labels=df_label)
 
 ```

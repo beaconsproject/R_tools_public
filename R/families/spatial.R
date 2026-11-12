@@ -327,7 +327,7 @@ append_reserve <- function(conservation_areas_sf, conservation_areas_id, add_res
 
 build_network_polygons <- function(conservation_areas_sf, conservation_areas_id, network_list){
   
-  conservation_areas_sf <- check_colnames(conservation_areas_sf, cols = conservation_areas_id)
+  check_colnames(conservation_areas_sf, cols = conservation_areas_id)
   check_for_geometry(conservation_areas_sf)
   
   my_list <- list()

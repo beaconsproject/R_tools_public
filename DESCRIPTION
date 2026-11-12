@@ -1,0 +1,34 @@
+Package: bpRfunctions
+Title: BEACONs R Tools for Conservation Planning
+Version: 0.1.0
+Authors@R: c(
+    person("Melina", "Houle", email = "houle.melina@gmail.com", role = c("aut", "cre")),
+    person("Pierre", "Vernier", role = "aut"),
+    person("Marc", "Edwards", role = "aut"),
+    person("Kim", "Lisgo", role = "aut"),
+    person("BEACONs Project", role = c("cph", "fnd"))
+    )
+Description: Functions used by the BEACONs Project and its Shiny apps to build,
+    evaluate and compare conservation area networks: catchment-based builder
+    inputs, upstream and downstream catchments, dendritic connectivity (DCI),
+    representation targets, dissimilarity and ranking.
+License: GPL-3
+URL: https://github.com/beaconsproject/R_tools_public
+BugReports: https://github.com/beaconsproject/R_tools_public/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    dplyr,
+    exactextractr,
+    ggplot2,
+    magrittr,
+    purrr,
+    raster,
+    rlang,
+    sf,
+    terra,
+    tibble,
+    tidyr,
+    tidyselect,
+    utils
+Encoding: UTF-8

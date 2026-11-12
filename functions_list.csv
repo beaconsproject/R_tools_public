@@ -1,0 +1,87 @@
+R_tools_public,Folder,Script,Functions,Type,Parent function,Definition,Parameters,Example,Revised dplyr,Revised cas_sf,Revised terra,R_Tools_public scripts,R_Tools_documentation
+done,beaconstools,representation,criteria_to_catchments,function,,Sum areas of criteria raster values inside catchment polygons.,"function(catchments_sf, criteria_raster, criteria_name, class_vals = c())","criteria_to_catchments(catchments_sample, led_sample, ""led"")",No,,,representation,yes
+done,beaconstools,hydrology,calc_dci,function,,Calculate dendritic connectivity index (DCI) for a set of input polygons.,"function(conservation_areas_sf, stream_sf, conservation_areas_id, buffer_width = 0.1)","calc_dci(conservation_areas, streams_sample)",Yes ,,,hydrology,yes
+done,beaconstools,hydrology,calc_lwdci,function,,Calculate stream network length-weighted dendritic connectivity index (DCI) for a set of input polygons.,"function(conservation_areas_sf, stream_sf, conservation_areas_id, buffer_width = 0.1)","calc_lwdci(conservation_areas, streams_sample)",Yes,,,hydrology,yes
+done,beaconstools,representation,ks_stat,sub-function,calc_dissimilarity,,"function(refVal, netVal)",,No,,,,no
+done,beaconstools,representation,bc_stat,sub-function,calc_dissimilarity,,"function(refVal, netVal)",,No,,,,no
+done,beaconstools,representation,ks_plot,sub-function,calc_dissimilarity,,"function(refVal, netVal, plotTitle="""")",,No,,,,no
+done,beaconstools,representation,bc_plot,sub-function,calc_dissimilarity,,"function(refVal, netVal, plotTitle="""", labels=data.frame())",,No,,,,no
+done,beaconstools,representation,calc_dissimilarity,function,,Calculate dissimilarity values between a set of polygons and a reference area.,"function(conservation_areas_sf, reference_sf, raster_layer, raster_type, categorical_class_values=c(), plot_out_dir=NULL, categorical_class_labels=data.frame())","calc_dissimilarity(reserves, ref_poly, led_sample, 'continuous', plot_out_dir=""C:/temp/plots"")",No,,,,yes
+done,beaconstools,utils,group_conservation_areas,function,,Group conservation areas based on overlap using a grid.,"function(conservation_areas_sf, grid_size)","group_conservation_areas(reserves, 10000)",No,,,,
+done,beaconstools,utils,group_conservation_area_networks,function,,Group networks based on overlap of their component conservation areas.,"function(network_list, conservation_areas_sf, conservation_areas_id, grid_size)","group_conservation_area_networks(networks_sf$network, conservation_areas, ""network"", 10000)",No,,,,
+done,beaconstools,hydrology,getOrder1,sub-function,"getAggregationUpstreamCatchments_R (get_upstream_catchments), getAggregationDownstreamCatchments_R (get_downstream_catchments)",Get ORDER1 value from the provided CATCHNUM in a data.table,"function(catchment_df, current_catchment)",,Yes,,,hydrology,no
+done,beaconstools,hydrology,getOrder2,sub-function,"getAggregationUpstreamCatchments_R (get_upstream_catchments), getAggregationDownstreamCatchments_R (get_downstream_catchments)",Get ORDER2 value from the provided CATCHNUM in a data.table,"function(catchment_df, current_catchment)",,Yes,,,hydrology,no
+done,beaconstools,hydrology,getOrder3,sub-function,getAggregationUpstreamCatchments_R (get_upstream_catchments),Get ORDER3 value from the provided CATCHNUM in a data.table,"function(catchment_df, current_catchment)",,Yes,,,hydrology,no
+done,beaconstools,hydrology,getBasin,sub-function,"getAggregationUpstreamCatchments_R (get_upstream_catchments), getAggregationDownstreamCatchments_R  (get_downstream_catchments)",Get BASIN value from the provided CATCHNUM in a data.table,"function(catchment_df, current_catchment)",,Yes,,,hydrology,no
+done,beaconstools,hydrology,order3ToOrder2,sub-function,getAggregationDownstreamCatchments_R  (get_downstream_catchments),Replicating builder function to get order 2 from 3,function(order3),,Yes,,,hydrology,no
+done,beaconstools,hydrology,utf32_greaterthan,sub-function,utf32_greaterthan_vectorized (get_upstream_catchments),Used to identify upstream catchments based on comparison of ORDER1 and ORDER1_3 strings.,"function(x, y)",,Yes,,,hydrology,no
+done,beaconstools,hydrology,utf32_greaterthan_vectorized,sub-function,getAggregationUpstreamCatchments_R (get_upstream_catchments),,"function(x, y)",,Yes,,,hydrology,no
+NA,beaconstools,hydrology,isUpstream,sub-function,NONE,Test if other_catchment is upstream of current_catchment,"function(catchment_df, current_catchment, other_catchment)",,No,,,hydrology,
+NA,beaconstools,hydrology,getAggregationUpstreamCatchments_BUILDER_method,sub-function,NONE,Get all upstream catchments of an aggregation of catchments,"function(catchment_df, agg_catchments, neighbours_tib)",,Yes,,,,
+done,beaconstools,hydrology,getAggregationUpstreamCatchments_R,sub-function,get_upstream_catchments,Attempting a more R friendly version with less looping,"function(catchment_tab, agg_catchments)",,Yes,,,hydrology,no
+done,beaconstools,hydrology,get_upstream_catchments,function,,Calculate upstream catchments for a set of input polygons.,"function(conservation_areas_sf, conservation_areas_id, catchments_sf)","get_upstream_catchments(reserves, ""network"", catchments_sample)",Yes,,,hydrology,yes
+done,beaconstools,hydrology,getAggregationDownstreamCatchments_R,sub-function,get_downstream_catchments,Attempting a more R friendly version with less looping,"function(catchment_tab, agg_catchments)",,Yes,,,hydrology,no
+done,beaconstools,hydrology,get_downstream_catchments,function,,Calculate downstream catchments for a set of input polygons.,"function(conservation_areas_sf, conservation_areas_id, catchments_sf)","get_downstream_catchments(reserves, ""network"", catchments_sample)",Yes,,,hydrology,yes
+done,beaconstools,names,gen_network_names,function,,Create a vector of network names.,"function(in_names, k, force_in = c())","gen_network_names(c(""PB_1"", ""PB_2"", ""PB_3"", ""PB_11""), 3, ""PB_1__PB_11"")",No,,,,
+done,beaconstools,names,sep_network_names,function,,Split network names into their constituent parts.,function(network_names),sep_network_names(x),Yes,,,utils,
+done,beaconstools,ranking,avg_rank,function,,Rank multiple columns and calculate the average rank for each feature.,"function(reserves, columns_asc = c(), columns_desc = c())","avg_rank(tbl, columns_asc = c('col1', 'col3'), columns_desc = 'col2')",No,,,,
+done,beaconstools,ranking,sum_raster_values,function,,Sum the area of each raster value in a set of input polygons.,"function(conservation_areas_sf, conservation_areas_id, sum_raster, class_vals = c(), fill_zeros = TRUE)","sum_raster_values(conservation_areas, ""network"", habitat_sample, c(2,3))",No,,,,
+done,beaconstools,ranking,sum_polygon_values,function,,Sum area of a polygon layer inside a set of input polygons.,"function(conservation_areas_sf, conservation_areas_id, sum_polygon, sum_polygon_groups = NULL, class_vals = c(), fill_zeros = TRUE)","sum_polygon_values(conservation_areas, ""network"", habitat, ""group"", c(2), fill_zeros = FALSE)",No,,,,
+done,beaconstools,ranking,raster_mean,function,,Calculate the mean of a raster layer inside a set of input polygons.,"function(conservation_areas_sf, raster_layer)","raster_mean(conservation_areas, led_sample)",No,,,,
+done,beaconstools,ranking,raster_geometric_mean,function,,Calculate the geometric mean of a raster layer inside a set of input polygons.,"function(conservation_areas_sf, raster_layer)","raster_geometric_mean(conservation_areas, led_sample)",No,,,,
+done,beaconstools,representation,gen_targets,function,,Generate target tables for representation analysis.,"function(reference_sf, representation_raster, reserve_size, class_values = c())","gen_targets(ref_poly, led_sample, 5000)",No,,,representation,yes
+done,beaconstools,representation,evaluate_targets_using_catchments,function,,Evaluate targets using conservation areas defined by lists of catchments.,"function(catchments_sf, criteria_name, builder_table, target_table, network_list=c())","evaluate_targets_using_catchments(catchments_sample,  ""led"", builder_table_sample,  target_table, c(""PB_0002__PB_0001""))",No,,,representation,yes
+done,beaconstools,representation,evaluate_targets_using_clip,function,,Evaluate targets by clipping.,"function(conservation_areas_sf, conservation_areas_id, representation_raster, target_table, conservation_areas_list=c())","evaluate_targets_using_clip(pas, ""network"", led_sample, target_table)",No,,,representation,yes
+done,beaconstools,representation,evaluate_targets_using_networks,function,,Combines individual conservation area results into networks.,"function(individual_results, network_list)","evaluate_targets_using_networks(results, ""PB_0001__PB_0002__PB_0003"")",No,,,,
+done,beaconstools,representation,summarize_representation_results,function,,Summarize representation results by network.,"function(network_evaluation_table, criteria_name, target_pass_proportion = 1, target_inclusion_proportion = 0, suffix = """", gaps = TRUE)","summarize_representation_results(network_evaluation_table, ""led"", 0.9, suffix = ""_90pcnt"", gaps = FALSE)",No,,,,
+done,beaconstools,spatial,catchnums_in_polygon,function,"get_downstream_catchments, get_upstream_catchments",Convert catchments to centroids and intersects with PAs,"function(conservation_areas_sf, conservation_areas_id, catchments_sf)",,No,,,spatial,
+done,beaconstools,spatial,dissolve_catchments_from_table,function,,Get lists of catchments from a table and dissolve.,"function(catchments_sf, input_table, out_feature_id, calc_area = FALSE, intactness_id = NULL, dissolve_list = c(), drop_table = NULL)","dissolve_catchments_from_table(catchments_sample, upstream_table,  ""network"",TRUE)",Yes,,,spatial,yes
+NA,beaconstools,spatial,extract_catchments_from_table,function,,Get list of catchments from a table and extract to a new feature.,"function(catchments_sf, input_table, extract_feature_id, out_feature_id)","extract_catchments_from_table(catchments_sample, builder_table_sample, ""PB_0001"", ""network"")",No,,,spatial,
+done,beaconstools,spatial,append_reserve,function,,Used to add reserves that are not output from the beaconsbuilder package to a sf object of conservation areas.,"function(conservation_areas_sf, add_reserve, reserve_name)","append_reserve(conservation_areas, pa_1,PA_1)",No,,,spatial,
+done,beaconstools,spatial,build_network_polygons,function,,Combine a set of conservation area polygons into a network,"function(conservation_areas_sf, network_list)","build_network_polygons(conservation_areas, c(""PB_0001__PB_0002""))",No,,,spatial,
+done,beaconstools,spatial,list_overlapping_polygons,function,,List all pairs of touching/overlapping conservation areas.,function(conservation_areas_sf),list_overlapping_polygons(conservation_areas),No,,,spatial,
+toDELETE,beaconstools,utils,check_catchnum,sub-function,"In criteria_to_catchments, need to change to check_colnames(sf, cols = ""CATCHNUM"")",,function(catchments_sf),,No,,,utils,
+NA,beaconstools,utils,check_catchnum_class,sub-function,"extract_catchments_from_table, (commented out in dissolve_catchments_from_table) ",,"function(catchments_sf, builder_table)",,Yes,,,,
+DELETE,beaconstools,utils,make_catchnum_integer,sub-function,"change for make_all_interger in get_downstream_catchments, get_upstream_catchments",,function(catchments_sf),,Yes,,,utils,
+DELETE,beaconstools,utils,make_catchnum_character,sub-function,NONE,,function(catchments_sf),,No,,,,
+done,beaconstools,utils,get_catch_list,sub-function,"get_downstream_catchments, get_upstream_catchments, evaluate_targets_using_catchments, extract_catchments_from_table, dissolve_catchments_from_table",Get unique sets of catchment values from a table.,"function(conservation_areas_id, input_table)","get_catch_list(c(""PB_0001"", ""PB_0003""), builder_table_sample)",Yes,,,utils,no
+toDELETE,beaconstools,utils,check_network (should be check_colnames),sub-function,"calc_dissimilarity, evaluate_targets_using_networks, summarize_representation_results, build_network_polygons, list_overlapping_polygons, append_reserve",,function(reserves_sf),,No,,,,
+done,beaconstools,utils,check_for_geometry,sub-function,"calc_dissimilarity, sum_raster_values, sum_polygon_values, raster_mean, raster_geometric_mean",,function(in_sf),,Yes,,,utils,no
+done,beaconstools,utils,check_conservation_area_names,sub-function,"evaluate_targets_using_networks, build_network_polygons",Check conservation area names are in conservation_area_sf$network,"function(nets, conservation_area_sf)",,No,,,,
+done,beaconstools,utils,check_evaluation_table ,sub-function,NONE,,function(evaluation_table),,No,,,utils,no
+done,beaconstools,utils,check_classes_in_catchments,sub-function,evaluate_targets_using_catchments,Check all required criteria classes have been added to catchments for a given input target table,"function(expected_classes, observed_classes, warning_, stop_)",,No,,,utils,no
+done,beaconstools,utils,long_to_wide,sub-function,"catchnums_in_polygon, ",Convert long table into wide table with NAs (i.e. BUILDER style table),"function(long_df, col_names, values_col)","long_to_wide(long_df = wide_to_long(builder_table_sample, ""group""),  col_names = ""group"", values_col = ""value"")",yes,,,,no
+NA,beaconstools,utils,wide_to_long,sub-function,NONE,Convert wide BUILDER type table into long table.,"function(wide_df, col_name)","wide_to_long(builder_table_sample, group)",No,,,,
+done,beaconstools,utils,list_to_wide,sub-function,"get_downstream_catchments, get_upstream_catchments",convert list of vectors into df with list element names as colnames and missing values as NAs (i.e. BUILDER style table),function(values_list),,yes,,,,no
+done,beaconstools,utils,remove_oid,sub-function,"evaluate_targets_using_catchments, dissolve_catchments_from_table",remove OID from tables comgin out of BUILDER,function(in_table),,Yes,,,utils,no
+done,beaconstools,utils,check_for_rows,sub-function,dissolve_catchments_from_table,Check for rows,function(in_table),,Yes,,,utils,no
+done,beaconsbuilder,builder,neighbours,function,,Create a neighbours table listing neighbours for each catchment.,function(catchments_sf),neighbours(builder_catchments_sample),Yes,,,builder,yes
+done,beaconsbuilder,builder,seeds,function,,Create a seeds table.,"function(catchments_sf, filter_polygon = NULL, areatarget_value = NULL, areatarget_col = NULL, areatarget_polygon = NULL, areatarget_polygon_col = NULL)","seeds(catchments_sf = builder_catchments_sample, filter_polygon = ref_poly,  areatarget_polygon = ref_poly, areatarget_polygon_col = ""Areatarget"")",Yes,,,builder,yes
+done,beaconsbuilder,builder,reserve_seeds,function,,," function (catchments_sf, conservation_areas_sf, conservation_area_id, areatarget_value= NULL, joinType = ""CENTROID"", out_dir)",,Yes,,,builder,yes
+done,beaconsbuilder,builder,builder,function,,Call the BUILDER software from R.,"function(catchments_sf, seeds, neighbours, out_dir = NULL,  catchment_level_intactness = 1, conservation_areas_intactness = 1, area_target_proportion = 1,
+                    area_type = ""land"", construct_conservation_areas = TRUE,  area_target_multiplier = 1,
+                    handle_isolated_catchments = TRUE, output_upstream = FALSE, output_downstream = FALSE, output_hydrology_metrics = FALSE,
+                    area_land = ""Area_Land"", area_water = ""Area_Water"",
+                    skeluid = ""SKELUID"", catchnum = ""CATCHNUM"", subzone = ""FDA"", zone = ""MDA"", basin = ""BASIN"", order1 = ""ORDER1"",
+                    order2 = ""ORDER2"", order3 = ""ORDER3"", stream_length = ""STRMLEN"", intactness = ""intact"", isolated = ""Isolated"",
+                    unique_identifier = ""PB"", handler_summary = FALSE, summary_intactness_props = '""""', summary_area_target_props = '""""'
+                    )","builder(catchments_sf = builder_catchments_sample, seeds = seed, neighbours = nghbrs)",Yes,,,builder,yes
+done,beaconsbuilder,utils,logical_to_integer,sub-function,builer,,function(x),,No,,,utils,no
+done,beaconsbuilder,utils,check_seeds_areatargets,sub-function,builder,,function(seeds),,No,,,utils,no
+done,beaconsbuilder,utils,check_seeds_in_catchments,sub-function,builder,,"function(seeds, catchments_sf)",,No,,,utils,no
+done,beaconsbuilder,utils,check_colnames,sub-function,"builder, extract_catchments_from_table, dissolve_catchments_from_table",,"function(x, x_name, cols)",,No,,,utils,no
+done,beaconsbuilder,utils,make_all_integer,sub-function,"builder, get_downstream_catchments, get_upstream_catchments",,"function(x, cols = NULL)",,No,,,utils,no
+done,beaconsbuilder,utils,make_all_numeric,sub-function,builder,,"function(x, cols = NULL)",,No,,,utils,no
+done,beaconsbuilder,utils,make_all_character,sub-function,builder,,"function(x, cols = NULL)",,No,,,utils,no
+done,NEW,representation,evaluate_criteria_using_clip,function,,Evaluate criteria by clipping with a conservation areas or a network.,"function(conservation_areas_sf, criteria_raster, conservation_areas_id = NULL, class_values = c(), target_size = NULL)",,Yes,,,representation,yes
+done,NEW,builder,fetch_builder_output,function,,read Builder output tables that uses column format,"function(out_dir, type= ""BENCHMARKS"")",,,,,builder,yes
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+Total function ,,,69,,,,,,,,,,
+NB done,,,38,,,,,,,,,,
+NB toDo,,,24,,,,,,,,,,
+Total to document,,,32,,,,,,,,,,
+NB to document,,,19,,,,,,,,,,
+NB documented,,,12,,,,,,,,,,
