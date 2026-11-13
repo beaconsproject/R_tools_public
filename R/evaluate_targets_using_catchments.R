@@ -56,7 +56,13 @@ evaluate_targets_using_catchments <- function(catchments_sf, criteria_name, buil
   
   missing_cols <- check_colnames(catchments_sf, "CATCHNUM")
   if (length(missing_cols) > 0) stop("Column(s) missing from catchments_sf: ", paste(missing_cols, collapse = ", "))
-  check_catchnum_class(catchments_sf, builder_table) # Check catchments match, warning if not
+  
+  col_classes <- sapply(colnames(builder_table), function(x) class(builder_table[[x]]))
+  # Check catchments match, warning if not
+  if(!all(col_classes == class(catchments_sf$CATCHNUM))){
+    warning(paste0("Table column classes do not match class(catchments_sf$CATCHNUM) for columns: ", paste0(colnames(builder_table)[col_classes != class(catchments_sf$CATCHNUM)], collapse=", ")))
+  }
+  
   builder_table <- remove_oid(builder_table) # drop OID column if it exists
   
   # Check all required classes are in the catchments. If not, provide warning. Missing classes will be assumed to have area of zero.

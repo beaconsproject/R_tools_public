@@ -67,7 +67,6 @@ dissolve_catchments_from_table <- function(catchments_sf, input_table, out_featu
   missing_cols <- check_colnames(catchments_sf, "CATCHNUM")
   if (length(missing_cols) > 0) stop("Column(s) missing from catchments_sf: ", paste(missing_cols, collapse = ", "))
   check_for_geometry(catchments_sf)
-  #check_catchnum_class(catchments_sf, input_table) # Check catchments match, warning if not
   input_table <- remove_oid(input_table) #drop oid column is it exists
   check_for_rows(input_table)
   

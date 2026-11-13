@@ -27,7 +27,11 @@ extract_catchments_from_table <- function(catchments_sf, input_table, extract_fe
   
   missing_cols <- check_colnames(catchments_sf, "CATCHNUM")
   if (length(missing_cols) > 0) stop("Column(s) missing from catchments_sf: ", paste(missing_cols, collapse = ", "))
-  check_catchnum_class(catchments_sf, input_table) # Check catchments match, warning if not
+  col_classes <- sapply(colnames(input_table), function(x) class(input_table[[x]]))
+    # Check catchments match, warning if not
+    if(!all(col_classes == class(catchments_sf$CATCHNUM))){
+      warning(paste0("Table column classes do not match class(catchments_sf$CATCHNUM) for columns: ", paste0(colnames(input_table)[col_classes != class(catchments_sf$CATCHNUM)], collapse=", ")))
+  }
   check_for_geometry(catchments_sf)
   
   # get list of catchments
