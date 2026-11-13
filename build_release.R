@@ -11,7 +11,7 @@ release_dir <- "release"
 list_file   <- "functions_list.csv"
 
 if (!file.exists(list_file) || !dir.exists(fct_dir)) {
-  stop("Run this script from the beacons_fct folder (working directory = beacons_fct).")
+  stop("Run this script from the R_tools_public folder (working directory = beacons_fct).")
 }
 
 # ---- Read function list --------------------------------------------------

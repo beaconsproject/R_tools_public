@@ -2,7 +2,7 @@
 #
 #' Call the BUILDER software from R.
 #'
-#' Prepares and passes all input tables and variables to the BUIDLER executable and returns the builder table to R.
+#' Prepares and passes all input tables and variables to the BUILDER executable and returns the builder table to R.
 #'
 #' This function prepares the input tables (neighbours, seeds, catchments) required by BUILDER in a temp file, then creates
 #' a string of parameters that is passed to the BUILDER executable using \code{system()}. The BUILDER output tables are saved to the
@@ -30,7 +30,7 @@
 #'   }
 #'
 #' @param catchments_sf sf object of the catchments dataset with unique identifier column: CATCHNUM.
-#' @param data_source Specify the seed type (catchment or reserve). Default is catchment. 
+#' @param data_source Specify the seed type: "catchment" (default, seeds from [seeds()]) or "Reserve" (seeds from [reserve_seeds()]).
 #' @param seeds Seeds table from \code{seeds()} listing seed catchments and area targets.
 #' @param reserve_name Reserve column listing the name of the reserve. Only used if data_source Reserve is selected. 
 #' @param neighbours Neighbours table from \code{neighbours()} listing all neighbouring pairs of catchments.
@@ -82,7 +82,7 @@
 #'               seeds(catchments_sf = ., areatarget_value = 500000000)
 #' seed <- seed[1:10,]
 #' builder(catchments_sf = builder_catchments_sample, seeds = seed, neighbours = nghbrs)
-builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_name= NULL, neighbours, # input tables
+builder <- function(catchments_sf, data_source = c("catchment", "Reserve"), seeds, reserve_name= NULL, neighbours, # input tables
                     out_dir = NULL, # output dir
                     builder_local_path,
                     catchment_level_intactness = 1, conservation_areas_intactness = 1, area_target_proportion = 1, # main parameters
@@ -93,14 +93,15 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
                     order2 = "ORDER2", order3 = "ORDER3", stream_length = "STRMLEN", intactness = "intact", isolated = "Isolated",
                     unique_identifier = "PB", handler_summary = FALSE, summary_intactness_props = '""', summary_area_target_props = '""'
 ){
-  
+  data_source <- match.arg(data_source)
+
   # builder path
   #if(exists("builder_local_path")){
   builder_cmd <- file.path(builder_local_path, "BenchmarkBuilder_cmd.exe") # This is a temporary solution to avoid publishing builder.exe on github during the review process.
   #} else{
   #  builder_cmd <- system.file("exec", "BenchmarkBuilder_cmd.exe", package = "beaconsbuilder")
   #}
-  
+
   # set up output directory. Default is a temp folder. out_dir can be used if builder output should be saved, e.g. in a looped analysis.
   if(is.null(out_dir)){
     tmpdir <- file.path(tempdir(), "builder")
@@ -108,6 +109,8 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
       dir.create(tmpdir)
     }
     outdir <- tmpdir
+    # delete the temp folder however the function exits (success or error)
+    on.exit(unlink(outdir, recursive = TRUE), add = TRUE)
   } else{
     outdir <- out_dir
     # check no spaces
@@ -120,7 +123,7 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
   }
   
   # Count benchmark tables in out_dir
-  benchmarks_out_pre <- length(list.files(outdir, pattern = "COLUMN_All_Unique_BAs.csv"))
+  benchmarks_out_pre <- length(list.files(outdir, pattern = "COLUMN_All_Unique_BAs[.]csv$"))
   
   # save seeds table to outdir
   message("checking seeds table")
@@ -128,10 +131,8 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
   if(data_source == "catchment"){
     seeds <- make_all_integer(seeds)
     missing_cols <- check_colnames(seeds, c("CATCHNUM", "Areatarget"))
-  }else if(data_source == "Reserve"){
+  }else{ # Reserve
     missing_cols <- check_colnames(seeds, c(reserve_name, "Areatarget", "CATCHNUM"))
-  }else{
-    stop("data_source must be either catchment or Reserve")
   }
   if (length(missing_cols) > 0) stop("Column(s) missing from seeds: ", paste(missing_cols, collapse = ", "))
 
@@ -167,6 +168,7 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
   handler_summary <- logical_to_integer(handler_summary)
   
   # set system variables
+  # paths are quoted with shQuote() so folders with spaces work on the command line
   seeds_file <- file.path(outdir, "seeds.txt")
   seeds_table_name <- "seeds"
   seeds_catchnum_field <- "CATCHNUM"
@@ -179,11 +181,11 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
   # construct system call
   if(data_source == "catchment"){
     system_string <- paste(sep = " ",
-                           builder_cmd,
+                           shQuote(builder_cmd),
                            "builder", "1",
-                           outdir,
+                           shQuote(outdir),
                            "catchment",
-                           seeds_file,
+                           shQuote(seeds_file),
                            seeds_table_name,
                            seeds_catchnum_field,
                            seeds_areatarget_field,
@@ -195,7 +197,7 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
                            output_upstream,
                            output_downstream,
                            output_hydrology_metrics,
-                           catchments_file,
+                           shQuote(catchments_file),
                            catchments_table_name,
                            area_land,
                            area_water,
@@ -210,22 +212,22 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
                            intactness,
                            zone,
                            isolated,
-                           neighbours_file,
+                           shQuote(neighbours_file),
                            neighbours_file_name,
                            neighbours_catchnum_field,
                            neighbours_neighbours_field
     )
   }else{
     if(is.null(reserve_name)){
-      stop("You must provide the column name holder the reserve name")
+      stop("You must provide the column name holding the reserve name")
     }else{
       if(reserve_name %in% colnames(seeds)){
         system_string <- paste(sep = " ",
-                               builder_cmd,
+                               shQuote(builder_cmd),
                                "builder", "1",
-                               outdir,
+                               shQuote(outdir),
                                "Reserve",
-                               seeds_file,
+                               shQuote(seeds_file),
                                seeds_table_name,
                                reserve_name,
                                seeds_catchnum_field,
@@ -238,7 +240,7 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
                                output_upstream,
                                output_downstream,
                                output_hydrology_metrics,
-                               catchments_file,
+                               shQuote(catchments_file),
                                catchments_table_name,
                                area_land,
                                area_water,
@@ -253,7 +255,7 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
                                intactness,
                                zone,
                                isolated,
-                               neighbours_file,
+                               shQuote(neighbours_file),
                                neighbours_file_name,
                                neighbours_catchnum_field,
                                neighbours_neighbours_field
@@ -269,20 +271,21 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
   system(system_string)
   
   # prep for HANDLER
-  h1 <- list.files(outdir, pattern = "_ROW.csv", full.names = TRUE)
-  h1 <- ifelse(length(h1) > 0, h1[[length(h1)]], '""') # if multiple, return the last one which should be most recent
-  h2 <- list.files(outdir, pattern = "_ROW_AREALAND.csv", full.names = TRUE)
-  h2 <- ifelse(length(h2) > 0, h2[[length(h2)]], '""') # if multiple, return the last one which should be most recent
-  h3 <- list.files(outdir, pattern = "_ROW_AREALAND.csv", full.names = TRUE)
-  h3 <- ifelse(length(h3) > 0, h3[[length(h3)]], '""') # if multiple, return the last one which should be most recent
-  h4 <- list.files(outdir, pattern = "_ROW_UPSTREAM_CATCHMENTS.csv", full.names = TRUE)
-  h4 <- ifelse(length(h4) > 0, h4[[length(h4)]], '""') # if multiple, return the last one which should be most recent
-  h5 <- list.files(outdir, pattern = "_ROW_DOWNSTREAM_CATCHMENTS.csv", full.names = TRUE)
-  h5 <- ifelse(length(h5) > 0, h5[[length(h5)]], '""') # if multiple, return the last one which should be most recent
+  # newest BUILDER file matching pattern (file names start with the date), quoted for the command line.
+  # '""' (empty argument) if BUILDER did not write that file.
+  latest_file <- function(pattern){
+    f <- list.files(outdir, pattern = pattern, full.names = TRUE)
+    if(length(f) > 0) shQuote(f[[length(f)]]) else '""'
+  }
+  h1 <- latest_file("_ROW[.]csv$")
+  h2 <- latest_file("_ROW_AREALAND[.]csv$")
+  h3 <- latest_file("_ROW_AREALAND[.]csv$") # TODO: same file as h2, check which file HANDLER expects here
+  h4 <- latest_file("_ROW_UPSTREAM_CATCHMENTS[.]csv$")
+  h5 <- latest_file("_ROW_DOWNSTREAM_CATCHMENTS[.]csv$")
   
   # prep HANDLER system string
   handler_string <- paste(sep = " ",
-                          builder_cmd,
+                          shQuote(builder_cmd),
                           "handler",
                           h1, h2, h3, h4, h5,
                           conservation_areas_intactness,
@@ -295,36 +298,12 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
   # call HANDLER
   system(handler_string)
   
-  # Load output tables
-  benchmarks_out <- list.files(outdir, pattern = "COLUMN_All_Unique_BAs.csv")
-  if(length(benchmarks_out) > benchmarks_out_pre){ # If new table was added, it becomes the output path
-    if(length(benchmarks_out) > 1){
-      benchmarks_out <- benchmarks_out[[length(benchmarks_out)]]
-      warning("Multiple output tables in output folder, returning newest")
-    }
-  } else{ # If no new table was added, for out_dir, do nothing. For temp dir, delete. Then throw error.
-    if(is.null(out_dir)){
-      unlink(outdir, recursive = TRUE)
-    }
+  # Check BUILDER added a new output table (out_dir may already hold tables from earlier runs)
+  benchmarks_out_post <- length(list.files(outdir, pattern = "COLUMN_All_Unique_BAs[.]csv$"))
+  if(benchmarks_out_post <= benchmarks_out_pre){
     stop("No output produced. Check parameters, file paths and input tables.")
   }
-  
-  message(paste0("Returning BUILDER table: ", benchmarks_out))
-  
-  out_tab <- utils::read.csv(file.path(outdir, benchmarks_out))
-  
-  # delete temp directory. If out_dir was provided, don't delete
-  if(is.null(out_dir)){
-    unlink(outdir, recursive = TRUE)
-  }
-  
-  # make sure BUILDER made some conservation areas
-  if(nrow(out_tab) == 0){
-    warning("No conservation areas to return, try changing the BUILDER parameters by decreasing intactness and/or area requirements")
-    return(NULL)
-  }
-  
-  # return
-  out_tab$OID <- NULL
-  return(dplyr::as_tibble(out_tab))
+
+  # Load the newest output table. The temp folder (if used) is deleted by on.exit() after reading.
+  return(fetch_builder_output(outdir, "BENCHMARKS"))
 }

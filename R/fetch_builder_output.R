@@ -6,13 +6,13 @@ fetch_builder_output <- function(builder_dir, type= "BENCHMARKS")
   }
   
   if(type =="BENCHMARKS"){
-    benchmarks_out <- list.files(builder_dir, pattern = "COLUMN_All_Unique_BAs.csv")
+    benchmarks_out <- list.files(builder_dir, pattern = "COLUMN_All_Unique_BAs[.]csv$")
   }else if (type == "UPSTREAM"){
-    benchmarks_out <- list.files(builder_dir, pattern = "UPSTREAM_CATCHMENTS_COLUMN.csv")
+    benchmarks_out <- list.files(builder_dir, pattern = "UPSTREAM_CATCHMENTS_COLUMN[.]csv$")
   }else if (type == "DOWNSTREAM"){
-    benchmarks_out <- list.files(builder_dir, pattern = "DOWNSTREAM_CATCHMENTS_COLUMN.csv")
+    benchmarks_out <- list.files(builder_dir, pattern = "DOWNSTREAM_CATCHMENTS_COLUMN[.]csv$")
   }else{
-    stop("Wrong Type. Please select BENCHMARK, UPSTREAM or DOWNSTREAM")
+    stop("Wrong Type. Please select BENCHMARKS, UPSTREAM or DOWNSTREAM")
   }
   
   if(length(benchmarks_out) > 1){

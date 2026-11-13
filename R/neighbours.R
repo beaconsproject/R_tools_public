@@ -6,7 +6,7 @@
 #' and returns them in a long tibble. Neighbours are defined as having at least on point in common (within 0.1m).
 #'
 #'
-#' @param catchments_sf sf object of the catchments dataset with unique identifier column: CATCHNUM .
+#' @param catchments_sf sf object of the catchments dataset with unique identifier column: CATCHNUM, in a projected CRS (metres).
 #'
 #' @return A tibble of neighbouring pairs with columns \code{CATCHNUM} and \code{neighbours}.
 #'
@@ -24,6 +24,11 @@ neighbours <- function(catchments_sf){
   # More info on st_relate at:
   # https://www.rdocumentation.org/packages/sf/versions/0.7-7/topics/st_relate
   # Queen pattern found here: https://github.com/r-spatial/sf/issues/234
+
+  # the 0.1 buffer below is in map units, so the CRS must be projected (metres), not lat/long degrees
+  if(isTRUE(sf::st_is_longlat(catchments_sf))){
+    stop("catchments_sf must use a projected CRS in metres, not longitude/latitude")
+  }
 
   # check catchnum and convert to integer
   catchments_sf <- make_all_integer(catchments_sf, cols= "CATCHNUM")
