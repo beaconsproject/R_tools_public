@@ -93,6 +93,11 @@ test_that("neighbours are symmetric", {
   expect_setequal(pairs, reversed)
 })
 
+test_that("neighbours errors on a longitude/latitude CRS", {
+  catch_ll <- st_transform(catchments_sample[1:5, ], 4326)
+  expect_error(neighbours(catch_ll), "projected CRS")
+})
+
 test_that("neighbours only uses catchments from the input", {
   n <- neighbours(catchments_sample)
   expect_true(all(n$CATCHNUM %in% catchments_sample$CATCHNUM))
@@ -158,4 +163,143 @@ test_that("reserve_seeds INTERSECT includes all CENTROID catchments", {
     expect_true(all(cent %in% int))
     expect_gte(length(int), length(cent))
   }
+})
+
+
+# check_seeds_areatargets
+test_that("check_seeds_areatargets passes when all area targets are > 0", {
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  expect_silent(check_seeds_areatargets(s))
+})
+
+test_that("check_seeds_areatargets errors on zero or negative area targets", {
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  s$Areatarget[1] <- 0
+  expect_error(check_seeds_areatargets(s), "All Areatarget values must be > 0")
+  s$Areatarget[1] <- -5
+  expect_error(check_seeds_areatargets(s), "All Areatarget values must be > 0")
+})
+
+
+# check_seeds_in_catchments
+test_that("check_seeds_in_catchments passes when all seeds are in catchments", {
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  expect_silent(check_seeds_in_catchments(s, catchments_sample))
+})
+
+test_that("check_seeds_in_catchments accepts comma separated CATCHNUMs from reserve_seeds", {
+  cas <- dissolve_catchments_from_table(catchments_sample, builder_table_sample, "network",
+                                        dissolve_list = c("PB_0001", "PB_0002"))
+  r <- reserve_seeds(catchments_sample, cas, "network", 1e9)
+  expect_silent(check_seeds_in_catchments(r, catchments_sample))
+})
+
+test_that("check_seeds_in_catchments warns when some seeds are missing", {
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  s$CATCHNUM[1] <- 1L # not a CATCHNUM in the sample
+  expect_warning(check_seeds_in_catchments(s, catchments_sample), "Not all seeds are in catchments_sf")
+})
+
+test_that("check_seeds_in_catchments errors when no seeds are in catchments", {
+  s <- tibble::tibble(CATCHNUM = c(1L, 2L), Areatarget = 1e9)
+  expect_error(check_seeds_in_catchments(s, catchments_sample), "None of the seeds are in catchments_sf")
+})
+
+
+# fetch_builder_output
+# write a fake BUILDER output table in a temporary folder
+write_builder_csv <- function(dir, file, tab = builder_table_sample) {
+  tab$OID <- seq_len(nrow(tab)) # BUILDER tables have an OID column
+  utils::write.csv(tab, file.path(dir, file), row.names = FALSE)
+}
+
+test_that("fetch_builder_output reads the BENCHMARKS table and drops OID", {
+  d <- withr::local_tempdir()
+  write_builder_csv(d, "run1_COLUMN_All_Unique_BAs.csv")
+  expect_message(fetch_builder_output(d), "run1_COLUMN_All_Unique_BAs.csv")
+  out <- suppressMessages(fetch_builder_output(d))
+  expect_s3_class(out, "tbl_df")
+  expect_false("OID" %in% names(out))
+  expect_equal(out, builder_table_sample, ignore_attr = TRUE)
+})
+
+test_that("fetch_builder_output reads UPSTREAM and DOWNSTREAM tables", {
+  d <- withr::local_tempdir()
+  write_builder_csv(d, "run1_UPSTREAM_CATCHMENTS_COLUMN.csv")
+  write_builder_csv(d, "run1_DOWNSTREAM_CATCHMENTS_COLUMN.csv")
+  expect_message(fetch_builder_output(d, "UPSTREAM"), "UPSTREAM_CATCHMENTS_COLUMN")
+  expect_message(fetch_builder_output(d, "DOWNSTREAM"), "DOWNSTREAM_CATCHMENTS_COLUMN")
+})
+
+test_that("fetch_builder_output warns and returns the last table when several exist", {
+  d <- withr::local_tempdir()
+  write_builder_csv(d, "run1_COLUMN_All_Unique_BAs.csv")
+  write_builder_csv(d, "run2_COLUMN_All_Unique_BAs.csv")
+  expect_warning(
+    expect_message(fetch_builder_output(d), "run2_COLUMN_All_Unique_BAs.csv"),
+    "Multiple output tables"
+  )
+})
+
+test_that("fetch_builder_output warns and returns NULL for an empty table", {
+  d <- withr::local_tempdir()
+  write_builder_csv(d, "run1_COLUMN_All_Unique_BAs.csv", builder_table_sample[0, ])
+  expect_warning(out <- suppressMessages(fetch_builder_output(d)), "No conservation areas")
+  expect_null(out)
+})
+
+test_that("fetch_builder_output ignores files that only contain the table name", {
+  d <- withr::local_tempdir()
+  write_builder_csv(d, "run1_COLUMN_All_Unique_BAs.csv")
+  write_builder_csv(d, "run2_COLUMN_All_Unique_BAs.csv.bak")  # wrong extension
+  write_builder_csv(d, "run3_COLUMN_All_Unique_BAsXcsv")     # "." must be literal
+  expect_no_warning(expect_message(fetch_builder_output(d), "run1_COLUMN_All_Unique_BAs.csv"))
+})
+
+test_that("fetch_builder_output errors on bad inputs", {
+  d <- withr::local_tempdir()
+  expect_error(fetch_builder_output(NULL), "Builder_output directory")
+  expect_error(fetch_builder_output(d, "OTHER"), "BENCHMARKS, UPSTREAM or DOWNSTREAM")
+  expect_error(fetch_builder_output(d), "No output produced") # empty folder
+})
+
+
+# builder
+# These tests stop before BUILDER is called, so they run without BenchmarkBuilder_cmd.exe
+test_that("builder errors on invalid data_source", {
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  expect_error(
+    builder(catchments_sample, data_source = "reserves", seeds = s, neighbours = NULL,
+            builder_local_path = "not_used"),
+    "should be one of"
+  )
+})
+
+test_that("builder deletes its temp folder when it stops on an error", {
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  s$Areatarget[1] <- 0L # fails check_seeds_areatargets
+  expect_error(
+    suppressMessages(builder(catchments_sample, seeds = s, neighbours = NULL, builder_local_path = "not_used")),
+    "All Areatarget values must be > 0"
+  )
+  expect_false(dir.exists(file.path(tempdir(), "builder")))
+})
+
+test_that("builder keeps out_dir when it stops on an error", {
+  out <- file.path(withr::local_tempdir(), "builder_out")
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  s$Areatarget[1] <- 0L
+  expect_error(
+    suppressMessages(builder(catchments_sample, seeds = s, neighbours = NULL, out_dir = out, builder_local_path = "not_used")),
+    "All Areatarget values must be > 0"
+  )
+  expect_true(dir.exists(out))
+})
+
+test_that("builder errors when out_dir has spaces", {
+  s <- seeds(catchments_sample, areatarget_value = 1e9)
+  expect_error(
+    builder(catchments_sample, seeds = s, neighbours = NULL, out_dir = "C:/builder out", builder_local_path = "not_used"),
+    "out_dir cannot have spaces"
+  )
 })
