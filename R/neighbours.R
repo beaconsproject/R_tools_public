@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' neighbours(builder_catchments_sample)
+#' neighbours(catchments_sample)
 #'
 neighbours <- function(catchments_sf){
   # Generate neighbours where single point is shared
