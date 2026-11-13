@@ -8,7 +8,7 @@
 #'
 #' @param conservation_areas_sf sf object with unique id column named \code{network}, typically the output from
 #'  [dissolve_catchments_from_table()].
-#'@param conservation_areas_id
+#'@param conservation_areas_id character specify unique identifier. Default is network.
 #' @param add_reserve sf object to add as a single additional reserve to conservation_areas_sf. All features will
 #' be dissolved into a single POLYGON or MULTIPOLYGON feature to append to conservation_areas_sf. If multiple add_reserve
 #' object are required, add them using multiple calls to [append_reserve()].
@@ -33,10 +33,12 @@
 #'           sf::st_cast("POLYGON") %>%
 #'           sf::st_transform(st_crs(conservation_areas)) %>%
 #'           dplyr::mutate(pa_name="a protected area", ha=9999, class="provincial")
-#' append_reserve(conservation_areas, pa_1, "PA_1")
-append_reserve <- function(conservation_areas_sf, conservation_areas_id, add_reserve, reserve_name){
+#' append_reserve(conservation_areas, "network", pa_1, "PA_1")
+append_reserve <- function(conservation_areas_sf, conservation_areas_id = "network", add_reserve, reserve_name){
   
-  conservation_areas_sf <- check_colnames(conservation_areas_sf, cols = conservation_areas_id)
+  missing_cols <- check_colnames(conservation_areas_sf, conservation_areas_id)
+  if (length(missing_cols) > 0) stop("Column(s) missing from conservation_areas_sf: ", paste(missing_cols, collapse = ", "))
+  conservation_areas_sf[[conservation_areas_id]] <- as.character(conservation_areas_sf[[conservation_areas_id]])
   check_for_geometry(conservation_areas_sf)
   stopifnot(sf::st_crs(conservation_areas_sf) == sf::st_crs(add_reserve))
   

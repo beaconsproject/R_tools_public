@@ -54,7 +54,8 @@
 #'   c("PB_0002__PB_0001"))
 evaluate_targets_using_catchments <- function(catchments_sf, criteria_name, builder_table, target_table, network_list=c()){
   
-  check_colnames(catchments_sf, cols = "CATCHNUM") # check for CATCHNUM
+  missing_cols <- check_colnames(catchments_sf, "CATCHNUM")
+  if (length(missing_cols) > 0) stop("Column(s) missing from catchments_sf: ", paste(missing_cols, collapse = ", "))
   check_catchnum_class(catchments_sf, builder_table) # Check catchments match, warning if not
   builder_table <- remove_oid(builder_table) # drop OID column if it exists
   

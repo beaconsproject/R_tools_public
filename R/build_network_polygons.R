@@ -11,7 +11,7 @@
 #'
 #' @param conservation_areas_sf sf object with unique id column named \code{network}, typically the output from
 #'  [dissolve_catchments_from_table()].
-#' @param conservation_areas_id
+#' @param conservation_areas_id character specify unique identifier. Default is network.
 #' @param network_list Vector of strings detailing network names to be built. Typically network names built using [gen_network_names()] 
 #' (e.g. PB_0001__PB_0002). All network names must include names from the conservation_areas_sf \code{network} column, separated by \code{"__"} (double underscore).
 #'
@@ -31,9 +31,10 @@
 #' 
 #' build_network_polygons(conservation_areas, c("PB_0001__PB_0002"))
 
-build_network_polygons <- function(conservation_areas_sf, conservation_areas_id, network_list){
+build_network_polygons <- function(conservation_areas_sf, conservation_areas_id = "network", network_list){
   
-  check_colnames(conservation_areas_sf, cols = conservation_areas_id)
+  missing_cols <- check_colnames(conservation_areas_sf, conservation_areas_id)
+  if (length(missing_cols) > 0) stop("Column(s) missing from conservation_areas_sf: ", paste(missing_cols, collapse = ", "))
   check_for_geometry(conservation_areas_sf)
   
   my_list <- list()

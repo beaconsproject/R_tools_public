@@ -55,7 +55,8 @@
 summarize_representation_results <- function(network_evaluation_table, criteria_name, target_pass_proportion = 1, target_inclusion_proportion = 0, suffix = "", gaps = TRUE){
   
   # run columns checks
-  check_colnames(network_evaluation_table, "evaluation_table", cols = "network")
+  missing_cols <- check_colnames(network_evaluation_table, "network")
+  if (length(missing_cols) > 0) stop("Column(s) missing from network_evaluation_table: ", paste(missing_cols, collapse = ", "))
   check_evaluation_table(network_evaluation_table)
   
   # make output table template

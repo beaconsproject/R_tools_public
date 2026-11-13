@@ -10,7 +10,7 @@
 #'
 #' @param conservation_areas_sf sf object with unique id column named \code{network}, typically the output from
 #'  [dissolve_catchments_from_table()], possibly with additional reserves added using [append_reserve()].
-#' @param conservation_areas_id
+#' @param conservation_areas_id character specify unique identifier. Default is network.
 #' @return Vector of network names constructed using the \code{"__"} separator.
 #' @export
 #'
@@ -24,9 +24,10 @@
 #' 
 #' sep_network_names(list_overlapping_polygons(conservation_areas))
 
-list_overlapping_polygons <- function(conservation_areas_sf, conservation_areas_id){
+list_overlapping_polygons <- function(conservation_areas_sf, conservation_areas_id = "network"){
   
-  check_colnames(conservation_areas_sf, cols = conservation_areas_id)
+  missing_cols <- check_colnames(conservation_areas_sf, conservation_areas_id)
+  if (length(missing_cols) > 0) stop("Column(s) missing from conservation_areas_sf: ", paste(missing_cols, collapse = ", "))
   
   df <- as.data.frame(sf::st_intersects(conservation_areas_sf, conservation_areas_sf)) # get pairwise intersects
   

@@ -56,88 +56,63 @@
 sum_polygon_values <- function(conservation_areas_sf, conservation_areas_id, sum_polygon, sum_polygon_groups = NULL, class_vals = c(), fill_zeros = TRUE){
   
   stopifnot(sf::st_crs(conservation_areas_sf) == sf::st_crs(sum_polygon))
-  
-  # check geometry column is present in sf objects
+
+  # check required columns
   check_for_geometry(conservation_areas_sf)
   check_for_geometry(sum_polygon)
-  
-  sf::st_agr(conservation_areas_sf) = "constant"
-  sf::st_agr(sum_polygon) = "constant"
-  
-  if(!is.null(sum_polygon_groups)){
-    
-    # check sum_polygon_groups is in sum_polygon
-    if(!sum_polygon_groups %in% names(sum_polygon)){
-      stop(paste0(sum_polygon_groups, " is not a column in sum_polygon"))
-    }
-    
-    # Grouped code
-    out_df <- dplyr::tibble(a = as.character(), b = as.character(), area_km2 = as.numeric()) # make table template
-    names(out_df)[names(out_df) %in% c("a","b")] <- c(conservation_areas_id, sum_polygon_groups)
-    
-    sum_polygon_dslv <- sum_polygon %>%
-      dplyr::group_by(.data[[sum_polygon_groups]]) %>%
-      sf::st_union() # make sure sum_polygon is a single feature per group
-    
-    all_groups <- unique(sum_polygon[[sum_polygon_groups]]) # get list of all groups
-    
-    for(reserve in conservation_areas_sf[[conservation_areas_id]]){ # loop conservation_areas and intersect grouped sum_polygon
-      
-      # need to split this operation into two so the grouped sum_polygons can be made "constant". Otherwise we get the warning msg.
-      df <- sum_polygon %>%
-        dplyr::group_by(.data[[sum_polygon_groups]])
-      sf::st_agr(df) = "constant"
-      
-      df <- df %>%
-        sf::st_intersection(conservation_areas_sf[conservation_areas_sf[[conservation_areas_id]] == reserve,]) %>%
-        dplyr::mutate(area_km2 = round(as.numeric(sf::st_area(.data$geometry)) / 1000000, 3)) %>% # assumes units of m
-        sf::st_drop_geometry() %>%
-        dplyr::select(.data[[conservation_areas_id]], .data[[sum_polygon_groups]], .data$area_km2) %>%
-        dplyr::filter(.data$area_km2 > 0) %>% # intersection includes touching polygons that don't actually overlap. Don't want to return these
-        dplyr::as_tibble()
-      
-      if(fill_zeros){
-        # fill in missing values with 0
-        for(group_id in all_groups[!all_groups %in% df[[sum_polygon_groups]]]){
-          add_row <- dplyr::tibble(a = reserve, b = group_id, area_km2 = 0)
-          names(add_row)[names(add_row) %in% c("a","b")] <- c(conservation_areas_id, sum_polygon_groups)
-          df <- rbind(df, add_row)
-        }
-      }
-      out_df <- rbind(out_df, df)
-      
-      # filter by class_vals if requested
-      if(length(class_vals > 0)){
-        out_df <- out_df %>%
-          dplyr::filter(.data[[sum_polygon_groups]] %in% class_vals)
-      }
-    }
-    
-  } else{
-    # Non grouped code
-    out_df <- dplyr::tibble(a = as.character(), area_km2 = as.numeric())
-    names(out_df)[names(out_df) == "a"] <- c(conservation_areas_id)
-    
-    sum_polygon_dslv <- sum_polygon %>%
-      sf::st_union() # make sure sum_polygon is a single feature
-    
-    for(reserve in conservation_areas_sf[[conservation_areas_id]]){ # loop conservation_areas and intersect sum_polygon
-      
-      df <- conservation_areas_sf[conservation_areas_sf[[conservation_areas_id]] == reserve,] %>%
-        sf::st_intersection(sum_polygon_dslv) %>%
-        dplyr::mutate(area_km2 = round(as.numeric(sf::st_area(.data$geometry)) / 1000000, 3)) %>% # assumes units of m
-        sf::st_drop_geometry() %>%
-        dplyr::select(.data[[conservation_areas_id]], .data$area_km2) %>%
-        dplyr::filter(.data$area_km2 > 0) %>% # intersection includes touching polygons that don't actually overlap. Don't want to return these
-        dplyr::as_tibble()
-      
-      # Fill in zeros if missing (i.e. if the polygons don't intersect)
-      if(fill_zeros & nrow(df) == 0){
-        df <- dplyr::tibble(a = reserve, area_km2 = 0)
-        names(df)[names(df) == "a"] <- c(conservation_areas_id)
-      }
-      out_df <- rbind(out_df, df)
-    }
+  missing_cols <- check_colnames(conservation_areas_sf, conservation_areas_id)
+  if (length(missing_cols) > 0) stop("Column(s) missing from conservation_areas_sf: ", paste(missing_cols, collapse = ", "))
+  if (!is.null(sum_polygon_groups) && length(check_colnames(sum_polygon, sum_polygon_groups)) > 0) {
+    stop(sum_polygon_groups, " is not a column in sum_polygon")
   }
-  return(out_df)
+
+  # 1. Merge sum_polygon into one feature per group (or a single feature if no groups)
+  if (is.null(sum_polygon_groups)) {
+    grp <- ".all"
+    sum_polygon <- sf::st_sf(.all = "all", geometry = sf::st_union(sf::st_geometry(sum_polygon)))
+  } else {
+    grp <- sum_polygon_groups
+    sum_polygon <- sum_polygon[!is.na(sum_polygon[[grp]]), ]
+    if (length(class_vals) > 0) sum_polygon <- sum_polygon[sum_polygon[[grp]] %in% class_vals, ]
+    sum_polygon <- sum_polygon %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of(grp))) %>%
+      dplyr::summarise(.groups = "drop") # summarise() on sf unions the geometries of each group
+  }
+  all_groups <- sort(unique(sum_polygon[[grp]]))
+  ids <- conservation_areas_sf[[conservation_areas_id]]
+
+  # 2. Intersect all conservation areas with all groups at once
+  ca <- conservation_areas_sf[conservation_areas_id]
+  sf::st_agr(ca) <- "constant"
+  sf::st_agr(sum_polygon) <- "constant"
+  inter <- sf::st_intersection(ca, sum_polygon)
+
+  # 3. Area in km2 (assumes units of m). Touching polygons give zero area and are dropped.
+  out_df <- dplyr::tibble(
+      id = inter[[conservation_areas_id]],
+      group = inter[[grp]],
+      area_km2 = as.numeric(sf::st_area(inter)) / 1000000) %>%
+    dplyr::group_by(.data$id, .data$group) %>%
+    dplyr::summarise(area_km2 = round(sum(.data$area_km2), 3), .groups = "drop") %>%
+    dplyr::filter(.data$area_km2 > 0)
+
+  # 4. Optionally add a zero for every conservation area x group with no overlap
+  if (fill_zeros) {
+    out_df <- tidyr::expand_grid(id = ids, group = all_groups) %>%
+      dplyr::left_join(out_df, by = c("id", "group")) %>%
+      dplyr::mutate(area_km2 = dplyr::coalesce(.data$area_km2, 0))
+  }
+
+  # Keep the order of conservation_areas_sf, then group
+  out_df <- out_df[order(match(out_df$id, ids), out_df$group), ]
+
+  # Restore the caller's column names; drop the group column when no groups were requested
+  if (is.null(sum_polygon_groups)) {
+    out_df$group <- NULL
+    names(out_df)[names(out_df) == "id"] <- conservation_areas_id
+  } else {
+    names(out_df)[names(out_df) == "id"] <- conservation_areas_id
+    names(out_df)[names(out_df) == "group"] <- sum_polygon_groups
+  }
+  out_df
 }

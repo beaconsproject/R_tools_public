@@ -19,7 +19,8 @@
 
 criteria_to_catchments <- function(catchments_sf, criteria_raster, criteria_name, class_vals = c()){
   
-  check_colnames(catchments_sf, cols = "CATCHNUM") # check for CATCHNUM
+  missing_cols <- check_colnames(catchments_sf, "CATCHNUM")
+  if (length(missing_cols) > 0) stop("Column(s) missing from catchments_sf: ", paste(missing_cols, collapse = ", "))
   stopifnot(sf::st_crs(catchments_sf) == sf::st_crs(criteria_raster))
   
   cell_area <- prod(raster::res(criteria_raster)) / 1000000 # convert to area in km2, assumes raster res is in metres

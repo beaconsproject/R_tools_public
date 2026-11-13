@@ -40,7 +40,9 @@
 #' evaluate_targets_using_networks(results, "PB_0001__PB_0002__PB_0003")
 evaluate_targets_using_networks <- function(individual_results, network_list){
   
-  individual_results <- check_network(individual_results)
+  missing_cols <- check_colnames(individual_results, "network")
+  if (length(missing_cols) > 0) stop("Column(s) missing from individual_results: ", paste(missing_cols, collapse = ", "))
+  individual_results$network <- as.character(individual_results$network)
   check_evaluation_table(individual_results)
   
   # process 1000 networks at a time to limit the number of bin_row calls

@@ -36,7 +36,7 @@ group_conservation_areas <- function(conservation_areas_sf, grid_size){
   # remove grid_id if it already exists
   if("grid_id" %in% colnames(points_sf)){
     points_sf <- points_sf %>%
-      dplyr::select(-.data$grid_id)
+      dplyr::select(-all_of("grid_id"))
   }
   
   # spatial join fishnet grid id to conservation areas

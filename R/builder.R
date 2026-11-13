@@ -127,26 +127,29 @@ builder <- function(catchments_sf, data_source = "catchment", seeds, reserve_nam
   
   if(data_source == "catchment"){
     seeds <- make_all_integer(seeds)
-    check_colnames(seeds, "seeds", c("CATCHNUM", "Areatarget"))
+    missing_cols <- check_colnames(seeds, c("CATCHNUM", "Areatarget"))
   }else if(data_source == "Reserve"){
-    check_colnames(seeds, "seeds", c(reserve_name, "Areatarget", "CATCHNUM"))
+    missing_cols <- check_colnames(seeds, c(reserve_name, "Areatarget", "CATCHNUM"))
   }else{
     stop("data_source must be either catchment or Reserve")
   }
-  
+  if (length(missing_cols) > 0) stop("Column(s) missing from seeds: ", paste(missing_cols, collapse = ", "))
+
   check_seeds_areatargets(seeds)
   check_seeds_in_catchments(seeds, catchments_sf)
   utils::write.csv(seeds, file.path(outdir, "seeds.txt"), row.names = FALSE)
   
   # save neighbours table to outdir
   message("checking neighbours table")
-  check_colnames(neighbours, "neighbours", c("CATCHNUM", "neighbours", "key"))
+  missing_cols <- check_colnames(neighbours, c("CATCHNUM", "neighbours", "key"))
+  if (length(missing_cols) > 0) stop("Column(s) missing from neighbours: ", paste(missing_cols, collapse = ", "))
   neighbours <- make_all_integer(neighbours)
   utils::write.csv(neighbours, file.path(outdir, "neighbours.csv"), row.names = FALSE)
   
   # save catchment attributes
   catchments_csv <- sf::st_drop_geometry(catchments_sf)
-  check_colnames(catchments_csv, "catchments_sf", c(area_land, area_water, skeluid, catchnum, subzone, zone, basin, order1, order2, order3, stream_length, intactness, isolated)) # check all provided columns are present
+  missing_cols <- check_colnames(catchments_csv, c(area_land, area_water, skeluid, catchnum, subzone, zone, basin, order1, order2, order3, stream_length, intactness, isolated)) # check all provided columns are present
+  if (length(missing_cols) > 0) stop("Column(s) missing from catchments_sf: ", paste(missing_cols, collapse = ", "))
   catchments_csv <- make_all_character(catchments_csv, c(order1, order3, zone, subzone, basin)) # check type
   catchments_csv <- make_all_integer(catchments_csv, c(catchnum, skeluid, isolated))
   catchments_csv <- make_all_numeric(catchments_csv, c(order2, area_land, area_water, intactness))
