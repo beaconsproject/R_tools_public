@@ -121,6 +121,14 @@ calc_dissimilarity <- function(
     r_crop <- terra::crop(r, terra::ext(v), snap = "out")
     r_mask <- terra::mask(r_crop, v, touches = FALSE)
     
+    # Fewer non-NA cells than requested: use them all (exact, and spatSample would warn).
+    # global() counts in chunks, so large rasters are never read into memory at once.
+    n_avail <- terra::global(!is.na(r_mask), "sum")[[1]]
+    if (n_avail <= n) {
+      vals <- terra::values(r_mask, mat = FALSE)
+      return(vals[!is.na(vals)])
+    }
+
     vals <- terra::spatSample(r_mask, size = n, method = "random", na.rm = TRUE, as.df = TRUE, warn = FALSE)[[1]]
     vals[!is.na(vals)]
   }
