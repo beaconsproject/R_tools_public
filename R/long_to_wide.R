@@ -21,18 +21,13 @@
 long_to_wide <- function(long_df, col_names, values_col){
   
   # get out table nrow (i.e. longest list of values)
-  tbl_rows <- long_df %>%
-    dplyr::group_by(.data[[col_names]]) %>%
-    dplyr::summarise(n = dplyr::n()) %>%
-    dplyr::summarise(m = max(.data$n)) %>%
-    dplyr::pull(.data$m)
+  tbl_rows <- max(table(long_df[[col_names]]))
   
   values_list <- lapply(unique(long_df[[col_names]]), function(x){
     vals <- long_df[[values_col]][long_df[[col_names]]==x]
     c(vals, rep(NA, tbl_rows - length(vals)))
   })
   names(values_list) <- unique(long_df[[col_names]])
-  out_tab <- as.data.frame(do.call(cbind, values_list))
   out_tab <- dplyr::as_tibble(do.call(cbind, values_list))
   
   return(out_tab)

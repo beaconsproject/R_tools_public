@@ -68,8 +68,9 @@ calc_dci <- function(conservation_areas_sf, stream_sf, conservation_areas_id = "
     sf::st_buffer(dist = buffer_width, endCapStyle = "ROUND")
   
   report(0.50, "Merging connected stream sections")
-  merged_streams <- buffered_streams |>
-    dplyr::summarise(geometry = sf::st_union(geometry))
+  merged_streams <- sf::st_sf(
+     geometry = sf::st_union(sf::st_geometry(buffered_streams))
+  )
   
   report(0.70, "Calculating components within each conservation area")
   reserve_dci <- sf::st_intersection(merged_streams, conservation_areas_sf) |>
